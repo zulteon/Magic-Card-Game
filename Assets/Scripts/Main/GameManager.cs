@@ -21,35 +21,26 @@ public class GameManager : NetworkBehaviour
     public NetworkManager networkManager;
     public GameObject liveCardPrefab;
     public bool offlineTestMode;
-
+    public bool turnOff = false;
     #region Board
     public readonly SyncList<MinionState> boardAlly=new();
     public readonly SyncList<MinionState> boardEnemy=new(); 
-    public List<ILiveTarget> GetAlly(bool homePerspective = true)
+    public List<MinionState> GetAlly(bool homePerspective = true)
     {
-        var result = new List<ILiveTarget>();
-
-        var side = homePerspective ? boardAlly:boardEnemy   ;
-        foreach (var minion in side)
-        {
-            ILiveTarget target =(ILiveTarget) GetMinionById(minion.cardId);
-            if (target != null)
-                result.Add(target);
-        }return result;
+        return homePerspective ? boardAlly.ToList() : boardEnemy.ToList();
 
     }
-    public List<ILiveTarget> GetEnemyBoard(bool homePerspective = true)
+    public void AddAlly(MinionState ally)
     {
-        var result = new List<ILiveTarget>();
-
-        var side = homePerspective ?  boardEnemy:boardAlly;
-        foreach (var minion in side)
+        try
         {
-            ILiveTarget target = (ILiveTarget)GetMinionById(minion.cardId);
-            if (target != null)
-                result.Add(target);
+            boardAlly.Add(ally);
         }
-        return result;
+        catch { }
+    }
+    public List<MinionState> GetEnemyBoard(bool homePerspective = true)
+    {
+        return !homePerspective ? boardAlly.ToList() : boardEnemy.ToList();
 
     }
     
@@ -61,16 +52,65 @@ public class GameManager : NetworkBehaviour
             return !homePerspective?boardAlly:boardEnemy;
     }
     #endregion
-    public MinionData GetMinionById(ushort cardId)
+//Need to implement
+    public  MinionState GetMinionById(ushort sequenceId)
     {
-        return new MinionData();
+       foreach(var minion in boardAlly.Concat(boardEnemy))
+        {
+            if(minion.sequenceId == sequenceId) return  minion;
+        }
+        return default;
+        //foreach in heros
+    }
+    public void ChangeMinionByIndex(int id,MinionState minion)
+    {
+        if (id < boardAlly.Count)
+        {
+            boardAlly[id] = minion;
+        }
+        else
+        {
+            boardEnemy[id-boardAlly.Count] = minion;
+        }
+    }
+    
+    public void ChangeMinionById(ushort sequenceId, Func<MinionState, MinionState> modify)
+    {
+        // Ally board
+        for (int i = 0; i < boardAlly.Count; i++)
+        {
+            if (boardAlly[i].sequenceId == sequenceId)
+            {
+                var minion = boardAlly[i];
+                minion=modify( minion);  // Lambda-val módosítás
+                print(minion.currentHealth);
+
+                boardAlly[i] = minion;
+                return;
+            }
+        }
+
+        // Enemy board
+        for (int i = 0; i < boardEnemy.Count; i++)
+        {
+            if (boardEnemy[i].sequenceId == sequenceId)
+            {
+                var minion = boardEnemy[i];
+                modify(minion);
+                boardEnemy[i] = minion;
+                return;
+            }
+        }
     }
 
     // List<ILiveTarget> ally { get { return board[borderBoardEnemy:]} set; }
     void Awake()
     {
-        networkManager = FindObjectOfType<NetworkManager>();
         instance = this;
+        if (turnOff) return;
+        networkManager = FindObjectOfType<NetworkManager>();
+        
+
         if (!online)
         {
             networkManager.ServerManager.StartConnection();
@@ -80,13 +120,14 @@ public class GameManager : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-
+        if (turnOff) return;
         // Itt fut le a játék inicializálása, ami eddig az Awake-ben volt.
         gameOverHandler = GetComponent<GameOverHandler>();
         gameEvents = new GameEvents();
         Hero a = ScriptableObject.CreateInstance<Hero>();
         gameState = new GameState();
         Init(testDeck, a, testDeck, a);
+
     }
     public enum Phase { ready,animation,targeting }
     public Phase phase = Phase.ready;
@@ -95,37 +136,7 @@ public class GameManager : NetworkBehaviour
     public readonly SyncVar<PlayerController> playerA = new SyncVar<PlayerController>();
     public readonly SyncVar<PlayerController> playerB = new SyncVar<PlayerController>();
     public Deck testDeck;
-    public List<ILiveTarget> GetTargets(PlayerController player, ILiveTarget self, Effect e)
-    {
-        var targets = new List<ILiveTarget>();
-        var enemy = GetEnemy(player);
-        bool isHome= isAlly(player);
-        switch (e.target)
-        {
-            case Trigger.Target.all:
-                targets.AddRange(GetAlly(isHome));
-                targets.AddRange(GetEnemyBoard(isHome));
-                break;
-
-            case Trigger.Target.enemy:
-                targets.AddRange(GetEnemyBoard(isHome));
-                break;
-
-            case Trigger.Target.ally:
-                targets.AddRange(GetAlly(isHome));
-                break;
-
-            case Trigger.Target.self:
-                if (self != null)
-                    targets.Add(self);
-                break;
-
-            default:
-                break;
-        }
-
-        return targets;
-    }
+    
     private int turn = 1;
     public void AddEventSystem(GameEvents gameEvents)
     {
@@ -159,8 +170,8 @@ public class GameManager : NetworkBehaviour
             playerB.Value.Init(gameState.players[1], false, this);
             player2GO.transform.parent = transform;
         }
-        /*
-            GameObject player = new GameObject("player1");
+        
+            /*GameObject player = new GameObject("player1");
             player.transform.parent = transform;
             playerA.Value = player.AddComponent<PlayerController>();
             playerA.Value.Init(gameState.players[0], true, this);
@@ -171,7 +182,7 @@ public class GameManager : NetworkBehaviour
         
     }
     void Update()
-    {
+    {if (turnOff) return;
         // Ez csak demo, nyomj entert a kör végéhez:
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -180,29 +191,28 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.D) && IsServer)
         {
             print("drawwweA"+playerA.Value);
-            playerA.Value.CmdDraw();
+            playerA.Value.DrawCard();
 
         }
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.U) && IsServer)
         {
-            print("drawwB");
+            print("drawwB"+playerB.Value);
 
-            CmdDummyDrawPlayer2();
+            playerB.Value.DrawCard();
 
         }
-        
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            print("huhuh");
+            playerB.Value.PlayMinion(playerB.Value.hand[0]);
+        }
+        /*if (IsServer && Input.inputString.Contains("ö"))
+        {
+            DebugBoardState();
+        }   */
 
     }
-    public void Setup()
-    {
-        Hero h =new Hero();
-        h.Health = 20;
-        LiveHero Ally = new LiveHero();
-        LiveHero Enemy = new LiveHero();
-        Enemy.Init(h);
-        Ally.Init(h);
-
-    }
+    
     public void StartTurn()
     {
         Debug.Log($"Turn {turn} ended.");
@@ -216,8 +226,8 @@ public class GameManager : NetworkBehaviour
         gameEvents.RaiseTurnEnd();
         turn++;
     }
-    
-    
+
+    #region CardTemplate
     [Header("prefabs")]
     public GameObject cardTemplateFront;
     public GameObject cardTemplateBack;
@@ -228,13 +238,18 @@ public class GameManager : NetworkBehaviour
         front = cardTemplateFront;
         back = cardTemplateBack;
     }
+    #endregion
     public void GameOver(bool isEnemy)
     {
         gameOverHandler.TriggerGameOver(isEnemy);
     }
     public ILiveTarget currentAtacker;
-    
-
+    [ServerRpc]
+    public void DamageServerRpc(ushort attackerId,ushort attackedId)
+    {
+        ushort damage=(ushort)
+        GetMinionById(attackerId).attack;
+    }
     public void AttackWith(ILiveTarget attacker,Vector3 position)// selection phase
     {
         Arrow3DPointer.instance.SetArrow(position);
@@ -247,12 +262,7 @@ public class GameManager : NetworkBehaviour
         phase = Phase.targeting;
         currentAtacker = attacker;
     }
-    public void StartAttack(ILiveTarget target)//animation phase
-    {
-        phase = Phase.animation;
-        StartCoroutine(
-        AttackIt(currentAtacker,target));
-    }
+
     public void FinishAttack()
     {
         currentAtacker = null;
@@ -267,34 +277,7 @@ public class GameManager : NetworkBehaviour
 
     }
 
-    public List<ILiveTarget> WhoIsThereToAttack(bool home)
-    {
-        // 1. Válaszd ki a védekező oldalt
-        PlayerController defender = home ? playerB.Value : playerA.Value;
-
-        // 2. Először gyűjtsd ki a taunt-olt lényeket
-        // Ahol a board lista elemeit (NetworkObject-okat)
-        // ILiveTarget-re konvertáljuk.
-        var taunts = GetEnemyBoard(home)
-            .Where(target => target != null && target.isTaunt())
-            .ToList();
-
-        if (taunts.Count > 0)
-            return taunts;
-
-        // 3. Ha nincs taunt, először a hős, aztán az összes többi lény
-        var result = new List<ILiveTarget>();
-
-        // A hős már ILiveTarget, így simán hozzáadjuk
-        result.Add(defender.hero);
-
-        // A board lista elemeit itt is ILiveTarget-re konvertáljuk
-        result.AddRange(GetEnemyBoard(home)
-            
-            .Where(target => target != null));
-
-        return result;
-    }
+   
 
     //################################
 
@@ -395,28 +378,49 @@ public class GameManager : NetworkBehaviour
     }
 
     // A RequireOwnership = false kulcsfontosságú, mert a GameManagernek nincs tulajdonosa.
-    [Server]
-    public void CmdDummyDrawPlayer2()
-    {
-        // Ez a kód csak a szerveren fut le!
-        print("Szerver: Megkaptam a teszt kérést Player2-nek.");
-        if (playerB.Value != null)
-        {
-            // A szerver közvetlenül hívja meg a Player2 metódusát.
-            playerB.Value.ServerDraw();
-        }
-        else
-        {
-            print("Szerver: A playerB még nem létezik.");
-        }
-    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
-        print("Klieeens vagyko more");
+        if (turnOff) return;
         // A kliens példány iratkozik fel a SyncList-ekre.
         //boardAlly.OnChange += BoardManager.instance.OnBoardChangeHome;
         //boardEnemy.OnChange += BoardManager.instance.OnBoardChangeEnemy;
+    }
+    [ServerRpc]
+    public void StartGame()
+    {
+        // A deck-et itt kellene betölteni egy adatbázisból vagy fájlból
+        List<Card> playerDeck = GetPlayerDeck();
+
+        // Szerver oldalon betöltjük a CardManager-t a paklival
+        //CardManager.instance.LoadCardsFromJson(playerDeck);
+
+        RpcLoadCardsOnClient(playerDeck.Select(card => card.cardId).ToList());
+    }
+    public List<Card> GetPlayerDeck()
+    {
+        return gameState.players[0].deck.deck.Concat(gameState.players[1].deck.deck).ToList();
+    }
+    [ObserversRpc]
+    public void RpcLoadCardsOnClient(List<ushort> cardIds)
+    {
+        // A kliens kapja a hívást és betölti a kártyákat a saját CardManager-be
+        List<Card> playerDeck = new List<Card>();
+
+        foreach (ushort cardId in cardIds)
+        {
+            // A kliens a saját Resources mappájából tölti be a kártya assetet
+            // A fájlnevet a cardId alapján kell létrehozni, pl. "Cards/1"
+            Card card = Resources.Load<Card>($"Cards/{cardId}");
+            if (card != null)
+            {
+                playerDeck.Add(card);
+            }
+        }
+
+        // A kliens most feltölti a saját CardManagerét
+        //CardManager.instance.LoadFromDeck(playerDeck);
     }
     [Server]
     public void RegisterPlayer(PlayerController player)
@@ -444,6 +448,46 @@ public class GameManager : NetworkBehaviour
     {
             return testDeck.deck[0];
     }
+
+
+
+    #region Debug
+    [Server]
+    public void DebugBoardState()
+    {
+        Debug.Log("--- Tábla Állapota ---");
+
+        // Szövetséges minionok
+        Debug.Log("--- Szövetséges Minionok ---");
+        for (int i = 0; i < boardAlly.Count; i++)
+        {
+            MinionState minion = boardAlly[i];
+            Debug.Log($"Index: {i}, SequenceId: {minion.sequenceId}, Health: {minion.currentHealth}, Attack: {minion.attack}, CanAttack: {minion.canAttack}");
+        }
+
+        // Ellenséges minionok
+        Debug.Log("--- Ellenséges Minionok ---");
+        for (int i = 0; i < boardEnemy.Count; i++)
+        {
+            MinionState minion = boardEnemy[i];
+            Debug.Log($"Index: {i}, SequenceId: {minion.sequenceId}, Health: {minion.currentHealth}, Attack: {minion.attack}, CanAttack: {minion.canAttack}");
+        }
+    }
+    List<MinionLogic> minionLogics = new List<MinionLogic>();
+    public void CreateMinionLogic(ushort id)
+    {
+        if (minionLogics.Any(m => m._sequenceId == id))
+        {
+            UnityEngine.Debug.LogError($"MinionLogic with sequenceId {id} already exists!");
+            return;
+        }
+        minionLogics.Add(new MinionLogic(id));
+    }
+    internal MinionLogic GetMinionLogic(ushort targetId)
+    {
+        return minionLogics.SingleOrDefault(m => m._sequenceId == targetId);
+    }
+    #endregion
 }
 
 

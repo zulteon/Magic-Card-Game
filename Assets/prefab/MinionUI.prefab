@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3126447581089989032}
   - component: {fileID: 9176982780338997315}
   - component: {fileID: 7509724841750469428}
+  - component: {fileID: -5567276821277575490}
   m_Layer: 5
   m_Name: MinionUI
   m_TagString: Untagged
@@ -153,6 +154,24 @@ MonoBehaviour:
   attackText: {fileID: 4550843031246428691}
   healthText: {fileID: 7068520321490412688}
   spriteRenderer: {fileID: 3126447581089989032}
+--- !u!114 &-5567276821277575490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043349455705400269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13ae3adf189cea4e8c8aff7dca81836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardId: 0
+  sequenceId: 0
+  currentHealth: 0
+  attack: 0
+  ally: 1
+  activeEffects: 
 --- !u!1 &3732697723086050560
 GameObject:
   m_ObjectHideFlags: 0

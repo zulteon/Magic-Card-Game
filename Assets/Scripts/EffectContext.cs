@@ -1,20 +1,33 @@
-using System.Linq;
-
 using System.Collections.Generic;
+
 public class EffectContext
 {
     public Effect effect;
-    public ILiveTarget doer;
-    public List<ILiveTarget> targets;
-    public PlayerController source;
-    public PlayerController enemy;
+    public ushort doerId;
+    public MinionLogic Doer => new MinionLogic(doerId);
+    public List<MinionLogic> targets;
 
-    public EffectContext(Effect e, ILiveTarget doer, List<ILiveTarget> targets, PlayerController source, PlayerController enemy)
+    public PlayerController source;
+
+    public PlayerController Enemy => GameManager.instance.OtherPlayer(source);
+
+    public EffectContext(
+        Effect e,
+        ushort doerId,
+        List<ushort> targetIds,
+        PlayerController source)
     {
         this.effect = e;
-        this.doer = doer;
-        this.targets = targets;
+        this.doerId = doerId;
+        this.targets = new List<MinionLogic>();
+
+        foreach (var targetId in targetIds)
+        {
+            var logic = GameManager.instance.GetMinionLogic(targetId);
+            if (logic != null)
+                this.targets.Add(logic);
+        }
+
         this.source = source;
-        this.enemy = enemy;
     }
 }

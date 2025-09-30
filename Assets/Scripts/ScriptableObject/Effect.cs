@@ -34,6 +34,11 @@ public class Effect : ScriptableObject
     public bool multiSplit = false;
     public bool other = false;
     public ushort effectId;
+    [Header("Logic Operators")]
+    public List<LogicOperator> logicOp =new List<LogicOperator>(){ };
+    public Trigger linkedTrigger; // következő trigger a láncban
+
+    public enum LogicOperator { NONE, AND, OR, THEN }
 }
 
 

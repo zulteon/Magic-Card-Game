@@ -17,6 +17,7 @@ public static class MinionStateSerializer
         CurrentHealth = 1 << 2,
         Attack = 1 << 3,
         ActiveEffects = 1 << 4,
+        CanAttack = 1 << 5
     }
 
     public static void WriteMinionState(Writer writer, MinionState value)
@@ -25,7 +26,7 @@ public static class MinionStateSerializer
 
         bool hasEffects = value.activeEffects != null && value.activeEffects.Count > 0;
 
-        Fields flags = Fields.CardId | Fields.SequenceId | Fields.CurrentHealth | Fields.Attack;
+        Fields flags = Fields.CardId | Fields.SequenceId | Fields.CurrentHealth | Fields.Attack| Fields.CanAttack;
         if (hasEffects)
             flags |= Fields.ActiveEffects;
 
@@ -35,13 +36,20 @@ public static class MinionStateSerializer
         if ((flags & Fields.SequenceId) != 0) writer.WriteUInt16(value.sequenceId);
         if ((flags & Fields.CurrentHealth) != 0) writer.WriteUInt16(value.currentHealth);
         if ((flags & Fields.Attack) != 0) writer.WriteInt16(value.attack);
-
+        if ((flags & Fields.CanAttack) != 0) writer.WriteBoolean(value.canAttack);
         if ((flags & Fields.ActiveEffects) != 0)
         {
             var list = value.activeEffects;
-            writer.WriteInt32(list.Count);
-            for (int i = 0; i < list.Count; i++)
-                writer.WriteUInt16(list[i]);
+            if (list != null)  // ✅ Null check
+            {
+                writer.WriteInt32(list.Count);
+                for (int i = 0; i < list.Count; i++)
+                    writer.WriteUInt16(list[i]);
+            }
+            else
+            {
+                writer.WriteInt32(0);  // Üres lista jelzése
+            }
         }
     }
 
@@ -59,7 +67,7 @@ public static class MinionStateSerializer
             if ((flags & Fields.SequenceId) != 0) ms.sequenceId = reader.ReadUInt16();
             if ((flags & Fields.CurrentHealth) != 0) ms.currentHealth = reader.ReadUInt16();
             if ((flags & Fields.Attack) != 0) ms.attack = reader.ReadInt16();
-
+            if ((flags & Fields.CanAttack) != 0) ms.canAttack = reader.ReadBoolean();
             if ((flags & Fields.ActiveEffects) != 0)
             {
                 int count = reader.ReadInt32();
@@ -70,7 +78,7 @@ public static class MinionStateSerializer
             }
             else
             {
-                ms.activeEffects = new List<ushort>(0);
+                ms.activeEffects = null;
             }
 
             return ms;

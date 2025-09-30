@@ -8,7 +8,7 @@ public class Trigger : ScriptableObject
     //public enum Trigger { instant, endofturn, startofturn, dormant, }
         // instant is like battlecry
     public enum time { instant,during, endofturn, startofturn, dormant,when, after,oneturn,multiturn,startofcombat,endofcombat,ifso,value }
-    public enum subject{ Minion,Card,None,Copy,Hero,Health,Attack, Attack_Health,Self,LastBattleDamage,minionCount }
+    public enum subject{ Minion,Card,None,Hero,Health,Attack, Attack_Health,Self,minionCount,eventvalue}
     public enum conditions { less,adjacent,more,none,equals,thisOne}
     public enum Target {self, all,enemy,ally, adjacent,allother,left,right,none}
     public enum TargetType { minion,race,character,taunt,hero,none}
@@ -24,6 +24,7 @@ public class Trigger : ScriptableObject
     public Target tar=Trigger.Target.none;
     public TargetType tartype=TargetType.none;
     public TargetCast targetcast=TargetCast.none;
+    public Trigger valueTrigger;
 }
 
 

@@ -23,6 +23,7 @@ public class BoardManager : MonoBehaviour
     {
         //minionPrefab = GameManager.instance.minionPrefabUI;
     }
+   
     public void AddToBoard(GameObject minion,bool toHome=true)
     {
         if (minion == null) print("whyy");
@@ -31,44 +32,17 @@ public class BoardManager : MonoBehaviour
             abroad.Add(minion);
         Arrangecards();
     }
-  /*  public void OnBoardChangeHome(SyncListOperation op, int index, LiveMinion oldItem, LiveMinion newItem, bool asServer)
-    {
-        /*if (op == SyncListOperation.Add && newItem != null)
-        {
-            home.Add(newItem.minionUI.gameObject);
-            newItem.minionUI.transform.parent = boardMinions.GetChild(1);
-        }
-        else if (op == SyncListOperation.RemoveAt && index < home.Count)
-        {
-            Destroy(home[index]);
-            home.RemoveAt(index);
-        }
-        Arrangecards();
-    }
-    public void OnBoardChangeEnemy(SyncListOperation op, int index, LiveMinion oldItem, LiveMinion newItem, bool asServer)
-    {
-        /*if (op == SyncListOperation.Add && newItem != null)
-        {
-            abroad.Add(newItem.minionUI.gameObject);
-            newItem.minionUI.transform.parent = boardMinions.GetChild(1);
-        }
-        else if (op == SyncListOperation.RemoveAt && index < abroad.Count)
-        {
-            Destroy(abroad[index]);
-            abroad.RemoveAt(index);
-        }
-        Arrangecards();*/
+ 
     public void OnBoardChangeHome(SyncListOperation op, int index, MinionState oldItem, MinionState newItem, bool asServer)
     {
         print($"A tábla megváltozott:  {newItem.cardId} (index {index}) op :{op.ToString()} isServer:{asServer}");
-
-        if (!GameManager.instance.networkManager.IsClient) return;
-        //if (asServer) return;
+        
+        if (asServer) return;
         print("Board change Home");
         if (op == SyncListOperation.Add )
         {
             print("Friend Spawned");
-            home.Add(CreateMinionUI());
+            home.Add(CreateMinionUI(newItem));
         }
         else if (op == SyncListOperation.RemoveAt && index < home.Count)
         {
@@ -80,11 +54,12 @@ public class BoardManager : MonoBehaviour
     }
     public void OnBoardChangeEnemy(SyncListOperation op, int index, MinionState oldItem, MinionState newItem, bool asServer)
     {
-        if(asServer) return;
+        print($"A ellenfél táblája megváltozott:  {newItem.cardId} (index {index}) op :{op.ToString()} isServer:{asServer}");
+        if (asServer) return;
         if (op == SyncListOperation.Add )
         {
             print("Enemy Spawned");
-            abroad.Add(CreateMinionUI());
+            abroad.Add(CreateMinionUI(newItem,false));
         }
         else if (op == SyncListOperation.RemoveAt && index < home.Count)
         {
@@ -93,9 +68,13 @@ public class BoardManager : MonoBehaviour
         }
         Arrangecards();
     }
-    public GameObject CreateMinionUI()
+    public GameObject CreateMinionUI(MinionState minion,bool home=true)
     {
-        return Instantiate(minionPrefab,boardMinions);
+        print("Creating a minion UI");
+        GameObject newMinion=Instantiate(minionPrefab,boardMinions.GetChild(home?0:1));
+        newMinion.GetComponent<LiveMinion>().InitFromMinionState(minion);
+        newMinion.GetComponent<MinionView>().Initialize(CardManager.instance.GetMinion(minion.cardId).sprite,minion.attack,minion.currentHealth);
+        return newMinion;
     }
     void Arrangecards(bool home =true)
     {
@@ -104,7 +83,6 @@ public class BoardManager : MonoBehaviour
         float size; 
         float startingPoint;
         int counter = 0;
-        print("Arranging" +  count+" "+abroad.Count);
         if (home)
         {
             size = margin * (count - 1) + minionsize * count;
@@ -115,14 +93,16 @@ public class BoardManager : MonoBehaviour
                 i.transform.position = new Vector3(pos, minusYheight, 0);
                 counter++;
             }
-            return;
+           // return;
         }
+        counter= 0; 
         count = abroad.Count;
-        size = margin * (count - 1) + minionsize * abroad.Count;
-        startingPoint = -size / 2;
+        size = margin * (count - 1) + minionsize * count;
+        startingPoint = -size / 2 + minionsize / 2;
         foreach (GameObject i in abroad)
         {
-            float pos = counter * (margin + minionsize);
+            
+            float pos = startingPoint + counter * (margin + minionsize);
             i.transform.position = new Vector3(pos, YHeight, 0);
             counter++;
         }

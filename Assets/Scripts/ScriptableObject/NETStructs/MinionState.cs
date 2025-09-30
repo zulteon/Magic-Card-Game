@@ -11,7 +11,7 @@ public struct MinionState : IEquatable<MinionState>
 
     public ushort currentHealth;  // Aktuális HP
     public short attack;          // ATK (lehet negatív is)
-
+    public bool canAttack;
     public List<ushort> activeEffects; // Buff/Debuff ID-k
 
     public bool Equals(MinionState other)
@@ -20,7 +20,7 @@ public struct MinionState : IEquatable<MinionState>
             sequenceId != other.sequenceId ||
             ownerNetId != other.ownerNetId ||
             currentHealth != other.currentHealth ||
-            attack != other.attack)
+            attack != other.attack || canAttack!=other.canAttack)
             return false;
 
         if (activeEffects == null && other.activeEffects == null)
@@ -50,7 +50,7 @@ public struct MinionState : IEquatable<MinionState>
             hash = hash * 31 + ownerNetId.GetHashCode();
             hash = hash * 31 + currentHealth.GetHashCode();
             hash = hash * 31 + attack.GetHashCode();
-
+            hash = hash * 31 + canAttack.GetHashCode();
             if (activeEffects != null)
             {
                 for (int i = 0; i < activeEffects.Count; i++)

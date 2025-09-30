@@ -7,7 +7,7 @@ public class SerializationTester : MonoBehaviour
     void Start()
     {
         TestCardState();
-        //TestMinionState();
+        TestMinionState();
     }
 
     void TestCardState()
@@ -42,27 +42,44 @@ public class SerializationTester : MonoBehaviour
 
     void TestMinionState()
     {
-        MinionState original = new MinionState
+        // Eset 1: Minion effektekkel és támadási joggal
+        MinionState original1 = new MinionState
         {
             cardId = 789,
             sequenceId = 101,
             currentHealth = 10,
             attack = 4,
+            canAttack = true,
             activeEffects = new System.Collections.Generic.List<ushort>
-            {
-                (ushort)8 ,
-                (ushort)3
-            }
+        {
+            (ushort)8,
+            (ushort)3
+        }
         };
 
+        TestMinionStateHelper(original1);
+
+        // Eset 2: Minion effektek és támadási jog nélkül
+        MinionState original2 = new MinionState
+        {
+            cardId = 790,
+            sequenceId = 102,
+            currentHealth = 5,
+            attack = 2,
+            canAttack = false,
+            activeEffects = null
+        };
+
+        TestMinionStateHelper(original2);
+    }
+
+    void TestMinionStateHelper(MinionState original)
+    {
         // Szerializálás
         Writer writer = new Writer();
         MinionStateSerializer.WriteMinionState(writer, original);
-
-        // Writer adatok átvétele
         byte[] data = writer.GetBuffer();
         int length = writer.Length;
-
         Debug.Log($"[MinionState] Serialized bytes: {length}");
 
         // Deszerializálás
@@ -72,18 +89,7 @@ public class SerializationTester : MonoBehaviour
 
         // Eredmény ellenőrzése
         Debug.Log($"[MinionState] Equal: {original.Equals(copy)}");
-        Debug.Log($"Original: ID={original.cardId}, Seq={original.sequenceId}, HP={original.currentHealth}, ATK={original.attack}, Effects={original.activeEffects?.Count ?? 0}");
-        Debug.Log($"Copy:     ID={copy.cardId}, Seq={copy.sequenceId}, HP={copy.currentHealth}, ATK={copy.attack}, Effects={copy.activeEffects?.Count ?? 0}");
-
-        // Effect részletek
-        if (original.activeEffects != null && copy.activeEffects != null)
-        {
-            for (int i = 0; i < original.activeEffects.Count; i++)
-            {
-                var origEffect = original.activeEffects[i];
-                var copyEffect = copy.activeEffects[i];
-                Debug.Log($"Effect {i}: Original({origEffect}, vs Copy({copyEffect},)");
-            }
-        }
+        Debug.Log($"Original: ID={original.cardId}, Seq={original.sequenceId}, HP={original.currentHealth}, ATK={original.attack}, CanAttack={original.canAttack}, Effects={original.activeEffects?.Count ?? 0}");
+        Debug.Log($"Copy:     ID={copy.cardId}, Seq={copy.sequenceId}, HP={copy.currentHealth}, ATK={copy.attack}, CanAttack={copy.canAttack}, Effects={copy.activeEffects?.Count ?? 0}");
     }
 }

@@ -52,6 +52,10 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 2157317284404765103}
   liveCardPrefab: {fileID: 0}
   showHand: {fileID: 5776992809356375682}
+  manager: {fileID: 0}
+  isEnemy: 0
+  attacker: {fileID: 0}
+  gameController: {fileID: 193336011099995818, guid: 3a79029ee1fcd87439edb2f76d29b482, type: 3}
 --- !u!114 &7505070100609370286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +131,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 15
+  <PrefabId>k__BackingField: 11
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 16827585925996473256
   <SceneId>k__BackingField: 0

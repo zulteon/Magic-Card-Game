@@ -5,118 +5,143 @@ using UnityEngine;
 public  static class TargetingCenter
 {
     public static GameManager GameManager { get; private set; }
-    public static List<ILiveTarget> GetTargets(Effect e, ILiveTarget doer, PlayerController source, PlayerController enemy)
+    public static List<ushort> GetTargets(Effect e, ushort doerId, PlayerController source, PlayerController enemy)
     {
-        // A célpontok listáját nem kell inicializálni, késõbb építjük fel
-        List<ILiveTarget> targets = new List<ILiveTarget>();
+        List<ushort> targetIds = new List<ushort>();
 
-        // Mindenekelõtt a board listákat át kell alakítanunk ILiveTarget listákká
-        // A .Select(netObj => netObj.GetComponent<ILiveTarget>()) a kulcs!
-        var sourceBoardTargets = GameManager.GetAlly(!source.isEnemy)
-            .Where(target => target != null) // Kiszûrjük, ha valamiért nem ILiveTarget
+        // például: forrás minionjai
+        var sourceIds = GameManager.instance.GetAlly(!source.isEnemy)
+            .Select(m => m.sequenceId)
             .ToList();
 
-        var enemyBoardTargets = GameManager.GetEnemyBoard(!source.isEnemy)
-            .Where(target => target != null)
+        var enemyIds = GameManager.instance.GetEnemyBoard(!source.isEnemy)
+            .Select(m => m.sequenceId)
             .ToList();
 
         switch (e.target)
         {
             case Trigger.Target.self:
-                targets = new List<ILiveTarget>();
-                // Ez a rész jó, mert a "doer" már ILiveTarget
-                if (doer.type != ILiveTarget.Type.hero)
-                    targets.Add(doer);
+                targetIds.Add(doerId);
                 break;
-
             case Trigger.Target.ally:
-                // Hozzáadjuk a hõsünket és a lényeinket
-                targets.Add(source.hero);
-                targets.AddRange(sourceBoardTargets);
+                targetIds.Add(source.heroId);
+                targetIds.AddRange(sourceIds);
                 break;
-
             case Trigger.Target.enemy:
-                // Hozzáadjuk az ellenfél hõsét és lényeit
-                targets.Add(enemy.hero);
-                targets.AddRange(enemyBoardTargets);
+                targetIds.Add(enemy.heroId);
+                targetIds.AddRange(enemyIds);
                 break;
-
             case Trigger.Target.all:
-                // A hõsöket és az asztalokat összefûzzük
-                targets.Add(source.hero);
-                targets.Add(enemy.hero);
-                targets.AddRange(sourceBoardTargets.Concat(enemyBoardTargets));
+                targetIds.Add(source.heroId);
+                targetIds.Add(enemy.heroId);
+                targetIds.AddRange(sourceIds.Concat(enemyIds));
                 break;
-
             case Trigger.Target.allother:
-                // Az összes célpontot összegyûjtjük, majd eltávolítjuk a doer-t
-                targets.Add(source.hero);
-                targets.Add(enemy.hero);
-                targets.AddRange(sourceBoardTargets.Concat(enemyBoardTargets));
-                targets.Remove(doer);
+                targetIds.Add(source.heroId);
+                targetIds.Add(enemy.heroId);
+                targetIds.AddRange(sourceIds.Concat(enemyIds));
+                targetIds.Remove(doerId);
                 break;
-
-            default:
-                Debug.LogWarning("Unknown target : " + e.target);
-                return new List<ILiveTarget>();
         }
 
-        if (e.other)
-            targets.Remove(doer);
-
-        // Ezt a részt a meglévõ logikád alapján kell megírni,
-        // feltételezve, hogy a FilterByType és a SelectFinalTargets
-        // metódusok ILiveTarget listákat várnak.
-        targets = FilterByType(doer, targets, e);
-        targets = SelectFinalTargets(targets, e);
-
-        return targets;
-    }/*
-    public static List<ILiveTarget> GetTargets(Effect e,ILiveTarget doer, PlayerController source, PlayerController enemy, string offline="ja")
+        return FilterAndSelectTargets(doerId,targetIds, e);
+    }
+    public static List<ushort> FilterAndSelectTargets(
+       ushort doerId,
+       List<ushort> targetIds,
+       Effect e)
     {
-        List<ILiveTarget> targets=new List<ILiveTarget> ();
-        targets.Add(source.hero);
-        targets.Add(enemy.hero);
-        switch (e.target)
-        {
-            case Trigger.Target.self:
-                targets=new List<ILiveTarget>();
-                if(doer.type!=ILiveTarget.Type.hero)
-                    targets.Add(doer);
-                break;
-            case Trigger.Target.ally:
-                targets.Remove(enemy.hero) ;
+        // 1. Típus szerinti szûrés
+        // itt MinionState-et kell lekérni a GameManagerbõl
+        //var selectedTarget = targetIds;
 
-                targets.AddRange(source.board);
-                
+        switch (e.targetType)
+        {
+            case Trigger.TargetType.character:
+                // minden marad
                 break;
-            case Trigger.Target.enemy:
-                targets.Remove(source.hero);
-                targets.AddRange(enemy.board);
-                
+
+            case Trigger.TargetType.minion:
+                targetIds = targetIds.Where(s =>!IsHero(s)).ToList(); 
                 break;
-            case Trigger.Target.all:
-                targets.AddRange (source.board.Concat(enemy.board));
+
+            case Trigger.TargetType.hero:
+                // itt a hero külön jön, nem MinionState
+                targetIds = targetIds.Where(s => !IsHero(s)).ToList();
                 break;
-            case Trigger.Target.allother:
-                targets.AddRange(source.board.Concat(enemy.board));
-                targets.Remove(doer);
+
+            case Trigger.TargetType.race:
+                targetIds = targetIds.Where(s =>  CardManager.instance.GetMinion(s) != null
+                      && CardManager.instance.GetMinion(s).raceId == e.raceValue).ToList();
                 break;
-            
-            
+
             default:
-                Debug.LogWarning("Unknown target : " + e.target);
-                return new List<ILiveTarget>();
+                Debug.LogWarning("Unknown target type: " + e.targetType);
+                break;
         }
-        if (e.other)
-            targets.Remove(doer);
-        targets = FilterByType(doer, targets, e);
-        targets = SelectFinalTargets(targets, e);
-        return targets;
-        
-    }*/
-    
-    public  static List<ILiveTarget> FilterByType(ILiveTarget doer,List<ILiveTarget> targets,Effect e)
+
+        if (targetIds.Count == 0)
+            return new List<ushort>();
+
+        // 2. Végsõ kiválasztás
+        List<ushort> result = new List<ushort>();
+        switch (e.targetCast)
+        {
+            case Effect.TargetCast.all:
+                return targetIds;
+
+            case Effect.TargetCast.single:
+                if (targetIds.Count == 1)
+                {
+                    result.Add(targetIds[0]);
+                }
+                else if (e.random)
+                {
+                    var rnd = Random.Range(0, targetIds.Count);
+                    result.Add(targetIds[rnd]);
+                }
+                else
+                {
+                    Debug.Log("TODO: Player manual target selection");
+                    return null;
+                }
+                break;
+
+            case Effect.TargetCast.multi:
+                int multivalue = Mathf.Min(targetIds.Count, e.multiValue);
+
+                if (e.random)
+                {
+                    if (e.multiSplit)
+                    {
+                        for (int i = 0; i < multivalue; i++)
+                        {
+                            var rnd = Random.Range(0, targetIds.Count);
+                            result.Add(targetIds[rnd]);
+                        }
+                    }
+                    else
+                    {
+                        var shuffled = targetIds.OrderBy(_ => Random.value).ToList();
+                        result = shuffled.Take(multivalue).Select(c => c).ToList();
+                    }
+                }
+                else
+                {
+                    Debug.Log("TODO: Player selects multiple targets");
+                    return result;
+                }
+                break;
+        }
+
+        return result;
+    }
+    private static bool IsHero(ushort id)
+    {
+        return id == 0 || id == 1;
+    }
+
+    public static List<ILiveTarget> FilterByType(ILiveTarget doer,List<ILiveTarget> targets,Effect e)
     {
         switch (e.targetType)
         {
