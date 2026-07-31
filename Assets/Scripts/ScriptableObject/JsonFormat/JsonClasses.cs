@@ -17,8 +17,14 @@ public abstract class CardData
     public int cost;
     public string description;
     public string cardType; // JSON deserializáláshoz kell
+    public string sprite;
 
+    public List<ushort> effectIds = new List<ushort>();
     public abstract CardType GetCardType();
+    public Dictionary<string, int> dynamicValues = new Dictionary<string, int>();
+
+    public void SetDynamicValue(string key, int value) => dynamicValues[key] = value;
+    public int GetDynamicValue(string key) => dynamicValues.ContainsKey(key) ? dynamicValues[key] : 0;
 }
 
 // Minion kártya
@@ -27,16 +33,15 @@ public class MinionCard : CardData
 {
     public int attack;
     public int health;
-    public string sprite;
+    
     public string effect;
-    public List<int> effectIds = new List<int>();
     public int raceId;
 
     public MinionCard()
     {
         cardType = "minion";
     }
-
+    
     public override CardType GetCardType() => CardType.Minion;
 }
 
@@ -44,9 +49,8 @@ public class MinionCard : CardData
 [System.Serializable]
 public class SpellCard : CardData
 {
-    public string sprite;
     public string effect;
-    public List<int> effectIds = new List<int>();
+    public List<ushort> effectIds = new List<ushort>();
 
     public SpellCard()
     {

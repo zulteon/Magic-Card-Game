@@ -1,100 +1,64 @@
 {
   "cards": [
     {
-      "attack": 3,
-      "health": 3,
-      "sprite": "",
+      "attack": 8,
+      "health": 8,
       "effect": "",
-      "effectIds": [],
       "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
+      "cardId": 9,
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "",
+      "effectIds": [
+        0
+      ],
+      "dynamicValues": {}
     },
     {
       "attack": 3,
-      "health": 3,
-      "sprite": "",
+      "health": 8,
       "effect": "",
-      "effectIds": [],
       "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
+      "cardId": 8,
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "",
+      "effectIds": [
+        8
+      ],
+      "dynamicValues": {}
     },
     {
-      "attack": 3,
-      "health": 3,
-      "sprite": "",
+      "attack": 5,
+      "health": 5,
       "effect": "",
-      "effectIds": [],
       "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
+      "cardId": 4,
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "lemur_reader",
+      "effectIds": [
+        1
+      ],
+      "dynamicValues": {}
     },
     {
-      "attack": 3,
-      "health": 3,
-      "sprite": "",
+      "attack": 2,
+      "health": 4,
       "effect": "",
-      "effectIds": [],
       "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
-    },
-    {
-      "attack": 3,
-      "health": 3,
+      "cardId": 6,
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
       "sprite": "",
-      "effect": "",
-      "effectIds": [],
-      "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
-    },
-    {
-      "attack": 3,
-      "health": 3,
-      "sprite": "",
-      "effect": "",
-      "effectIds": [],
-      "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
-    },
-    {
-      "attack": 3,
-      "health": 3,
-      "sprite": "",
-      "effect": "",
-      "effectIds": [],
-      "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
-    },
-    {
-      "attack": 3,
-      "health": 3,
-      "sprite": "",
-      "effect": "",
-      "effectIds": [],
-      "raceId": 0,
-      "cardId": 0,
-      "cost": 8,
-      "description": "Hahoo",
-      "cardType": "minion"
+      "effectIds": [
+        3
+      ],
+      "dynamicValues": {}
     }
   ]
 }

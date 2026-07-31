@@ -40,35 +40,13 @@ public class Arrow3DPointer : MonoBehaviour
             mainCamera = Camera.main;
         }
         SetArrow(new Vector3(0, 0, 0));
+        TurnOff();
     }
 
     internal void TurnOff()
     {
         on = false;
         SetArrowVisible(false);
-    }
-    void Select()
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-
-        if (hit.collider != null)
-        {
-            ILiveTarget target = hit.collider.GetComponent<ILiveTarget>();
-            if (target != null) { 
-                
-                
-            }
-            else
-            {
-                GameManager.instance.CancelAttack();
-            }
-        }
-        else
-        {
-            GameManager.instance.CancelAttack();
-        }
-
     }
     void SetupComponents()
     {
@@ -107,10 +85,6 @@ public class Arrow3DPointer : MonoBehaviour
         CalculateCurvePoints();
         DrawCurve();
         UpdateArrowHead();
-        if (Input.GetMouseButtonDown(0))
-        {
-            Select();
-        }
     }
 
     // Frissíti a célpontot az egér pozíciója alapján

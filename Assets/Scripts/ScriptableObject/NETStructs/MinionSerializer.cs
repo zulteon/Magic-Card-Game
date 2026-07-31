@@ -2,7 +2,9 @@
 using FishNet.CodeGenerating;
 using System;
 using System.Collections.Generic;
-
+/// <summary>
+/// /////////////////// HALOTTT KÓD NEM ÉL!!!!!
+/// </summary>
 [UseGlobalCustomSerializer]
 public static class MinionStateSerializer
 {
@@ -22,8 +24,9 @@ public static class MinionStateSerializer
 
     public static void WriteMinionState(Writer writer, MinionState value)
     {
-        writer.WriteByte(VERSION);
 
+        writer.WriteByte(VERSION);
+        UnityEngine.Debug.Log($"WRITE {value.sequenceId}");
         bool hasEffects = value.activeEffects != null && value.activeEffects.Count > 0;
 
         Fields flags = Fields.CardId | Fields.SequenceId | Fields.CurrentHealth | Fields.Attack| Fields.CanAttack;
@@ -37,19 +40,12 @@ public static class MinionStateSerializer
         if ((flags & Fields.CurrentHealth) != 0) writer.WriteUInt16(value.currentHealth);
         if ((flags & Fields.Attack) != 0) writer.WriteInt16(value.attack);
         if ((flags & Fields.CanAttack) != 0) writer.WriteBoolean(value.canAttack);
-        if ((flags & Fields.ActiveEffects) != 0)
-        {
+        if((flags & Fields.ActiveEffects) != 0)
+{
             var list = value.activeEffects;
-            if (list != null)  // ✅ Null check
-            {
-                writer.WriteInt32(list.Count);
-                for (int i = 0; i < list.Count; i++)
-                    writer.WriteUInt16(list[i]);
-            }
-            else
-            {
-                writer.WriteInt32(0);  // Üres lista jelzése
-            }
+            writer.WriteInt32(list.Count);
+            for (int i = 0; i < list.Count; i++)
+                writer.WriteUInt16(list[i]);
         }
     }
 
@@ -57,7 +53,7 @@ public static class MinionStateSerializer
     {
         byte version = reader.ReadByte();
 
-        if (version >= 1)
+        if (version == 1)
         {
             Fields flags = (Fields)reader.ReadUInt16();
 
@@ -78,7 +74,7 @@ public static class MinionStateSerializer
             }
             else
             {
-                ms.activeEffects = null;
+                ms.activeEffects = new List<ushort>();
             }
 
             return ms;

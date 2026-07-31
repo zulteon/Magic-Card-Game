@@ -1,20 +1,16 @@
 using UnityEngine;
 
-public class LiveHero : MonoBehaviour,ILiveTarget
+public class LiveHero : MonoBehaviour
 {
     public int Health { get; set; }
     public int Attack { get; set; }
     public bool valid {  get; set; }
     public Hero h;
     public int maxHealth;
-    public ILiveTarget.Type type {  get; set; }
-    public ILiveTarget.Race race{  get; set; }
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        type = ILiveTarget.Type.hero;
-        race=0;
     }
 
     // Update is called once per frame

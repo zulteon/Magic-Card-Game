@@ -5,7 +5,7 @@ using UnityEngine;
 public class Effect : ScriptableObject
 {
     
-    public enum Type:byte { none,damage,heal,give}
+    public enum Type { none,damage,heal,give,death,attack,buff,steal,swapAttackHealth, setStats, copyStats ,gainEconomy,counter,spell}
     /*public enum Type{none,all,cleave,windfury,buff,have,ranged,
         damaged,arrange,execute,steal,roll,death,target,rolled,
         highlight,extraspace,level,bomb,summon,gold,freeroll,spy,boardHave,instantAttack,attack};
@@ -37,9 +37,12 @@ public class Effect : ScriptableObject
     [Header("Logic Operators")]
     public List<LogicOperator> logicOp =new List<LogicOperator>(){ };
     public Trigger linkedTrigger; // következő trigger a láncban
-
+    public Trigger.SortMode sortMode;
     public enum LogicOperator { NONE, AND, OR, THEN }
+    public Zone activeZone = Zone.Board; 
+
 }
+
 
 
 /*

@@ -6,13 +6,15 @@ using FishNet.Object.Synchronizing;
 using FishNet.Managing.Timing;
 using Unity.VisualScripting;
 using System;
+using FishNet.Connection;
 
 public class PlayerController : NetworkBehaviour
 {
     // A SyncList automatikusan szinkronizálja a szerveroldali változásokat a kliensekkel.
-    public readonly SyncList<ushort> deck = new ();
+    private readonly List<CardState> _deck = new();
     [SerializeReference]
     public readonly SyncList<CardState> hand = new ();// saját oldalon lévő minionok
+    //new SyncTypeSettings(WritePermission.ServerOnly, ReadPermission.OwnerOnly));
     private readonly List<CardState> _serverDeckData = new();
     // Itt tároljuk a kártyák aktuális állapotát a pakliban
     //private Dictionary<string, CardState> cardStates = new Dictionary<string, CardState>();
@@ -27,7 +29,7 @@ public class PlayerController : NetworkBehaviour
     
     private void Start()
     {
-       NetworkCards_Hand= new GameObject("HandNetworkCardData").transform;
+       NetworkCards_Hand = new GameObject("HandNetworkCardData").transform;
        NetworkCards_Hand.transform.parent = transform;
        NetworkCards_Board = new GameObject("BoardNetworkCardData").transform;
        NetworkCards_Board.transform.parent = transform;
@@ -35,67 +37,63 @@ public class PlayerController : NetworkBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && !isEnemy&&IsClient)
-        {
-            // print(hand[0].c);
+        if (!IsOwner) return;
+        if (GameManager.instance == null || GameManager.instance.offlineTestMode) return;
 
-            CmdPlayMinion(hand[0]);
-        }
-        
+        if (Input.GetKeyDown(KeyCode.D)) RequestDrawServerRpc();
+        if (Input.GetKeyDown(KeyCode.F)) RequestPlayFirstServerRpc();
+        if (Input.GetKeyDown(KeyCode.Return)) RequestEndTurnServerRpc();
     }
-    
+
+    [ServerRpc(RequireOwnership = true)]
+    private void RequestDrawServerRpc() => DrawCard();
+
+    [ServerRpc(RequireOwnership = true)]
+    private void RequestPlayFirstServerRpc()
+    {
+        if (hand.Count == 0) return;
+        PlayMinion(hand[0]);
+    }
+
+    [ServerRpc(RequireOwnership = true)]
+    private void RequestEndTurnServerRpc() => GameManager.instance.EndTurn();
     public GameObject liveCardPrefab;
     public LiveHero hero { get; set; }
     int Health;
     public ShowHand showHand;
     public GameManager manager;
-    public bool isEnemy;
+    public readonly SyncVar<bool> isEnemy = new();
     public PlayerState state;
 
     private bool _subscribed = false;
     public ushort heroId;
-    public void Init(PlayerState player,bool home,GameManager manager2)
+    [Server]
+    public void Init(PlayerState player, bool home, GameManager manager2)
     {
-        // Probably this method not needed we leave it for now
-        if (manager == null)
-            manager = manager2;
-        boardManager=manager.gameObject.GetComponent<BoardManager>();
-        //Debug.Log("This is enemy: " + isEnemy + " is this player a?" + manager.isAlly(this) + "are we client? " + IsClient+"Is this haho");
+        manager = GameManager.instance;
+        boardManager = manager.gameObject.GetComponent<BoardManager>();
         liveCardPrefab = manager.liveCardPrefab;
-        if(IsServer)
-        CreateDeck(player.deck);
-        
-        hero =gameObject.GetComponent<LiveHero>();
-        
-        if (hero==null)
-            hero =gameObject.AddComponent<LiveHero>();
-        if(showHand==null)
-            showHand=gameObject.AddComponent<ShowHand>();
-        showHand.isEnemy=!home;
-        heroId = isEnemy ?(ushort) 1 :(ushort) 0;
-        if (!_subscribed&&IsClient)  { 
-            _subscribed = true;
-            
-            
-            
-                
-            
-        }
 
-        isEnemy = !home;
+        isEnemy.Value = !home;                      // EGYSZER, nem háromszor
+        heroId = isEnemy.Value ? (ushort)1 : (ushort)0;
+
+        CreateDeck(player.deck);              // <- az ID-allokátorhoz kell a home
+
+        hero = gameObject.GetComponent<LiveHero>();
+        if (hero == null) hero = gameObject.AddComponent<LiveHero>();
         hero.Init(player.hero);
-       
+
         state = player;
-
-
     }
     int maxMana;
-    int currentMana;
+    public readonly SyncVar<int> currentResource=new(0);
+    public PlayerEconomy economy;
+    /*
     public void SpendMana(int amount)
     {
         currentMana -= amount;
         if(currentMana < 0) currentMana = 0;
-        if(!isEnemy)
+        if(!isEnemy.Value)
         ManaCrystalUI.instance.setManaCrystal(currentMana, maxMana);
     }
     void setMana(int maxMana)
@@ -103,35 +101,16 @@ public class PlayerController : NetworkBehaviour
         
         this.maxMana = maxMana;
         currentMana = maxMana;
-        if(!isEnemy)
+        if(!isEnemy.Value)
         ManaCrystalUI.instance.setManaCrystal(maxMana, maxMana);
-    }
-    // Update is called once per frame
-    
-   
-    
-   /* public void StartEffect(ILiveTarget doer,Effect e)
-    {
-        List<ILiveTarget> targets =
-        TargetingCenter.GetTargets(e, doer, this,manager.OtherPlayer(this));
-
-        if (targets.Count > 0)
-        {
-            EndEffect(doer, targets, e);
-        }
-    }
-    public void EndEffect(ILiveTarget doer,List<ILiveTarget> targets, Effect e)
-    {
-        EffectRunner.Run(e,doer,targets,this,manager.OtherPlayer(this));
-        
     }*/
     public void Die()
     {
         Debug.Log("Meghalt a player");
-        manager.GameOver(isEnemy);
+        manager.GameOver(isEnemy.Value);
     }
     int maxboardCount = 8;
-    static ushort minionSequenceId=0;
+    static ushort minionSequenceId=1;//0,1 heros main
     [Server]
     public void PlayMinion(CardState card)
     {
@@ -140,17 +119,49 @@ public class PlayerController : NetworkBehaviour
 
         //live.InitFromCardState(card); // beállítja a statokat a CardState alapján
 
+        minionSequenceId = manager.NextCardId(!isEnemy.Value);
 
         // 4. MinionState létrehozás és hozzáadás a boardhoz
-        minionSequenceId++;
         MinionState state = MinionStateFactory.FromCardState(card, minionSequenceId);
-        print("thi is my state " + state.ToString() + state.cardId + state.GetType());
-        if(!isEnemy) 
+        //print("thi is my state " + state.ToString() + state.cardId + state.GetType());
+        MinionLogic minionLogic=manager.CreateMinionLogic(minionSequenceId);
+        if (!isEnemy.Value)
             manager.boardAlly.Add(state);
-        else 
+        else
             manager.boardEnemy.Add(state);
         RemoveCardFromHand(card);
+
+        // --- BATTLECRY CHECK HELYE ---
+        // Lekérjük a statikus adatokat (ScriptableObject), hogy lássuk az effekteket
+        MinionCard data = CardManager.instance.GetMinion(card.cardId);
+
+        // print(data.effectIds[0]);
+        Effect[] battlecry = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, data).ToArray();
+        //effects.Remove(battlecry)
+        manager.DoEffects(battlecry, minionSequenceId, this);
+        
+        manager.RegisterAbilities(minionLogic.effectBag,minionSequenceId, EffectManagerClient.instance.GetEffectData(data.effectIds).ToArray(),Zone.Board);
+       /* MinionLogic logic = manager.GetMinionLogic(minionSequenceId);
+        List<Effect> effects =
+            EffectManagerClient.instance.GetEffectData(data.effectIds);
+        List<Trigger.time> activeTriggeringEffects = new List<Trigger.time>() { Trigger.time.startofturn, Trigger.time.endofturn };
+        foreach (Effect effect in effects)
+        {
+            if (effect == null || effect.triggers == null || effect.triggers.Length == 0)
+                continue;
+            Trigger.time when = effect.triggers[0].t;
+           
+                
+            if( TriggerConverter.ActiveEffectConverter(when, out GameEvents.EventType gameEvent))
+            {
+                ushort capturedId = minionSequenceId;
+                print("effect added " +effect.type.ToString() +" to game events "+ gameEvent.ToString() + "doer " +minionSequenceId.ToString() );
+                GameEvents.Instance.AddEvent(minionSequenceId, gameEvent, () => EffectRunner.Run(effect, capturedId));
+            } 
+        }*/
     }
+    // ott, ahol most a feliratkozó foreach van (szerveroldal)
+    
     [ServerRpc]
     public void CmdPlayMinion(CardState card) // vagy int cardIndex
     {
@@ -174,40 +185,24 @@ public class PlayerController : NetworkBehaviour
     }
     
     
-    [ServerRpc]
-    public void CmdDraw()
-    {
-        DrawCard();
-    }
     [Server]
     public void DrawCard()
     {
-        // A kártyahúzás teljes logikája
-        if (_serverDeckData.Count == 0)
+        if (_deck.Count == 0)
         {
             Debug.LogWarning("Nincs több lap a pakliban!");
-            return;
+            return;   // TODO: fatigue
         }
-        print("huzas");
-        CardState cardState = _serverDeckData[0];
-        _serverDeckData.RemoveAt(0);
-        hand.Add(cardState);
-    }
-    public string sequenceIdTostring()
-    {
-        return"";
+        // todo ha a kéz 10 kártya van  a lép  ég 
+        CardState cs = _deck[0];
+        _deck.RemoveAt(0);
+        hand.Add(cs);                    // <- előbb a listába
+
+        GameManager.instance.MoveCard(cs.sequenceId, Zone.Deck, Zone.Hand);
+       // GameEvents.Instance.RaiseCardDrawn(cs.cardId);
     }
     Arrow3DPointer arrow;
-    public void StartSelectPhase(ILiveTarget doer, List<ILiveTarget> targets )
-    {
-        AllTargetUnvalid();
-        foreach (ILiveTarget target in targets)
-        {
-            target.valid = true;
-        }
-        manager.StartSelectPhase(doer);
 
-    }
    
     public LiveMinion attacker;
     public void StartAttack(LiveMinion attacker)
@@ -215,23 +210,16 @@ public class PlayerController : NetworkBehaviour
         GameManager.instance.phase = GameManager.Phase.targeting;
         this.attacker= attacker;
         SelectTarget.instance.Ready(true);
-        //  GameManager.instance.StartAttack(attackedMinion);
-        //AllTargetUnvalid();
-        //CombatHandler.instance.AttackIt(attacker, attackedMinion);
-        //manager.Damage(attacker, attackedMinion);
     }
-    public void EndAttack(LiveMinion attackedMinion)
+    public void EndAttack(LiveMinion victim)
     {
-        print("endattack"+attackedMinion+attacker); 
-        CombatHandler.instance.Attack(attacker, attackedMinion);
-        //manager.DamageServerRpc(attacker, attackedMinion);
-        print("target pos" + attacker.transform.position + " victim pos" + attackedMinion.transform.position);
+        GameManager.instance.ExecuteAttack(attacker.sequenceId, victim.sequenceId);
     }
 
     public void AllTargetUnvalid()
     {
         Arrow3DPointer.instance.TurnOff();
-        /*foreach (ILiveTarget target in manager.GetAlly(!isEnemy).Concat(manager.GetEnemyBoard(!isEnemy)))
+        /*foreach (ILiveTarget target in manager.GetAlly(!isEnemy.Value).Concat(manager.GetEnemyBoard(!isEnemy.Value)))
         {
             target.valid = false;
         }*/
@@ -239,50 +227,54 @@ public class PlayerController : NetworkBehaviour
     }
     #region deck methods ---------------->
     static ushort _nextSequenceId = 0;
+    [Server]
     public void CreateDeck(Deck d)
     {
-        // Csak a szerveren futhat
-        if (!IsServer) return;
-        
+        _deck.Clear();
 
-
-        // Töröljük a korábbi listát a biztonság kedvéért
-        deck.Clear();
-
-        // Végigmegyünk a kapott paklin
         foreach (var card in d.deck)
         {
-            if (card != null)
-            {
-                // Létrehozzuk a CardState-et az egyedi azonosítóval
-                CardState newCard = new CardState
-                {
-                    cardId = card.cardId,
-                    sequenceId = _nextSequenceId++,
-                    currentCost = card.Cost
-                };
+            if (card == null) continue;
 
-                // Hozzáadjuk a CardState-et a hálózati listához
-                // A FishNet automatikusan szinkronizálja az összes adatot a klienssel.
-                _serverDeckData.Add(newCard);
-            }
+            _deck.Add(new CardState
+            {
+                cardId = card.cardId,
+                sequenceId = GameManager.instance.NextCardId(!isEnemy.Value),
+                currentCost = card.Cost
+            });
+        }
+
+        //Shuffle();
+    }
+
+    [Server]
+    private void Shuffle()
+    {
+        for (int i = _deck.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (_deck[i], _deck[j]) = (_deck[j], _deck[i]);
         }
     }
-    [ServerRpc(RequireOwnership = true)]
-    private void CmdShuffleDeck()
+    public bool TryFindCard(ushort seqId, out Zone zone, out int index)
     {
-        if (!IsServer) return;
+        for (int i = 0; i < hand.Count; i++)
+            if (hand[i].sequenceId == seqId) { zone = Zone.Hand; index = i; return true; }
 
-        // Fisher-Yates shuffle algoritmus a SyncList-en
-        for (int i = deck.Count - 1; i > 0; i--)
-        {
-           // int j = Random.Range(0, i + 1);
-           /* string temp = deck[i];
-            deck[i] = deck[j];
-            deck[j] = temp;*/
-        }
+        for (int i = 0; i < _deck.Count; i++)
+            if (_deck[i].sequenceId == seqId) { zone = Zone.Deck; index = i; return true; }
 
-        Debug.Log("Pakli megkeverve.");
+        zone = Zone.None; index = -1;
+        return false;
+    }
+
+    public CardState GetCard(Zone zone, int index)
+        => zone == Zone.Hand ? hand[index] : _deck[index];
+
+    public void SetCard(Zone zone, int index, CardState cs)
+    {
+        if (zone == Zone.Hand) hand[index] = cs;    // force:true → megy a hálóra
+        else _deck[index] = cs;   // szerveroldali, nincs szinkron
     }
     #endregion
 
@@ -298,60 +290,77 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-        
-        // Kliens oldalon megkeressük a GameManager-t
-        showHand = gameObject.GetComponent<ShowHand>(); 
+
+        showHand = gameObject.GetComponent<ShowHand>();
+        showHand.isEnemy = !IsOwner;
         hand.OnChange += showHand.OnHandChanged;
-
-        manager =GameObject.Find("GameController").GetComponent<GameManager>();
+        economy = new PlayerEconomy(this);
+        manager = GameManager.instance;
         boardManager = manager.gameObject.GetComponent<BoardManager>();
-        print("Manager is nullll +" + manager == null);
-        if (IsOwner && manager != null)
-        {
-            print("Csatlakozunk és jo minden");
-            // Ha ez a helyi klienshez tartozik, akkor szólunk a szervernek
-            // hogy regisztráljon minket a GameManager-ben
-            manager.RegisterPlayer(this);
-        
-            bool allyPlayer = manager.isAlly(this);
-            print($"iss ally player {allyPlayer}");
-            manager.boardAlly.OnChange += allyPlayer ? boardManager.OnBoardChangeHome : boardManager.OnBoardChangeEnemy;
-            manager.boardEnemy.OnChange += allyPlayer ? boardManager.OnBoardChangeEnemy : boardManager.OnBoardChangeHome;
-            // Itt kell csekkolni hogy ez már a második player e egyelőre 1 player van
-           // if (IsOwner)
-                //StartGameServerRpc();
-        }
-        bool ally = manager.isAlly(this);
-        
-        Debug.Log($"Subscribed OnChange. IsServer:{IsServer} IsClient:{IsClient} ally?{ally} dummy?{isDummy}");
 
+        if (!IsOwner) return;
 
-        
-        
-        
+        RegisterMeServerRpc();          
+
+        isEnemy.OnChange += OnRoleReceived;
+
     }
-    [ServerRpc]
-    private void StartGameServerRpc()
+    // PlayerController
+    [TargetRpc]
+    public void RoleAssignedTargetRpc(NetworkConnection conn, bool enemy) => SubscribeBoards(enemy);
+    private void OnRoleReceived(bool prev, bool next, bool asServer)
     {
-        // A játék indításának logikája, ami a szerveren fut le.
-        // Innen hívhatod meg a GameManagert.
-       // manager.StartGame();
+        if (asServer) return;
+        SubscribeBoards(next);
     }
-    public void  CreateGameController()
+
+    private bool _boardsSubscribed;
+
+    private void SubscribeBoards(bool enemy)
     {
-        base.Spawn(gameController);
+        if (_boardsSubscribed) return;
+        _boardsSubscribed = true;
+
+        bool ally = !enemy;
+
+        boardManager.SetSide(ally);// ami nekem "enemy"
+
+        manager.boardAlly.OnChange += ally ? boardManager.OnBoardChangeHome : boardManager.OnBoardChangeEnemy;
+        manager.boardEnemy.OnChange += ally ? boardManager.OnBoardChangeEnemy : boardManager.OnBoardChangeHome;
     }
+
     public override void OnStopClient()
     {
-        bool ally = manager.isAlly(this);
-        manager.boardAlly.OnChange -= ally
-            ? boardManager.OnBoardChangeHome
-            : boardManager.OnBoardChangeEnemy;
+        base.OnStopClient();
 
-        manager.boardEnemy.OnChange -= ally
-            ? boardManager.OnBoardChangeEnemy
-            : boardManager.OnBoardChangeHome;
+        if (showHand != null) hand.OnChange -= showHand.OnHandChanged;
+
+        isEnemy.OnChange -= OnRoleReceived;
+
+        if (!_boardsSubscribed) return;
+        _boardsSubscribed = false;
+
+        if (manager == null || boardManager == null) return;
+
+        bool ally = !isEnemy.Value;
+        manager.boardAlly.OnChange -= ally ? boardManager.OnBoardChangeHome : boardManager.OnBoardChangeEnemy;
+        manager.boardEnemy.OnChange -= ally ? boardManager.OnBoardChangeEnemy : boardManager.OnBoardChangeHome;
+    }
+    [ServerRpc(RequireOwnership = true)]
+    private void RegisterMeServerRpc()
+    {
+        GameManager.instance.RegisterPlayer(this);
+
     }
     #endregion
+    #region Debug
 
+    void printOutHand()
+    {
+        foreach (var i in hand)
+        {
+            print(i.cardId);
+        }
+    }
+    #endregion
 }

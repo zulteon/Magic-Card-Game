@@ -38,7 +38,7 @@ public class Deck : ScriptableObject
             // Minion kártya konvertálása
             if (card.m != null)
             {
-                Debug.Log($"Minion kártya: {card.m.attack}/{card.m.health}");
+                Debug.Log($"Minion kártya: {card.m.attack}/{card.m.health} +{card.m.sprite}");
                 cardData = new MinionCard
                 {
                     cardId = card.cardId,
@@ -91,16 +91,16 @@ public class Deck : ScriptableObject
      new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None });
     }
     // Effect-ek ID-kká konvertálása
-    private List<int> ConvertEffectsToIds(List<Effect> effects)
+    private List<ushort> ConvertEffectsToIds(List<Effect> effects)
     {
-        List<int> ids = new List<int>();
+        List<ushort> ids = new List<ushort>();
         if (effects != null)
         {
             foreach (Effect effect in effects)
             {
                 if (effect != null)
                 {
-                    ids.Add(effect.GetInstanceID()); // vagy effect.id ha van
+                    ids.Add(effect.effectId); 
                 }
             }
         }
@@ -126,8 +126,8 @@ public class Deck : ScriptableObject
         UnityEditor.AssetDatabase.Refresh();
 #endif
     }
-
-[UnityEditor.MenuItem("Assets/Export Deck to JSON", false, 20)]
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Assets/Export Deck to JSON", false, 20)]
 static void ExportSelectedDeck()
 {
     Deck selectedDeck = UnityEditor.Selection.activeObject as Deck;
@@ -140,4 +140,5 @@ static void ExportSelectedDeck()
         Debug.LogWarning("Válassz ki egy Deck ScriptableObject-et!");
     }
 }
+#endif
 }

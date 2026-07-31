@@ -1,0 +1,19 @@
+Wombat Pék
+Emlős
+AB_020
+End of Turn: If you have empty board space, add a 0/1 copy of this to your hand.
+
+
+100 – Nyomozó kaméleon
+Hüllő
+AB_020
+Ez a lény mindig a legalacsonyabb Életerejű ellenséges lényt támadja.
+
+023 tenrec -> give +3 Health 
+
+
+
+001 – Hírlapolvasó gyűrűsfarkú maki
+Prímás
+AB_028
+A köröd végén adj egy véletlenszerű baráti lénynek +1/+1-et.

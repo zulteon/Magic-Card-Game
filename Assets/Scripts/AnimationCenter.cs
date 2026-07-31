@@ -19,7 +19,6 @@ public class AnimationCenter : MonoBehaviour
     public void PlayDeathAnimation(string minionName)
     {
         Debug.Log($"Death animation: {minionName}");
-        // TODO: Animator trigger, particle effect
     }
 
     public void PlayBuffAnimation(string minionName, string buffName)

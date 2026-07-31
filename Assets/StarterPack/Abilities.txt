@@ -1,0 +1,8 @@
+Liquid Angel; Liquid Angel; 4,3/3,OnPlay:Healing 3 to EVERYBODY.
+FractalBulb;3,2/2,Ondeath:Give a minion: Ondeath: Summon a FractalBulb.
+Galactic Guard;1,2/2,
+LightWave;6,-,deal 4 damage to ALL.
+Forret Spy; 2,3/2, Copy an ability from board
+Crystal Bomb;2,deal 3 damage.
+Juppi; 1, 2/1, If  killed by enemy, Deal 3 damage to a random enemy.
+Endless reader; 4, 5/3, Mana steal 0. (Upgrades each turn) 

@@ -1,20 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Trigger;
 
 public  static class TargetingCenter
 {
     public static GameManager GameManager { get; private set; }
-    public static List<ushort> GetTargets(Effect e, ushort doerId, PlayerController source, PlayerController enemy)
+    public static List<ushort> GetTargets(Effect e, ushort doerId, PlayerController source=null)
     {
+        if (source == null)
+        {
+            Debug.Log("DOER : " +doerId.ToString());
+            bool isAlly= GameManager.instance.isAllyMinion(doerId);
+            source=GameManager.instance.GetPlayer(!isAlly);
+        }
+        PlayerController enemy = GameManager.instance.GetEnemy(source);
         List<ushort> targetIds = new List<ushort>();
 
         // például: forrás minionjai
-        var sourceIds = GameManager.instance.GetAlly(!source.isEnemy)
+        var sourceIds = GameManager.instance.GetAlly(!source.isEnemy.Value)
             .Select(m => m.sequenceId)
             .ToList();
 
-        var enemyIds = GameManager.instance.GetEnemyBoard(!source.isEnemy)
+        var enemyIds = GameManager.instance.GetEnemyBoard(!source.isEnemy.Value)
             .Select(m => m.sequenceId)
             .ToList();
 
@@ -67,12 +75,16 @@ public  static class TargetingCenter
 
             case Trigger.TargetType.hero:
                 // itt a hero külön jön, nem MinionState
-                targetIds = targetIds.Where(s => !IsHero(s)).ToList();
+                targetIds = targetIds.Where(s => IsHero(s)).ToList();
                 break;
 
             case Trigger.TargetType.race:
-                targetIds = targetIds.Where(s =>  CardManager.instance.GetMinion(s) != null
-                      && CardManager.instance.GetMinion(s).raceId == e.raceValue).ToList();
+                targetIds = targetIds.Where(s =>
+                {
+                    var st = GameManager.instance.GetMinionById(s);
+                    var mc = CardManager.instance.GetMinion(st.cardId);
+                    return mc != null && mc.raceId == e.raceValue;
+                }).ToList();
                 break;
 
             default:
@@ -82,7 +94,11 @@ public  static class TargetingCenter
 
         if (targetIds.Count == 0)
             return new List<ushort>();
-
+        // típus-szûrés után, mielõtt a targetCast szerint válogatnál:
+        if (e.sortMode != Trigger.SortMode.none)
+        {
+            targetIds = SortByMode(targetIds, e.sortMode);
+        }
         // 2. Végsõ kiválasztás
         List<ushort> result = new List<ushort>();
         switch (e.targetCast)
@@ -221,4 +237,21 @@ public  static class TargetingCenter
         }
         return result;
     }
+    private static List<ushort> SortByMode(List<ushort> ids, Trigger.SortMode mode)
+    {
+         switch (mode)
+         {
+             case Trigger.SortMode.highestHealth:
+                 return ids.OrderByDescending(id => GameManager.instance.GetMinionById(id).currentHealth).ToList();
+             case Trigger.SortMode.lowestHealth:
+                 return ids.OrderBy(id => GameManager.instance.GetMinionById(id).currentHealth).ToList();
+            case Trigger.SortMode.highestAttack:
+                 return ids.OrderByDescending(id => GameManager.instance.GetMinionById(id).attack).ToList();
+             case Trigger.SortMode.lowestAttack:
+                 return ids.OrderBy(id => GameManager.instance.GetMinionById(id).attack).ToList();
+             default:
+                 return ids;
+         }
+    }
+    
 }

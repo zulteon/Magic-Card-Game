@@ -1,0 +1,3 @@
+You don't have enough mana.|||Nincs elég manád.
+This minion has already attacked.|||Ez a lény már támadott.
+It is not your turn.|||Most nem te következel.

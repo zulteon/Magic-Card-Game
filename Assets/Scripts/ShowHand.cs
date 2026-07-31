@@ -15,13 +15,15 @@ public class ShowHand : MonoBehaviour
     public GameObject cardTemplateBack;
     public Transform handParent;
     public bool isEnemy { get; set; }
-
+    private void Awake()
+    {
+        handParent = new GameObject("Hand Parent UI").transform;
+        handParent.transform.parent = transform;
+    }
     private void Start()
     {
 
-        handParent = new GameObject("Hand Parent UI").transform;
-        handParent.transform.parent = transform;
-        playerController = GameManager.instance.GetLocalPlayerController();
+
         GameManager.instance.GetCardTemplates(out cardTemplateFront, out cardTemplateBack);
         getPlayer();
     }
@@ -37,7 +39,8 @@ public class ShowHand : MonoBehaviour
 
     public void OnHandChanged(SyncListOperation op, int index, CardState oldItem, CardState newItem, bool asServer)
     {
-        print($"Új lap érkezett a kézbe: {newItem.cardId} (index {index}) op :{op.ToString()} isServer:{asServer}" );
+       // print($"Új lap érkezett a kézbe: {newItem.cardId} {newItem.ToString()}(index {index}) op :{op.ToString()} isServer:{asServer}" );
+        
         if (asServer)
             return;
         // A logikád itt továbbra is a tulajdonosi viszonyra épül, ami helyes.
@@ -63,15 +66,37 @@ public class ShowHand : MonoBehaviour
             }
             handUI.Clear();
         }
+        else if (op == SyncListOperation.Set && index < handUI.Count)
+        {
+            //UpdateCardUI(index, newItem); a buff flesh event csinálja ezt.
+        }
+        else if (op == SyncListOperation.Complete)
+        {
+            foreach (var go in handUI) Destroy(go);
+            handUI.Clear();
+
+            for (int i = 0; i < playerController.hand.Count; i++)
+                CreateCardUI(playerController.hand[i]);
+
+            ArrangeCards();
+        } 
     }
 
+    private void UpdateCardUI(int index, CardState state)
+    {
+        if (isEnemy) return;   // hátlapnál nincs mit frissíteni
 
-    private void CreateCardUI(CardState cardState)
+        var view = handUI[index].GetComponent<CardView>();
+        if (view == null) return;
+
+        CardData cardData = CardManager.instance.GetCard(state.cardId);
+        view.SetCard(cardData, state);
+    }
+    private void CreateCardUI(CardState state)
     {
         GameObject cardGO;
-
         // Lekérjük a statikus CardData-t a GameManager-bõl a CardState.cardId alapján
-        Card cardData = GameManager.instance.GetCardById(cardState.cardId);
+        CardData cardData = CardManager.instance.GetCard(state.cardId);
        // print("a kartya valtozott");
         if (isEnemy)
         {
@@ -86,10 +111,10 @@ public class ShowHand : MonoBehaviour
             if (view != null)
             {
                 //print("loki loki "+cardData.m.attack);
-                
                 // A CardView a CardState-et és a statikus CardData-t is megkapja.
-                view.SetCard( cardData,cardState);
+                view.SetCard(cardData, state);
             }
+            else print("card is null");
         }
 
         handUI.Add(cardGO);
@@ -146,5 +171,16 @@ public class ShowHand : MonoBehaviour
     protected void getPlayer()
     {
         playerController=GetComponent<PlayerController>();
+        isEnemy = !playerController.IsOwner;
+    }
+    public CardView FindCardView(ushort seqId)
+    {
+        for (int i = 0; i < handUI.Count; i++)
+        {
+            var view = handUI[i].GetComponent<CardView>();
+            if (view != null && view.cardState.sequenceId == seqId)
+                return view;
+        }
+        return null;
     }
 }

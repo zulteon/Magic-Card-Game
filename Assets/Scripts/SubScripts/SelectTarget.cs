@@ -42,11 +42,13 @@ public class SelectTarget : MonoBehaviour
     public void CancelAttack()
     {
         print("cancel attack");
+        Arrow3DPointer.instance.TurnOff();
         ready = false;
     }
     public void EndAttack(LiveMinion target)
     {
         //  Here the attack method
+        Arrow3DPointer.instance.TurnOff();
         GameManager.instance.GetLocalPlayerController().EndAttack(target);
         
     }

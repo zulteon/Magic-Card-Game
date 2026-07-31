@@ -73,7 +73,7 @@ public class EffectTester : MonoBehaviour
         };
 
         var targets = new List<ushort> { minion11._sequenceId };
-        var ctx = new EffectContext(dmgEffect, minion10._sequenceId, targets, null);
+        var ctx = new EffectContext(dmgEffect, minion10._sequenceId, targets);
 
         EffectRunner.Run(ctx);
 

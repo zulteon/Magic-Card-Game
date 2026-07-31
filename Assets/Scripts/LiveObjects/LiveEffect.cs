@@ -1,15 +1,11 @@
 using UnityEngine;
 
-public class LiveEffect
+public class LiveEffect_old
 {
     public Effect baseEffect;
     public int remainingTurns;
 
-    public LiveEffect(Effect effect)
-    {
-        baseEffect = effect;
-       //remainingTurns = effect.defaultDuration;
-    }
+  
 
     public bool TickTurn()
     {

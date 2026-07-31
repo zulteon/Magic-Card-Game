@@ -54,6 +54,7 @@ MonoBehaviour:
   showHand: {fileID: 5776992809356375682}
   manager: {fileID: 0}
   isEnemy: 0
+  heroId: 0
   attacker: {fileID: 0}
   gameController: {fileID: 193336011099995818, guid: 3a79029ee1fcd87439edb2f76d29b482, type: 3}
 --- !u!114 &7505070100609370286

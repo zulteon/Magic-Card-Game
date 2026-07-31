@@ -1,12 +1,23 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class TriggerChecker : MonoBehaviour
 {
 
 
+    GameManager manager;
+    public static TriggerChecker instance;
 
+    private void Awake()
+    {
+        instance = this;
+    }
+    public void Start()
+    {
+        manager = GameManager.instance;
+    }
 
     public static readonly Dictionary<Effect.LogicOperator, Func<bool, bool, bool>> Operators =
     new Dictionary<Effect.LogicOperator, Func<bool, bool, bool>>
@@ -37,8 +48,20 @@ public class TriggerChecker : MonoBehaviour
         return result;
     }
 
-    bool IfSoTrigger(Trigger trigger, MinionLogic doerLogic,MinionLogic targetLogic,EffectContext effect, int eventValue) 
+    public bool IfSoTrigger(Trigger trigger, MinionLogic doerLogic,MinionLogic targetLogic,EffectContext effect=null, int eventValue=-1) 
     {
+        if (trigger.sub == Trigger.subject.turn)
+        {
+            bool expectsOwnerTurn = (trigger.cond == Trigger.conditions.ally);
+
+            bool isCardMine = !manager.IsEnemy(doerLogic);//or target?
+            bool isMyTurn = GameManager.instance.isAllyTurn();
+            bool isActuallyOwnerTurn = (isCardMine == isMyTurn);
+
+            // 5. Ha a kártya gazda-kört vár, és az van, AKKOR True.
+            // Ha a kártya ellenség-kört vár (false), és nem a gazda köre van (false), AKKOR is True.
+            return expectsOwnerTurn == isActuallyOwnerTurn;
+        }
         MinionState target=GameManager.instance.GetMinionById(targetLogic._sequenceId);
         MinionState doer=GameManager.instance.GetMinionById(doerLogic._sequenceId);
         int subjectValue=getSubject(trigger,targetLogic, target, eventValue);
@@ -75,5 +98,66 @@ public class TriggerChecker : MonoBehaviour
 
         }return value;
     }
+    // Ezt a belső metódust hívja az összes többi
+    private List<Effect> FilterByTrigger(IEnumerable<Effect> effects, Trigger.time targetTime)
+    {
+        if (effects == null) return new List<Effect>();
+
+        return effects.Where(e =>
+            e != null &&
+            e.triggers != null &&
+            e.triggers.Any(trig => trig.t == targetTime)
+        ).ToList();
+    }
     
+    public List<Effect> CheckTrigger(Trigger.time trigger, MinionData data)
+        => FilterByTrigger(data.e, trigger);
+
+    public List<Effect> CheckTrigger(Trigger.time trigger, ushort minionId)
+        => FilterByTrigger(manager.GetMinionEffects(minionId), trigger);
+
+    public List<Effect> CheckTrigger(Trigger.time trigger, MinionCard minion) 
+        => FilterByTrigger(EffectManagerClient.instance.GetEffectData(minion.effectIds), trigger);
+    public List<Effect> CheckTrigger(Trigger.time trigger, Effect.Type activity, ushort minionId)
+    => FilterByTrigger(manager.GetMinionEffects(minionId), trigger, activity);
+    public List<Effect> CheckTrigger(List<Effect> effects, Trigger.time targetTime)=> FilterByTrigger(effects, targetTime);
+    private List<Effect> FilterByTrigger(IEnumerable<Effect> effects, Trigger.time targetTime, Effect.Type targetActivity)
+    {
+        if (effects == null) return new List<Effect>();
+        return effects.Where(e =>
+            e != null &&
+            e.triggers != null &&
+            e.triggers.Any(trig => trig.t == targetTime && trig.activity == targetActivity)
+        ).ToList();
+    }
+    public bool IsBattlecry(Effect effect)
+    {
+        if (effect == null || effect.triggers == null )
+            return false;
+
+        return effect.triggers[0].name.ToLower()== "battlecry";
+    }
+    public bool IsDeathRettle(Effect effect)
+    {
+        if (effect == null || effect.triggers == null)
+            return false;
+
+        return effect.triggers[0].name.ToLower() == "ondeath";
+    }
+    public List<Effect> GetBattlecries(MinionCard minion)
+    {
+        List<Effect> allEffects = EffectManagerClient.instance.GetEffectData(minion.effectIds);
+        return allEffects.FindAll(e => IsBattlecry(e));
+    }
+    public List<Effect> GetOnDeathEffect(ushort minionId)
+    {
+        List<ushort>  effects=
+            GameManager.instance.GetMinionById(minionId).activeEffects;
+         return EffectManagerClient.instance.GetEffectData(effects).FindAll(e=> IsDeathRettle(e));
+    }
+    public List<Effect> GetOnDeathEffect(MinionData minion)
+    {
+        return minion.e.FindAll(e => IsDeathRettle(e));
+    }
+
 }
