@@ -1,4 +1,5 @@
 ﻿// A "robusztus, minimalista" MinionView
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -183,10 +184,8 @@ public class MinionView : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (_liveMinion != null)
-        {
-            _liveMinion.StartAttackClick();
-        }
+        if (TargetSelector.instance.IsActive) return;
+        if (_liveMinion != null) _liveMinion.StartAttackClick();
     }
     private void OnMouseEnter()
     {
@@ -199,5 +198,23 @@ public class MinionView : MonoBehaviour
     private void OnMouseExit()
     {
         MinionInspectView.Instance?.Hide();
+    }
+    public void SetTargetHighlight(bool on)
+    {
+        // pl. a SpriteRenderer színe, vagy egy kontúr GameObject
+        spriteRenderer.color = on ? new Color(1f, 0.6f, 0.6f) : Color.white;
+    }
+    public GameObject tauntUI;
+
+    public void TauntUI(bool b=true)
+    {
+        tauntUI.SetActive(b);
+    }
+    public Vector2Int GetStats()
+    {
+        Vector2Int vector2Int = new Vector2Int();
+        vector2Int.x = Int16.Parse( attackText.text);
+        vector2Int.y = Int16.Parse( healthText.text);
+        return vector2Int;
     }
 }

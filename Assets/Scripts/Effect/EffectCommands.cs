@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class EffectCommands
@@ -10,7 +11,14 @@ public static class EffectCommands
         { Effect.Type.heal, Heal },
         { Effect.Type.give, Give },
         { Effect.Type.buff, Buff },
-        {Effect.Type.attack,Attack }
+        {Effect.Type.attack,Attack },
+        {Effect.Type.charge,Charge },
+        {Effect.Type.sleep,Sleep },
+        {Effect.Type.copyStats,CopyStats },
+        {Effect.Type.summon,Summon },
+        {Effect.Type.doubleStats,DoubleStats},
+        {Effect.Type.gainEconomy,GainEconomy},
+       
         // add more as needed
     };
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
@@ -22,7 +30,28 @@ public static class EffectCommands
     {
         foreach (var t in ctx.targets)
         {
-            t.Damage(ctx.value,ctx.doerId);
+            t.Damage(ctx.value, ctx.doerId);
+        }
+    }
+    public static void Charge(EffectContext ctx)
+    {
+        foreach (var t in ctx.targets)
+        {
+            t.Charge();
+        }
+    }
+    public static void CopyStats(EffectContext ctx)
+    {
+        if (ctx.targets.Length > 1) {Debug.LogWarning("COpy multiple stats? ");
+        return;}
+        GameManager.instance.GetMinionLogic(ctx.doerId).CopyStats(ctx.targetIds[0], ctx.effect.buff);
+        
+    }
+    public static void DoubleStats(EffectContext ctx)
+    {
+        foreach(var t in ctx.targets)
+        {
+            t.DoubleStats(ctx.doerId, ctx.effect.buff);
         }
     }
     public static void Attack(EffectContext ctx)
@@ -53,6 +82,25 @@ public static class EffectCommands
         foreach (ushort id in ctx.targetIds)
             GameManager.instance.AddStats(id, attackBonus, healthBonus);
     }
+    public static void Summon(EffectContext ctx)
+    {
+        bool toHome = true;
+        if (ctx.effect.target == Trigger.Target.enemy || ctx.effect.target == Trigger.Target.ally)
+            toHome = ctx.effect.target == Trigger.Target.ally;
+        else
+            Debug.LogWarning("A Summon effect nincs beállítva hogy home vagy enemy summon");
+
+        int count = Mathf.Max(1, ctx.value);   // hány darabot idézzen
+
+        for (int i = 0; i < count; i++)
+            ctx.playerController.Summon(ctx.effect.summonableId, toHome);
+    }
+    public static void Sleep(EffectContext ctx)
+    {
+        foreach (var t in ctx.targets)
+            t.effectBag.Add(ctx.effect, t._sequenceId, EffectRole.Trigger,
+                            charges: ctx.value);
+    }
     public static void Give(EffectContext ctx)
     {
         foreach (var t in ctx.targets)
@@ -65,6 +113,10 @@ public static class EffectCommands
             }
         }
     }
-
+    public static void GainEconomy(EffectContext ctx)
+    {
+        foreach (var t in ctx.targets)
+            t.GainEconomy(ctx.doerId,ctx.value);
+    }
     // További parancsok ide jöhetnek
 }

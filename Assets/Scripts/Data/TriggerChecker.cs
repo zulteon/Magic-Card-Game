@@ -82,6 +82,7 @@ public class TriggerChecker : MonoBehaviour
                 return subjectValue > value;
         }return true;
     }
+
     int getSubject(Trigger trigger,MinionLogic targetLogic,MinionState target,int eventValue) {
         int value = 0;
         switch (trigger.sub)
@@ -130,19 +131,29 @@ public class TriggerChecker : MonoBehaviour
             e.triggers.Any(trig => trig.t == targetTime && trig.activity == targetActivity)
         ).ToList();
     }
+    // TriggerChecker — új overload
+    public List<Effect> CheckTrigger(Trigger.time trigger, CardData card)
+        => FilterByTrigger(EffectManagerClient.instance.GetEffectData(GetEffectIds(card)), trigger);
+
+    private static List<ushort> GetEffectIds(CardData card) => card switch
+    {
+        MinionCard m => m.effectIds,
+        SpellCard s => s.effectIds,
+        _ => new List<ushort>()
+    };
     public bool IsBattlecry(Effect effect)
     {
         if (effect == null || effect.triggers == null )
             return false;
 
-        return effect.triggers[0].name.ToLower()== "battlecry";
+        return effect.triggers[0].name.ToLower()== "onplay";
     }
     public bool IsDeathRettle(Effect effect)
     {
         if (effect == null || effect.triggers == null)
             return false;
-
-        return effect.triggers[0].name.ToLower() == "ondeath";
+        print(" Effect " + effect.type.ToString() + effect.effectId.ToString());
+        return effect.triggers[0].activity == Effect.Type.death;//name.ToLower() == "ondeath";
     }
     public List<Effect> GetBattlecries(MinionCard minion)
     {
@@ -153,11 +164,35 @@ public class TriggerChecker : MonoBehaviour
     {
         List<ushort>  effects=
             GameManager.instance.GetMinionById(minionId).activeEffects;
+        print(" ACTIVE EFFECTS " + effects.Count.ToString());
          return EffectManagerClient.instance.GetEffectData(effects).FindAll(e=> IsDeathRettle(e));
     }
     public List<Effect> GetOnDeathEffect(MinionData minion)
     {
         return minion.e.FindAll(e => IsDeathRettle(e));
     }
+    public bool IsDoerValid(Trigger trigger, MinionLogic doer, ushort ownerId)
+    {
+        switch (trigger.tar)
+        {
+            case Trigger.Target.none:
+            case Trigger.Target.all:
+                return true;
 
+            case Trigger.Target.self:
+                return doer._sequenceId == ownerId;
+
+            case Trigger.Target.allother:
+                return doer._sequenceId != ownerId;
+
+            case Trigger.Target.ally:
+                return manager.IsEnemy(doer) == manager.IsEnemy(GameManager.instance.GetMinionLogic(ownerId));
+
+            case Trigger.Target.enemy:
+                return manager.IsEnemy(doer) != manager.IsEnemy(GameManager.instance.GetMinionLogic(ownerId));
+
+            default:
+                return true;   // adjacent / left / right — pozíció, később
+        }
+    }
 }

@@ -26,6 +26,8 @@ MonoBehaviour:
   multiValue: -1
   multiSplit: 0
   other: 0
-  effectId: 0
+  effectId: 8
   logicOp: 
   linkedTrigger: {fileID: 11400000, guid: 4f582833ceb363e479706e9ea6656be5, type: 2}
+  sortMode: 0
+  activeZone: 1

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
+  m_Name: Spell_1010
+  m_EditorClassIdentifier: 
+  sprite: balansz
+  description: "Galamb t\xE1nccsapat \u2192 \"Szinkron-t\xE1nc\" Minden bar\xE1ts\xE1gos
+    minion statja kiegyenl\xEDt\u0151dik az \xE1tlagukra \u2014 mindenki ugyanazt
+    a l\xE9p\xE9st j\xE1rja."
+  effect: 
+  e: []

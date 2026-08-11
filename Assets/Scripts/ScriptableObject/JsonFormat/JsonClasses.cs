@@ -23,8 +23,6 @@ public abstract class CardData
     public abstract CardType GetCardType();
     public Dictionary<string, int> dynamicValues = new Dictionary<string, int>();
 
-    public void SetDynamicValue(string key, int value) => dynamicValues[key] = value;
-    public int GetDynamicValue(string key) => dynamicValues.ContainsKey(key) ? dynamicValues[key] : 0;
 }
 
 // Minion kártya
@@ -36,7 +34,7 @@ public class MinionCard : CardData
     
     public string effect;
     public int raceId;
-
+    public bool charge;
     public MinionCard()
     {
         cardType = "minion";

@@ -41,6 +41,8 @@ public class LiveMinion : MonoBehaviour
         sequenceId = minion.sequenceId;
         attack = minion.attack;
         currentHealth = minion.currentHealth;
+        if (minion.taunt)
+            GetComponent<MinionView>().TauntUI();
         //var def = CardDatabase.Get(card.cardId);  
        // attack = (short)def.BaseAttack;
         //currentHealth = (ushort)def.BaseHealth;
@@ -51,22 +53,12 @@ public class LiveMinion : MonoBehaviour
         
 
     }
-    
+
     public void StartAttackClick()
     {
-        if (ally && GameManager.instance.phase == GameManager.Phase.ready && CanAttack())
-        {
-            print("StartAttack");
-                // Megkeressük a támadó LiveMinion pozícióját
+        if (!ally || !CanAttack()) { print("nem tudunk támadni"); return; }
 
-                Arrow3DPointer.instance.SetArrow(transform.position);
-            GameManager.instance.GetLocalPlayerController().StartAttack(this);
-
-        }
-        else
-        {
-            print("nem tudunk támadni");
-        }
+         GameManager.instance.GetLocalPlayerController().StartAttack(this);
     }
     public MinionState ToMinionState()
     {
@@ -87,10 +79,8 @@ public class LiveMinion : MonoBehaviour
     [Client]
     public bool CanAttack()
     {
+        if (!GameManager.instance.GetMinionById(sequenceId).canAttack) return false;
         return true;
-        if (attack == 0) return false;
-        return false;
-            //GameManager.instance.GetMinionById(sequenceId).canAttack;
     }
     public void AttackDamageApply(int amount)
     {

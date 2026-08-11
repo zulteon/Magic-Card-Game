@@ -70,7 +70,7 @@ public class ShowHand : MonoBehaviour
         {
             //UpdateCardUI(index, newItem); a buff flesh event csinálja ezt.
         }
-        else if (op == SyncListOperation.Complete)
+       /* else if (op == SyncListOperation.Complete)
         {
             foreach (var go in handUI) Destroy(go);
             handUI.Clear();
@@ -79,7 +79,7 @@ public class ShowHand : MonoBehaviour
                 CreateCardUI(playerController.hand[i]);
 
             ArrangeCards();
-        } 
+        } */
     }
 
     private void UpdateCardUI(int index, CardState state)
@@ -97,7 +97,8 @@ public class ShowHand : MonoBehaviour
         GameObject cardGO;
         // Lekérjük a statikus CardData-t a GameManager-bõl a CardState.cardId alapján
         CardData cardData = CardManager.instance.GetCard(state.cardId);
-       // print("a kartya valtozott");
+        if (cardData == null) { Debug.LogError($"Nincs ilyen cardId: {state.cardId}"); return; }
+        // print("a kartya valtozott");
         if (isEnemy)
         {
             cardGO = Instantiate(cardTemplateBack, handParent);

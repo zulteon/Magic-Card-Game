@@ -17,6 +17,9 @@ public class EffectManagerClient : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+#if UNITY_EDITOR
+            LoadFromDirectory();
+#endif
             Initialize();
         }
         else
@@ -46,10 +49,33 @@ public class EffectManagerClient : MonoBehaviour
         return effectRegistry.TryGetValue(id, out Effect effect) ? effect : null;
     }
 
-    public List<Effect> GetEffectData(List<int> ids) => GetEffectData(ids.Select(i => i).ToList());
 
     public List<Effect> GetEffectData(List<ushort> ids)
     {
         return ids?.Select(id => GetEffectData(id)).Where(e => e != null).ToList() ?? new List<Effect>();
     }
+
+
+    //csak teszteléshez
+#if UNITY_EDITOR
+    [ContextMenu("Load effects from folder")]
+    private void LoadFromDirectory()
+    {
+        allEffects = new List<Effect>();
+
+        var guids = UnityEditor.AssetDatabase.FindAssets("t:Effect",
+            new[] { "Assets/Real_Cards/Abilities" });
+
+        foreach (var guid in guids)
+        {
+            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+            var e = UnityEditor.AssetDatabase.LoadAssetAtPath<Effect>(path);
+            if (e != null) allEffects.Add(e);
+        }
+
+        allEffects.Sort((a, b) => a.effectId.CompareTo(b.effectId));
+        UnityEditor.EditorUtility.SetDirty(this);
+        Debug.Log($"{allEffects.Count} effekt betöltve.");
+    }
+#endif
 }

@@ -11,6 +11,7 @@ public struct MinionState : IEquatable<MinionState>
     public ushort currentHealth;  // Aktuális HP
     public short attack;          // ATK (lehet negatív is)
     public bool canAttack;
+    public bool taunt;
     // FIGYELEM: sose módosítsd a meglévõ listát (Add/Remove/Clear)!
     // A struct másolásakor a lista referenciája osztott, így a dirty-check
     // nem venné észre a változást. Mindig új listát adj:
@@ -19,11 +20,10 @@ public struct MinionState : IEquatable<MinionState>
 
     public bool Equals(MinionState other)
     {
-        UnityEngine.Debug.Log(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>EQUALS hívva");
         if (cardId != other.cardId ||
         sequenceId != other.sequenceId ||
         currentHealth != other.currentHealth ||
-        attack != other.attack || canAttack != other.canAttack)
+        attack != other.attack || canAttack != other.canAttack || taunt!=other.taunt)
                 return false;
 
             int a = activeEffects?.Count ?? 0;
@@ -47,6 +47,8 @@ public struct MinionState : IEquatable<MinionState>
             hash = hash * 31 + currentHealth.GetHashCode();
             hash = hash * 31 + attack.GetHashCode();
             hash = hash * 31 + canAttack.GetHashCode();
+            hash = hash * 31 + taunt.GetHashCode();
+            
             if (activeEffects != null)
             {
                 for (int i = 0; i < activeEffects.Count; i++)

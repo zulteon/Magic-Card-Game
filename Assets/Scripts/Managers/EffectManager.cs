@@ -24,6 +24,8 @@ public class EffectManager : MonoBehaviour
         effectLookup.Clear();
         foreach (Effect effect in allEffects)
         {
+            if (effect.type == Effect.Type.none)
+                Debug.LogWarning($"Effect {effect.effectId} ({effect.name}) típusa None!");
             if (effect != null)
             {
                 effectLookup[effect.GetInstanceID()] = effect; // vagy effect.id

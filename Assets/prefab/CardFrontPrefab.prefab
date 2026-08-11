@@ -1010,12 +1010,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4731202287952155645, guid: 039a26b00a5b939489263e655112f443, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 039a26b00a5b939489263e655112f443, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 7.7, y: 11.52}
+  m_Size: {x: 1.4933333, y: 1.92}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1093,6 +1093,12 @@ MonoBehaviour:
   costText: {fileID: 6008575496539574593}
   descriptionText: {fileID: 120629259034639016}
   nameText: {fileID: 8582037802416406372}
+  cardState:
+    cardId: 0
+    sequenceId: 0
+    currentCost: 0
+    attackBonus: 0
+    healthBonus: 0
 --- !u!61 &3089124093942241303
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1131,8 +1137,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.2833333, y: 1.92}
-    newSize: {x: 7.7, y: 11.52}
+    oldSize: {x: 1.4933333, y: 1.92}
+    newSize: {x: 1.4933333, y: 1.92}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

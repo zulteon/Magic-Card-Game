@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Unity.VisualScripting.FullSerializer;
 
 // ─────────────────────────────────────────────────────────────
 //  Szerep: megmondja, hogy az effektnek milyen élettartama van,
@@ -70,7 +72,12 @@ public class LiveEffect
     public bool IsSpent => charges == 0;
 
     public bool IsExpired(int currentTurn)
-        => expiresOnTurn >= 0 && currentTurn >= expiresOnTurn;
+    {
+        if (expiresOnTurn < 0)
+            return false;              // -1 = örökké tart, sosem jár le
+
+        return currentTurn >= expiresOnTurn;
+    }
 
 
     /// <summary>
@@ -117,6 +124,13 @@ public class EffectBag
     /// Feliratkozni NEM itt kell — az vezérlés, nem állapot (és a kliens
     /// oldali visszatöltésnél nem szabad megtörténnie).
     /// </summary>
+    /*
+     Vagyis három réteg, ebben a sorrendben:
+
+idő — FilterByTrigger(effects, time) → kit érdekel ez az esemény egyáltalán // onplay, onsummoned, etc.
+scope — self / ally / enemy → engem érint-e ez a konkrét esemény 
+feltétel — IfSoTrigger → teljesül-e a szám-feltétel
+    */
     public LiveEffect Add(Effect def, ushort sourceId,
                       EffectRole role,
                       int charges = 1, int howOften = 1,
@@ -141,7 +155,15 @@ public class EffectBag
         return live;
     }
 
-
+    public bool Has(Effect.Type type)
+    {
+        for (int i = 0; i < _list.Count; i++)
+        {
+            var e = _list[i];
+            if (e.Def != null && e.Def.type == type && !e.IsSpent) return true;
+        }
+        return false;
+    }
     // ═════════ ELFOGÁS (Guard) ═════════
 
     /// <summary>
@@ -170,7 +192,22 @@ public class EffectBag
         return false;
     }
 
+    public bool ConsumeSleep()
+    {
+        for (int i = 0; i < _list.Count; i++)
+        {
+            var e = _list[i];
+            if (e.Def == null || e.Def.type != Effect.Type.sleep) continue;
+            if (e.IsSpent) continue;
 
+            if (!e.TryConsume()) continue;
+
+            if (e.IsSpent) RemoveAt(i);
+            UnityEngine.Debug.Log("CONSUMING SLEEP");
+            return true;
+        }
+        return false;
+    }
     // ═════════ TÖRLÉS ═════════
 
     /// <summary>Visszavonja mindazt, amit egy adott forrás adott (silence).</summary>
@@ -187,6 +224,7 @@ public class EffectBag
             if (_list[i].IsExpired(currentTurn))
                 RemoveAt(i);              // <- ugyanígy
     }
+
 
     /// <summary>
     /// A lény kikerült a pályáról. EGYETLEN belépési pont a takarításhoz —
@@ -209,7 +247,20 @@ public class EffectBag
     }
     private void RemoveAt(int i)
     {
-        if (_list[i].Role == EffectRole.Guard) guardCount--;
+        var e = _list[i];
+        if (e.Role == EffectRole.Guard) guardCount--;
         _list.RemoveAt(i);
+
+        // ha ez volt az utolsó taunt, a state-et is frissíteni kell
+        if (e.Def != null && e.Def.type == Effect.Type.taunt)
+        {
+            bool stillHasTaunt = false;
+            foreach (var live in _list)
+                if (live.Def != null && live.Def.type == Effect.Type.taunt) { stillHasTaunt = true; break; }
+
+            if (!stillHasTaunt)
+                GameManager.instance.ChangeMinionById(_ownerId, s => { s.taunt = false; return s; });
+        }
     }
+
 }

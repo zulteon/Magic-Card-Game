@@ -57,8 +57,8 @@ public class CardView : MonoBehaviour
     float moveSpeed=0.03f;
     private void OnMouseDrag()
     {
-        
-            mousePosition = Input.mousePosition;
+        if (TargetSelector.instance.IsActive) return;
+        mousePosition = Input.mousePosition;
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition) + new Vector3(0, 0, 3);
             transform.position = Vector3.Lerp(transform.position, mousePosition, moveSpeed);
             
@@ -67,23 +67,19 @@ public class CardView : MonoBehaviour
     float playingMinHeight = -2.1f;
     private void OnMouseUp()
     {
-        if(transform.position.y > playingMinHeight)
+        if (isEnemy) return;
+
+        var showHand = GameManager.instance.GetPlayer().showHand;
+
+        if (transform.position.y <= playingMinHeight || !GameManager.instance.IsMyTurn())
         {
-            
-            if (!GameManager.instance.IsMyTurn())
-            {
-                GameManager.instance.GetPlayer().showHand.ArrangeCards();
-            }
-            else//Play card
-            {
-                
-            }
+            showHand.ArrangeCards();
+            return;
         }
-        else
-        {
-            GameManager.instance.GetPlayer().showHand.ArrangeCards();
-        }
-   
+
+        // Kijátszás
+        GameManager.instance.GetLocalPlayerController().BeforePlay(cardState);
+        //showHand.ArrangeCards();   // a lap visszaugrik, amíg a szerver nem válaszol
     }
     private void OnMouseOver()
     {

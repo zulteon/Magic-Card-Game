@@ -1,5 +1,6 @@
 using UnityEngine;
 using FishNet.Managing;
+using System.Collections;
 
 /// <summary>
 /// Kapcsolat-indító gombok. Sima MonoBehaviour, mert a jelenetbeli
@@ -10,7 +11,7 @@ public class NetStartUI : MonoBehaviour
 {
     [Header("Megjelenítés")]
     [Range(0.7f, 2f)] public float scale = 1f;
-
+    private string _address = "127.0.0.1";
     private NetworkManager _nm;
     private bool _started;
 
@@ -37,7 +38,7 @@ public class NetStartUI : MonoBehaviour
     }
     void Start()
     {
-        if (GameManager.instance.offlineTestMode) Destroy(this);
+        StartCoroutine(TurnOff());
     }
 
     private void OnGUI()
@@ -47,7 +48,7 @@ public class NetStartUI : MonoBehaviour
         InitializeStyles();
 
         float w = 420f * scale;
-        float h = 340f * scale;
+        float h = 400f * scale;   // egy kicsit magasabb, hogy elférjen a mezõ
         Rect panel = new Rect((Screen.width - w) * 0.5f, (Screen.height - h) * 0.5f, w, h);
 
         GUI.Box(panel, GUIContent.none, _panelStyle);
@@ -70,8 +71,13 @@ public class NetStartUI : MonoBehaviour
 
             GUILayout.Space(14f * scale);
 
+            // IP mezõ a JOIN fölé
+            _address = GUILayout.TextField(_address, GUILayout.Height(40f * scale));
+            GUILayout.Space(8f * scale);
+
             if (GUILayout.Button("JOIN", _buttonStyle, GUILayout.Height(76f * scale)))
             {
+                _nm.TransportManager.Transport.SetClientAddress(_address);
                 _nm.ClientManager.StartConnection();
                 _started = true;
             }
@@ -86,7 +92,6 @@ public class NetStartUI : MonoBehaviour
             GUILayout.EndArea();
         }
     }
-
     private void InitializeStyles()
     {
         if (_stylesInitialized) return;
@@ -163,5 +168,17 @@ public class NetStartUI : MonoBehaviour
         if (tex == null) return;
         if (Application.isPlaying) Destroy(tex);
         else DestroyImmediate(tex);
+    }
+    IEnumerator TurnOff()
+    {
+        yield return null;
+        float t = 0.1f;
+        while (GameManager.instance==null)
+        {
+            yield return null;
+            t += Time.deltaTime;
+        }
+        if (GameManager.instance.offlineTestMode)
+            Destroy(this);
     }
 }

@@ -1,45 +1,80 @@
 {
   "cards": [
     {
-      "attack": 8,
-      "health": 8,
-      "effect": "",
-      "raceId": 0,
-      "cardId": 9,
-      "cost": 0,
-      "description": "",
-      "cardType": "minion",
-      "sprite": "",
-      "effectIds": [
-        0
-      ],
-      "dynamicValues": {}
-    },
-    {
-      "attack": 3,
-      "health": 8,
-      "effect": "",
-      "raceId": 0,
-      "cardId": 8,
-      "cost": 0,
-      "description": "",
-      "cardType": "minion",
-      "sprite": "",
-      "effectIds": [
-        8
-      ],
-      "dynamicValues": {}
-    },
-    {
       "attack": 5,
       "health": 5,
       "effect": "",
       "raceId": 0,
-      "cardId": 4,
+      "charge": false,
+      "cardId": 134,
       "cost": 0,
-      "description": "",
+      "description": "Each second hit is blocked",
       "cardType": "minion",
-      "sprite": "lemur_reader",
+      "sprite": "id_00182_005_tenrec_fakir_street_performer.png",
+      "effectIds": [
+        20
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 129,
+      "cost": 0,
+      "description": "+1 Gold ebben a körben",
+      "cardType": "minion",
+      "sprite": "id_00231_016_prompt_happy_crow_wearing.png",
+      "effectIds": [
+        18
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 130,
+      "cost": 0,
+      "description": "Cleave",
+      "cardType": "minion",
+      "sprite": "id_00058_005_stylized_monitor_lizard_sauna.png",
+      "effectIds": [
+        19
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 116,
+      "cost": 0,
+      "description": "OnDeath: visszatér 1 körre gyengült formában",
+      "cardType": "minion",
+      "sprite": "id_00035_007_stylized_pink_axolotl_pharmacist.png",
+      "effectIds": [
+        12
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 146,
+      "cost": 0,
+      "description": "Charge",
+      "cardType": "minion",
+      "sprite": "id_00136_051_sugar_glider_window_cleaner.png",
       "effectIds": [
         1
       ],
@@ -47,17 +82,112 @@
     },
     {
       "attack": 2,
-      "health": 4,
+      "health": 1,
       "effect": "",
       "raceId": 0,
-      "cardId": 6,
+      "charge": false,
+      "cardId": 118,
+      "cost": 0,
+      "description": "3 sebzés random ellenfélnek",
+      "cardType": "minion",
+      "sprite": "id_00114_029_poison_dart_frog_dj.png",
+      "effectIds": [
+        9
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 123,
+      "cost": 0,
+      "description": "Random barát duplázza HP-ját",
+      "cardType": "minion",
+      "sprite": "",
+      "effectIds": [
+        16
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 123,
+      "cost": 0,
+      "description": "Random barát duplázza HP-ját",
+      "cardType": "minion",
+      "sprite": "",
+      "effectIds": [
+        16
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 113,
+      "cost": 0,
+      "description": "Sleep For An Extra Turn",
+      "cardType": "minion",
+      "sprite": "id_00103_018_koala_call_center_worker.png",
+      "effectIds": [
+        8
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 115,
+      "cost": 0,
+      "description": "OnDeath: a szomszédos token minionok +stat-ot kapnak",
+      "cardType": "minion",
+      "sprite": "id_00105_020_platypus_accountant_bill_puzzled.png",
+      "effectIds": [
+        10
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 141,
+      "cost": 0,
+      "description": "TAUNT",
+      "cardType": "minion",
+      "sprite": "id_00071_001_babirusa_wild_pig_butcher.png",
+      "effectIds": [
+        11
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 147,
       "cost": 0,
       "description": "",
       "cardType": "minion",
       "sprite": "",
-      "effectIds": [
-        3
-      ],
+      "effectIds": [],
       "dynamicValues": {}
     }
   ]

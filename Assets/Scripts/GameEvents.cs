@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using static GameEvents;
 
 public class GameEvents
 {
@@ -37,7 +38,7 @@ public class GameEvents
         ClearMinion switch-be: case EventType.Uj: OnUjEsemeny -= sub.Handler; break;
      
      */
-    public enum EventType { TurnStart, TurnEnd, ManaChanged }
+    public enum EventType { TurnStart, TurnEnd, ManaChanged, MinionSummoned }
     public static GameEvents Instance { get; private set; } = new GameEvents();
     // ===== JÁTÉK ESEMÉNYEK =====
     public event Action OnTurnStart;
@@ -60,13 +61,13 @@ public class GameEvents
     // ===== A TAKARÍTÓ RENDSZER =====
     private class Subscription
     {
-        public Action Handler;
+        public Delegate Handler;
         public EventType Type;
     }
 
     #region Delayed effects
 
-    
+
 
     private readonly Dictionary<EventType, List<DelayedEntry>> _delayed = new();
     private readonly HashSet<EventType> _ticking = new();
@@ -133,13 +134,23 @@ public class GameEvents
         {
             case EventType.TurnStart: OnTurnStart += handler; break;
             case EventType.TurnEnd: OnTurnEnd += handler; break;
+
         }
 
         // Elmentjük a listába a késõbbi törléshez
         if (!_registry.ContainsKey(seqId)) _registry[seqId] = new List<Subscription>();
         _registry[seqId].Add(new Subscription { Handler = handler, Type = type });
     }
+    public void AddEvent(ushort seqId, EventType type, Action<MinionLogic> handler)
+    {
+        switch (type)
+        {
+            case EventType.MinionSummoned: OnMinionSummoned += handler; break;
+        }
 
+        if (!_registry.ContainsKey(seqId)) _registry[seqId] = new List<Subscription>();
+        _registry[seqId].Add(new Subscription { Handler = handler, Type = type });
+    }
     // ===== TÖRLÉS (Silence vagy Halál esetén) =====
     public void ClearMinion(ushort seqId)
     {
@@ -150,8 +161,9 @@ public class GameEvents
             // Itt pontosan ugyanúgy iratkozunk le, ahogy feliratkoztunk
             switch (sub.Type)
             {
-                case EventType.TurnStart: OnTurnStart -= sub.Handler; break;
-                case EventType.TurnEnd: OnTurnEnd -= sub.Handler; break;
+                case EventType.TurnStart: OnTurnStart -= (Action)sub.Handler; break;
+                case EventType.TurnEnd: OnTurnEnd -= (Action)sub.Handler; break;
+                case EventType.MinionSummoned:  OnMinionSummoned -= (Action<MinionLogic>)sub.Handler;break;
             }
         }
         _registry.Remove(seqId);
@@ -177,11 +189,7 @@ public class GameEvents
     {
         Instance = new GameEvents();
     }
-    private class EventSubscription
-    {
-        public Action Handler; // Maga a metódus, amit meghívunk
-        public Action<Action> UnsubscribeAction; // A "takarító" kód (pl. h => OnTurnEnd -= h)
-    }
+    
 
 }
 
@@ -189,21 +197,81 @@ public static class TriggerConverter
 {
     public static bool ActiveEffectConverter(
         Trigger.time trigger,
-        out GameEvents.EventType eventType)
+        out GameEvents.EventType eventType, Trigger t = null)
     {
         switch (trigger)
         {
             case Trigger.time.startofturn:
                 eventType = GameEvents.EventType.TurnStart;
                 return true;
-
             case Trigger.time.endofturn:
                 eventType = GameEvents.EventType.TurnEnd;
                 return true;
-
+            case Trigger.time.after:
+                return ActivityToEvent(t.activity, out eventType);
             default:
                 eventType = default;
                 return false;
         }
     }
+
+    static bool ActivityToEvent(Effect.Type activity, out GameEvents.EventType eventType)
+    {
+        switch (activity)
+        {
+            case Effect.Type.summon:
+                eventType = GameEvents.EventType.MinionSummoned;
+                return true;
+            default:
+                eventType = default;
+                return false;
+        }
+    }
+    /*  
+Új esemény hozzáadása
+
+A) PARAMÉTER NÉLKÜLI ESEMÉNY (pl. TurnStart) — 4 lépés:
+
+1. EventType enum bõvítése:
+   public enum EventType { ..., UjEsemeny }
+
+2. Event és kürt:
+   public event Action OnUjEsemeny;
+   public void RaiseUjEsemeny() => OnUjEsemeny?.Invoke();
+
+3. AddEvent(… Action handler) switch-be:
+   case EventType.UjEsemeny: OnUjEsemeny += handler; break;
+
+4. ClearMinion switch-be:
+   case EventType.UjEsemeny: OnUjEsemeny -= (Action)sub.Handler; break;
+
+
+B) ALANYOS ESEMÉNY (pl. MinionSummoned) — 6 lépés:
+
+1. EventType enum bõvítése
+
+2. Event és kürt:
+   public event Action<MinionLogic> OnUjEsemeny;
+   public void RaiseUjEsemeny(MinionLogic m) => OnUjEsemeny?.Invoke(m);
+
+3. AddEvent(… Action<MinionLogic> handler) switch-be:
+   case EventType.UjEsemeny: OnUjEsemeny += handler; break;
+
+4. ClearMinion switch-be:
+   case EventType.UjEsemeny: OnUjEsemeny -= (Action<MinionLogic>)sub.Handler; break;
+
+5. TriggerConverter.ActivityToEvent switch-be:
+   case Effect.Type.xy: eventType = EventType.UjEsemeny; return true;
+
+6. RegisterAbilities-ben: az alanyos ágba kell kerülnie (self-szûréssel),
+   nem a paraméter nélkülibe.
+
+
+FIGYELEM:
+- Ha kimarad a 3. lépés, a feliratkozás CSENDBEN nem történik meg.
+  Nem dob hibát, csak nem mûködik az effekt.
+- Ha kimarad a 4. lépés, a lény halála után is fut az effektje.
+- Új paramétertípusnál (pl. Action<ushort, int> a hõs-eseményekhez)
+  új AddEvent túlterhelés is kell.
+*/
 }

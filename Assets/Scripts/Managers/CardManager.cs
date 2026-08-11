@@ -88,12 +88,36 @@ public class CardManager : MonoBehaviour
         cardLookup.TryGetValue(cardId, out CardData card);
         return card;
     }
+    
     public MinionCard GetMinion(ushort cardId)
     {
         cardLookup.TryGetValue(cardId, out CardData card);
-        print("minionid" + cardId);
-        print("returning "+card.cardId );
         return (MinionCard)card;
+    }
+    private readonly List<CardData> _searchResult = new();
+
+    public List<CardData> Search(string query)
+    {
+        _searchResult.Clear();
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _searchResult.AddRange(allCards);
+            return _searchResult;
+        }
+
+        query = query.ToLowerInvariant();
+
+        for (int i = 0; i < allCards.Count; i++)
+        {
+            var c = allCards[i];
+
+            if ((c.description != null && c.description.ToLowerInvariant().Contains(query)) ||
+                (c.sprite != null && c.sprite.ToLowerInvariant().Contains(query)))
+                _searchResult.Add(c);
+        }
+
+        return _searchResult;
     }
 }
 [System.Serializable]

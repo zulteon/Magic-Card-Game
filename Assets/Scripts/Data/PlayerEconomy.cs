@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class PlayerEconomy
 {
     private PlayerController _owner;
@@ -7,10 +9,7 @@ public class PlayerEconomy
         _owner = owner;
     }
 
-    public void RaiseResource(int amount)
-    {
-        _owner.currentResource.Value += amount;
-    }
+    
 
     public bool TrySpendResource(int amount)
     {
@@ -19,5 +18,20 @@ public class PlayerEconomy
         return true;
     }
 
-    public int CurrentResource => 3;//_owner.currentResource.Value;
+    private const int MaxCrystals = 10;
+
+    public void StartTurn()
+    {
+        if (_owner.maxResource.Value < MaxCrystals)
+            _owner.maxResource.Value++;
+
+        _owner.currentResource.Value = _owner.maxResource.Value;
+    }
+
+    public void RaiseResource(int amount)
+    {
+        UnityEngine.Debug.Log("ECONOMY RAISED!!");
+        _owner.currentResource.Value += amount;   // nincs felsõ korlát
+    }
+    public int CurrentResource => _owner.currentResource.Value;
 }

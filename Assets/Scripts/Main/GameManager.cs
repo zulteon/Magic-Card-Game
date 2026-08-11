@@ -14,6 +14,7 @@ public class GameManager : NetworkBehaviour
     //public static event Action OnTurnEnd,OnTurnStart;
     public static GameManager instance;
 
+    public static int BOARD_LIMIT = 8;
     private GameEvents gameEvents;
     GameOverHandler gameOverHandler;
     private int localPlayerIndex=0;
@@ -32,7 +33,6 @@ public class GameManager : NetworkBehaviour
     public readonly SyncVar<PlayerController> playerB = new SyncVar<PlayerController>();
     public Deck testDeck;
 
-    private int turn = 1;
     #region CardTemplate
     [Header("prefabs")]
     public GameObject cardTemplateFront;
@@ -96,12 +96,24 @@ public class GameManager : NetworkBehaviour
     #region Minion
     public MinionState GetMinionById(ushort sequenceId)
     {
+        if (sequenceId < 2)
+            return GetPlayerByIndex(sequenceId).heroState.Value;
        foreach(var minion in boardAlly.Concat(boardEnemy))
         {
             if(minion.sequenceId == sequenceId) return  minion;
         }
         return default;
         //foreach in heros
+    }
+    public int GetBoardIndex(ushort id)
+    {
+        for (int i = 0; i < boardAlly.Count; i++)
+            if (boardAlly[i].sequenceId == id) return i;
+
+        for (int i = 0; i < boardEnemy.Count; i++)
+            if (boardEnemy[i].sequenceId == id) return i;
+
+        return -1;
     }
     public bool HasMinion(ushort sequenceId)
     {
@@ -122,6 +134,8 @@ public class GameManager : NetworkBehaviour
             boardEnemy[id-boardAlly.Count] = minion;
         }
     }
+    public void SetTaunt(ushort id, bool value)
+    => ChangeMinionById(id, s => { s.taunt = value; return s; });
     public void AddEffectIcon(ushort sequenceId, ushort effectId)
     {
         if (!TryFindMinion(sequenceId, out var list, out int i)) return;
@@ -139,6 +153,14 @@ public class GameManager : NetworkBehaviour
     }
     public void ChangeMinionById(ushort sequenceId, Func<MinionState, MinionState> modify)
     {
+        // Hős: nincs a board-listákban, külön SyncVar-ban él
+        if (sequenceId < 2)
+        {
+            var pc = GetPlayer(sequenceId == 1);
+            if (pc == null) return;
+            pc.heroState.Value = modify(pc.heroState.Value);
+            return;
+        }
         Debug.Log($"ChangeMinionById HÍVVA: {sequenceId}");
         // Segédfüggvény a lista frissítéséhez, hogy ne ismételjük a kódot
         bool UpdateInList(SyncList<MinionState> list)
@@ -195,6 +217,7 @@ public class GameManager : NetworkBehaviour
         return false;
     }
 
+    
     public CardState FindCardState(ushort seqId)
     {
         if (!TryFindCard(seqId, out var owner, out var zone, out int i))
@@ -259,11 +282,97 @@ public class GameManager : NetworkBehaviour
         return !boardAlly.Contains(
             GetMinionById(m._sequenceId));
     }
-    #endregion
-    
+
+
     #endregion
 
- //<<<<<<<<----------------------------------->>>>>>>>
+
+
+    #region TmpMinionCementary
+
+    private List<(int index, ushort id)> tmpCementaryAlly = new();
+    private List<(int index, ushort id)> tmpCementaryEnemy = new();
+
+    public void PutInMinionToTmpCementary(int index, ushort id, bool ally)
+    {
+        if (ally) tmpCementaryAlly.Add((index, id));
+        else tmpCementaryEnemy.Add((index, id));
+    }
+
+    public List<ushort> RestoreBoard(bool ally)
+    {
+        var tmpList = ally ? tmpCementaryAlly : tmpCementaryEnemy;
+        var board = ally ? boardAlly : boardEnemy;
+
+        var minionsAlive = new List<ushort>();
+        foreach (var m in board) minionsAlive.Add(m.sequenceId);
+
+        tmpList.Sort((a, b) => a.index.CompareTo(b.index));
+
+        var restoredBoard = new List<ushort>();
+
+        foreach (var dead in tmpList)
+        {
+            // ennyi élőnek kell elé kerülnie
+            int difference = dead.index - restoredBoard.Count;
+
+            for (int j = 0; j < difference && minionsAlive.Count > 0; j++)
+            {
+                restoredBoard.Add(minionsAlive[0]);
+                minionsAlive.RemoveAt(0);
+            }
+
+            restoredBoard.Add(dead.id);
+        }
+
+        restoredBoard.AddRange(minionsAlive);
+        return restoredBoard;
+    }
+
+    public void ClearCementary()
+    {
+        tmpCementaryAlly.Clear();
+        tmpCementaryEnemy.Clear();
+    }
+    public bool IsDead(ushort id, bool ally)
+    {
+        var list = ally ? tmpCementaryAlly : tmpCementaryEnemy;
+        foreach (var i in list)
+            if (i.id == id) return true;
+        return false;
+    }
+
+    public List<ushort> GetNeighbours(ushort id, bool ally)
+    {
+        var restored = RestoreBoard(ally);
+        var result = new List<ushort>();
+
+        int myPos = restored.IndexOf(id);
+        if (myPos < 0) return result;
+
+        // balra: az első élő
+        for (int i = myPos - 1; i >= 0; i--)
+        {
+            if (IsDead(restored[i], ally)) continue;
+            result.Add(restored[i]);
+            break;
+        }
+
+        // jobbra: az első élő
+        for (int i = myPos + 1; i < restored.Count; i++)
+        {
+            if (IsDead(restored[i], ally)) continue;
+            result.Add(restored[i]);
+            break;
+        }
+
+        return result;
+    }
+    
+    #endregion
+    #endregion
+
+    //<<<<<<<<----------------------------------->>>>>>>>
     #region 2. JÁTÉKmechanika + események
     public void AddEventSystem(GameEvents gameEvents)
     {
@@ -297,19 +406,65 @@ public class GameManager : NetworkBehaviour
         pc.PlayMinion(pc.hand[0]);
     }
 
-    public void StartTurn()
-    {
-        Debug.Log($"Turn {turn} ended.");
-        gameEvents.RaiseTurnStart();
-    }
+    // GameManager
+    public readonly SyncVar<int> turn = new(0);
 
+    public int CurrentPlayerIndex => (turn.Value+1) % 2;
+
+    public PlayerController CurrentPlayerController
+        => CurrentPlayerIndex == 0 ? playerA.Value : playerB.Value;
+    public bool IsPlayersTurn(PlayerController pc) => pc == CurrentPlayerController;
+
+    [Server]
     public void EndTurn()
     {
-        
-        Debug.Log($"Turn {turn} ended.");
         GameEvents.Instance.RaiseTurnEnd();
-        turn++;
+        graveyard.Execute();          // ha a körvégi effektek öltek
+
+        StartTurn();
     }
+
+    [Server]
+    private void StartTurn()
+    {
+        turn.Value++;
+
+        var pc = CurrentPlayerController;
+        if (pc == null) return;
+
+        pc.economy.StartTurn();
+
+        foreach (var m in minionLogics)
+            m.effectBag.TickExpiry(turn.Value);
+
+        ResetAttacks(pc);
+
+        pc.DrawCard();
+
+        GameEvents.Instance.RaiseTurnStart();
+        graveyard.Execute();
+
+        Debug.Log($"Turn {turn.Value} — P{CurrentPlayerIndex + 1}");
+    }
+
+    [Server]
+    private void ResetAttacks(PlayerController pc)
+    {
+        var board = pc.isEnemy.Value ? boardEnemy : boardAlly;
+        for (int i = 0; i < board.Count; i++)
+        {
+            var s = board[i];
+            if (s.canAttack) continue;
+
+            var logic = GetMinionLogic(s.sequenceId);
+            if (logic != null && logic.effectBag.ConsumeSleep()) continue;  // alszik még
+
+            s.canAttack = true;
+            board[i] = s;
+        }
+    }
+
+
     public void GameOver(bool isEnemy)
     {
         gameOverHandler.TriggerGameOver(isEnemy);
@@ -341,7 +496,7 @@ public class GameManager : NetworkBehaviour
             newHealth = mc.health + newCs.healthBonus;
         }
 
-        RecieveEvent(new ClientEvent
+        SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.buff,
             targetIds = new ushort[] { id },
@@ -350,7 +505,32 @@ public class GameManager : NetworkBehaviour
             doerId = id
         });
     }
-    
+    private bool _gameStarted;
+    [Server]
+    private void TryStartGame()
+    {
+        if (_gameStarted) return;
+        if (playerA.Value == null || playerB.Value == null) return;
+
+        _gameStarted = true;
+        GameStart();
+    }
+
+    [Server]
+    private void GameStart()
+    {
+        Debug.Log("GAME START");
+
+        // Kezdőkéz
+        for (int i = 0; i < 3; i++) playerA.Value.DrawCard();
+        for (int i = 0; i < 4; i++) playerB.Value.DrawCard();   // a második több lapot kap
+
+        // TODO: mulligan (lapcsere induláskor)
+        // TODO: coin a második játékosnak
+
+        turn.Value = -1;      // hogy a StartTurn ++ után 0 legyen → P1 kezd
+        StartTurn();
+    }
     #region EffectBagBusiness
 
     [Server]
@@ -379,6 +559,17 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var effect in effects)
         {
+            if (effect.type == Effect.Type.taunt)
+            {
+                bag.Add(effect, ownerId, EffectRole.Aura, charges: -1);
+                SetTaunt(ownerId, true);
+                continue;
+            }
+            if (effect.type == Effect.Type.cleave)
+            {
+                bag.Add(effect, ownerId, EffectRole.Aura, charges: -1);
+                continue;
+            }
             if (effect?.triggers == null || effect.triggers.Length == 0) continue;
             if ((effect.activeZone & currentZone) == 0) continue;
 
@@ -390,14 +581,34 @@ public class GameManager : NetworkBehaviour
                         charges: t.value, howOften: t.multiValue, toBlock: t.activity);
                 continue;
             }
+            
+            if (TriggerConverter.ActiveEffectConverter(t.t, out var gameEvent, t))
+            {
+                bag.Add(effect, ownerId, EffectRole.Trigger);
+                ushort capturedId = ownerId;
 
+                if (gameEvent == GameEvents.EventType.MinionSummoned)
+                {
+                    GameEvents.Instance.AddEvent(capturedId, gameEvent,
+                        (MinionLogic summoned) => {
+                            if (!TriggerChecker.instance.IsDoerValid(t, summoned, capturedId)) return;
+                            EffectRunner.Run(effect, capturedId); //  effectrunner helyett  DoRegistered EFfect és akkor ifso trigger
+                                                                        // belül történik 
+                        });
+                }
+                else
+                {
+                    GameEvents.Instance.AddEvent(capturedId, gameEvent,
+                        () => EffectRunner.Run(effect, capturedId));
+                }
+            }/*
             if (TriggerConverter.ActiveEffectConverter(t.t, out var gameEvent))
             {
                 bag.Add(effect, ownerId, EffectRole.Trigger);
                 ushort capturedId = ownerId;
                 GameEvents.Instance.AddEvent(capturedId, gameEvent,
                     () => EffectRunner.Run(effect, capturedId));
-            }
+            }*/
             // se guard, se konvertálható trigger → battlecry, nem kap LiveEffect-et
         }
     }
@@ -437,10 +648,18 @@ public class GameManager : NetworkBehaviour
         //GameEvents.Instance.RaiseEffectCountered(logic, kind);
         return true;
     }
-    [ObserversRpc]
-    public void RecieveEvent(ClientEvent _event)
+    [Server]
+    public void SendClientEvent(ClientEvent e)
     {
+        Debug.Log(
+            $"ClientEvent küldve innen: {(Effect.Type)e.effectType}"
+        );
 
+        ReceiveEvent(e);
+    }
+    [ObserversRpc]
+    public void ReceiveEvent(ClientEvent _event)
+    {
         EffectClient.instance.AddEvent(_event);
     }
 
@@ -451,7 +670,7 @@ public class GameManager : NetworkBehaviour
     public void DoEffect(EffectContext ctx)
     {
         EffectRunner.Run(ctx);
-        RecieveEvent(ctx.ToClientEvent());
+        SendClientEvent(ctx.ToClientEvent());
 
     }
     public void DoEffects(Effect[] effects, ushort doerId, PlayerController owner)
@@ -486,13 +705,16 @@ public class GameManager : NetworkBehaviour
             DoEffect(e, doerId, owner,fromDoEffects:true);
         }graveyard.Execute();
     }
-    public void DoEffect(Effect e, ushort doerId, PlayerController owner, ushort extraValue = 0,bool fromDoEffects=false)
+    public void DoEffect(Effect e, ushort doerId,  PlayerController owner, List<ushort> targets = null, ushort extraValue = 0,bool fromDoEffects=false)
     {
-        List<ushort> targets = TargetingCenter.GetTargets(e, doerId, owner);
-        var ctx = new EffectContext(e, doerId, targets);
+       // if(targets == null)
+       // List<ushort> targets = TargetingCenter.GetTargets(e, doerId, owner);
+        var ctx = new EffectContext(e, doerId, targets,source:owner);
 
         EffectRunner.Run(ctx); // Szerver matek
-        RecieveEvent(ctx.ToClientEvent()); // Kliens mozi
+        Debug.Log($"[Send] {ctx.effect.type}, targetIds: {string.Join(",", ctx.targetIds)}");
+        if (ctx.effect.type!=Effect.Type.damage && ctx.effect.type!=Effect.Type.summon && ctx.effect.type !=  Effect.Type.doubleStats)
+        SendClientEvent(ctx.ToClientEvent()); // Kliens mozi
         if (!fromDoEffects) graveyard.Execute();
     }
 
@@ -506,7 +728,20 @@ public class GameManager : NetworkBehaviour
         //ushort? overriddenTarget = EffectRunner.RunBeforeAttack(attackerId, defenderId);
         //ushort actualDefenderId = overriddenTarget ?? defenderId;
         MinionLogic attacker = GetMinionLogic(attackerId);
-       // Effect[] beforeAttack = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, Effect.Type.attack, attackerId).ToArray();
+        var defBoard = isAllyMinion(deffenderId)?boardAlly:boardEnemy;
+        bool tauntExists = false;
+        foreach (var m in defBoard) if (m.taunt) { tauntExists = true; break; }
+
+        if (tauntExists)
+        {
+            var target = GetMinionById(deffenderId);
+            if (!target.taunt)
+            {
+                Debug.Log("Taunt miatt elutasítva.");
+                return;
+            }
+        }
+        // Effect[] beforeAttack = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, Effect.Type.attack, attackerId).ToArray();
         if (attacker == null)return;
         if (CheckForCounter(Effect.Type.attack, deffenderId))
             return;
@@ -567,7 +802,8 @@ public class GameManager : NetworkBehaviour
         gameState.players[1].hero = p2_h;
         gameState.players[0].hero = p1_h;
 
-
+       // playerA.Value.InitHero(30);
+       // playerB.Value.InitHero(30);
         
         if (offlineTestMode)
         {
@@ -615,6 +851,7 @@ public class GameManager : NetworkBehaviour
             player.Init(gameState.players[1], false, this);
             player.RoleAssignedTargetRpc(player.Owner, player.isEnemy.Value);
         }
+        //TryStartGame();
     }
     #endregion
 
@@ -657,6 +894,20 @@ public class GameManager : NetworkBehaviour
         GetComponent<BoardManager>().GetMinion(v);
     }
     #region GetPlayer methods
+
+    [Server]
+    public PlayerController GetOwnerOf(ushort sequenceId)
+    {
+        if (sequenceId < 2) return GetPlayerByIndex(sequenceId);      // hős
+
+        for (int i = 0; i < boardAlly.Count; i++)
+            if (boardAlly[i].sequenceId == sequenceId) return playerA.Value;
+
+        for (int i = 0; i < boardEnemy.Count; i++)
+            if (boardEnemy[i].sequenceId == sequenceId) return playerB.Value;
+
+        return null;
+    }
     public bool isAlly(PlayerController player)
     {
         return player==playerA.Value;
@@ -678,12 +929,23 @@ public class GameManager : NetworkBehaviour
     }
     public PlayerController GetLocalPlayerController()
     {
-        return localPlayerIndex == 0 ? playerA.Value : playerB.Value;
+        return playerA.Value != null && playerA.Value.IsOwner ? playerA.Value : playerB.Value;
+    }
+    public bool AreWeHomePlayer()
+    {
+        return playerA.Value.IsOwner;
     }
 
     public PlayerController GetOpponentPlayerController()
     {
         return localPlayerIndex == 0 ? playerB.Value : playerA.Value;
+    }
+    public ushort GetHeroId(PlayerController player,bool enemy=false)
+    {
+        ushort id;
+        if (player == playerA.Value) { id = enemy ? (ushort)1 : (ushort)0; }
+        else { id = enemy ? (ushort)0 : (ushort)1; }
+        return id;
     }
     public PlayerController GetControllerOf(PlayerState state)
     {
@@ -696,15 +958,17 @@ public class GameManager : NetworkBehaviour
     {
         return playerController == playerA.Value ? playerB.Value : playerA.Value;
     }
+    public PlayerController GetPlayerByIndex(int index)
+    => index == 0 ? playerA.Value : playerB.Value;
     #endregion
     internal bool IsMyTurn()
     {
-        
-        return localPlayerIndex == 0 ?turn % 2 == 0:turn%2==1;
+        return true;
+        return localPlayerIndex == 0 ?turn.Value % 2 == 0:turn.Value %2==1;
     }
     public bool isAllyTurn()
     {
-        return turn % 2 == 0;
+        return turn.Value % 2 == 0;
     }
 
     
@@ -752,6 +1016,7 @@ public class GameManager : NetworkBehaviour
         {
             MinionState minion = boardAlly[i];
             Debug.Log($"Index: {i}, SequenceId: {minion.sequenceId},  Attack: {minion.attack}, Health: {minion.currentHealth}, CanAttack: {minion.canAttack}");
+            Debug.Log($"minion:{ minion.activeEffects.Count}");
         }
 
         // Ellenséges minionok

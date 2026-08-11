@@ -8,12 +8,19 @@ public class EffectContext  // ← Vissza class-ra
     public MinionLogic[] targets;// tudatosan minion logicokat adunk???
     public int value;
     public ushort[] targetIds;
-    public EffectContext(Effect e, ushort doerId, List<ushort> targetIds=null, ushort extraValue = 0)
+    public PlayerController playerController;
+    public EffectContext(Effect e, ushort doerId, List<ushort> targetIds=null, ushort extraValue = 0,PlayerController source=null)
     {
+        if (source == null)
+        {
+            source = GameManager.instance.GetOwnerOf(doerId);
+        }
+        playerController = source; // az egyszerüség kedvéért rámentjük 
+
         if (targetIds == null)
         {// maybe the targeting center get targets can drop minion logic but thats a micro performance
             //after a while it turned out very usefull, when we add events with empty targets 
-            targetIds=TargetingCenter.GetTargets(e, doerId);
+            targetIds=TargetingCenter.GetTargets(e, doerId,source);
         }
         this.effect = e;
         this.doerId = doerId;

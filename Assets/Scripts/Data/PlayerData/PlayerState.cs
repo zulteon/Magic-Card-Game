@@ -8,4 +8,3 @@ public class PlayerState
     public bool isLocalPlayer; // csak a UI tudja értelmezni
     public string playerId; // késõbb multiplayernél fontos lehet
 }
-

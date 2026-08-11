@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac8a27f6d19e7f948b70a5ccc50cba57, type: 3}
   m_Name: Testeffect 1
   m_EditorClassIdentifier: 
-  effectName: 
   type: 0
   targetType: 0
   targetCast: 0
@@ -23,3 +22,12 @@ MonoBehaviour:
   give: {fileID: 0}
   triggers: []
   random: 0
+  raceValue: -1
+  multiValue: -1
+  multiSplit: 0
+  other: 0
+  effectId: 8
+  logicOp: 
+  linkedTrigger: {fileID: 0}
+  sortMode: 0
+  activeZone: 1

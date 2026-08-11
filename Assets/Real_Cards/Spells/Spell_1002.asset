@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
+  m_Name: Spell_1002
+  m_EditorClassIdentifier: 
+  sprite: Gemini_Generated_Image_ (22).png
+  description: "3. M\xE9zborz g\xE1ztechnikus \u2192 \"Kontroll\xE1lt Robban\xE1s\"
+    Okozz 4 sebz\xE9st egy minionnak \xC9S 1-et a saj\xE1t h\u0151s\xF6dnek \u2014
+    a k\xE1osz \xE1ra van, de a m\xE9zborz tudja, mit csin\xE1l. (A \"nyugodt arc
+    a t\u0171zben\" flavor = a self-damage trade-off.)"
+  effect: 
+  e: []

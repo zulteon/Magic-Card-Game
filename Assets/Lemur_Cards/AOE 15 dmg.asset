@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   targetType: 0
-  targetCast: 3
+  targetCast: 0
   target: 2
   value: 15
   buff: {x: 0, y: 0}
@@ -27,7 +27,7 @@ MonoBehaviour:
   multiValue: -1
   multiSplit: 0
   other: 0
-  effectId: 0
+  effectId: 22
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0

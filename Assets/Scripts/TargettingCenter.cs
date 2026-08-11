@@ -7,16 +7,17 @@ public  static class TargetingCenter
 {
     public static GameManager GameManager { get; private set; }
     public static List<ushort> GetTargets(Effect e, ushort doerId, PlayerController source=null)
-    {
+    {// az egész playercontroller lekérést kilehetne szedni , fölösleges elég annyit tudni hogy ally vagy nem 
+       
+        
         if (source == null)
         {
-            Debug.Log("DOER : " +doerId.ToString());
-            bool isAlly= GameManager.instance.isAllyMinion(doerId);
-            source=GameManager.instance.GetPlayer(!isAlly);
+            source = GameManager.instance.GetOwnerOf(doerId);
         }
+        Debug.Log($"[GetTargets] source GetOwnerOf után: {(source == null ? "MÉG MINDIG NULL" : "ok")}");
         PlayerController enemy = GameManager.instance.GetEnemy(source);
         List<ushort> targetIds = new List<ushort>();
-
+        
         // például: forrás minionjai
         var sourceIds = GameManager.instance.GetAlly(!source.isEnemy.Value)
             .Select(m => m.sequenceId)
@@ -50,8 +51,13 @@ public  static class TargetingCenter
                 targetIds.AddRange(sourceIds.Concat(enemyIds));
                 targetIds.Remove(doerId);
                 break;
+            case Trigger.Target.adjacent:
+                targetIds.AddRange(
+                GameManager.instance.GetNeighbours(doerId, GameManager.instance.isAlly(source)));
+                break;
         }
-
+        if(e.other)targetIds.Remove(doerId);
+        Debug.Log($"[GetTargets] targetType={e.targetType} targetIds count ELÕTTE={targetIds.Count}");
         return FilterAndSelectTargets(doerId,targetIds, e);
     }
     public static List<ushort> FilterAndSelectTargets(
@@ -59,6 +65,7 @@ public  static class TargetingCenter
        List<ushort> targetIds,
        Effect e)
     {
+        
         // 1. Típus szerinti szûrés
         // itt MinionState-et kell lekérni a GameManagerbõl
         //var selectedTarget = targetIds;
@@ -91,7 +98,7 @@ public  static class TargetingCenter
                 Debug.LogWarning("Unknown target type: " + e.targetType);
                 break;
         }
-
+        Debug.Log($"[GetTargets] targetType={e.targetType} targetIds count ELÕTTE={targetIds.Count}");
         if (targetIds.Count == 0)
             return new List<ushort>();
         // típus-szûrés után, mielõtt a targetCast szerint válogatnál:
@@ -118,8 +125,11 @@ public  static class TargetingCenter
                 }
                 else
                 {
-                    Debug.Log("TODO: Player manual target selection");
-                    return null;
+                    Debug.LogWarning($"[{e.name}] single target, de nincs kiválasztás — az elsõt veszem.");
+                    result.Add(targetIds[0]);
+                    return result;
+                    //Debug.Log("TODO: Player manual target selection");
+                   // return null;
                 }
                 break;
 
@@ -149,7 +159,7 @@ public  static class TargetingCenter
                 }
                 break;
         }
-
+        Debug.Log($"[GetTargets] targetType={e.targetType} targetIds count ELÕTTE={targetIds.Count}");
         return result;
     }
     private static bool IsHero(ushort id)
@@ -157,7 +167,7 @@ public  static class TargetingCenter
         return id == 0 || id == 1;
     }
 
-    public static List<ILiveTarget> FilterByType(ILiveTarget doer,List<ILiveTarget> targets,Effect e)
+ /*   public static List<ILiveTarget> FilterByType(ILiveTarget doer,List<ILiveTarget> targets,Effect e)
     {
         switch (e.targetType)
         {
@@ -236,7 +246,7 @@ public  static class TargetingCenter
                 break;
         }
         return result;
-    }
+    }*/
     private static List<ushort> SortByMode(List<ushort> ids, Trigger.SortMode mode)
     {
          switch (mode)

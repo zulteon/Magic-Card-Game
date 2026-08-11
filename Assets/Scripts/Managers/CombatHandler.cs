@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static Trigger;
 
 public class CombatHandler : MonoBehaviour
 {
@@ -23,54 +24,62 @@ public class CombatHandler : MonoBehaviour
     }//StartCoroutine(AttackIt(attacker,victim));
     public IEnumerator AttackIt(LiveMinion attacker, LiveMinion victim, int attackerNewHp, int victimNewHP, bool isHome = true)
     {
-        Transform a = attacker.transform;
-        Transform b = victim.transform;
-        print("ATACK#####!" + a.name + ":" + b.name);
+        if (attacker == null || victim == null) yield break;
 
-        Vector3 startpos = a.transform.position;
-        float t = 0.2f;
-        float allT = t;
-        Vector3 firstStation = a.position + new Vector3(0f, isHome ? 0.078f : -0.078f, 0f);
+        Transform a = attacker.transform;
+        print("ATACK#####!" + a.name + ":" + victim.name);
+
+        // A pozíciókat EGYSZER kérjük le. Ha a célpont közben meghal és
+        // megsemmisül, az animáció akkor is végigfut a helyes koordinátákig.
+        Vector3 startpos = a.position;
+        Vector3 targetPos = victim.transform.position;
+        Vector3 firstStation = startpos + new Vector3(0f, isHome ? 0.078f : -0.078f, 0f);
+
+        // 1. Kis hátralépés
+        float t = 0.2f, allT = t;
         while (t > 0)
         {
+            if (a == null) yield break;
             t -= Time.deltaTime;
-            a.position = Vector3.Lerp(a.position, firstStation, (allT - t) / allT);
+            a.position = Vector3.Lerp(startpos, firstStation, (allT - t) / allT);
             yield return null;
         }
-        float dist = Vector3.Distance(a.transform.position, b.transform.position);
-        Vector3 tmp = a.position;
+
+        // 2. Nekirepülés
         t = 0.5f; allT = t;
         while (t > 0)
         {
+            if (a == null) yield break;
             t -= Time.deltaTime;
-            a.position = Vector3.Lerp(tmp, b.position, (allT - t) / allT);
+            a.position = Vector3.Lerp(firstStation, targetPos, (allT - t) / allT);
             yield return null;
         }
+
         // SoundManager.inst.Hit();
-        //damage
-        //GameManager.instance.Attack();
-        attacker.AttackDamageApply(
-           attacker.currentHealth - attackerNewHp);
-        Vector3 endPos = a.position;
+
+        // 3. Becsapódás — itt jelenik meg a sebzés mindkét oldalon
+        if (attacker != null) attacker.AttackDamageApply(attacker.currentHealth - attackerNewHp);
+        if (victim != null) victim.AttackDamageApply(victim.currentHealth - victimNewHP);
+
+        // 4. Vissza
         t = 0.7f; allT = t;
         while (t > 0)
         {
+            if (a == null) yield break;
             t -= Time.deltaTime;
-            a.position = Vector3.Lerp(b.position, firstStation, (allT - t) / allT);
+            a.position = Vector3.Lerp(targetPos, firstStation, (allT - t) / allT);
             yield return null;
         }
+
         t = 0.2f; allT = t;
         while (t > 0)
         {
+            if (a == null) yield break;
             t -= Time.deltaTime;
             a.position = Vector3.Lerp(firstStation, startpos, (allT - t) / allT);
             yield return null;
         }
-        a.position = startpos;
-        // yield return hogy az effect rendszer bevárja
-        attacker.AttackDamageApply(
-           attacker.currentHealth - attackerNewHp);
-        victim.AttackDamageApply(
-           victim.currentHealth - victimNewHP);
+
+        if (a != null) a.position = startpos;
     }
 }

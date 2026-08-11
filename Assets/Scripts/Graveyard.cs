@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 
 /* ════════════════════════════════════════════════════════════════════
    TODO — ami még hátra van
@@ -34,7 +36,7 @@ public class Graveyard
         if (!_pendingDeaths.Contains(id))
             _pendingDeaths.Add(id);
     }
-
+    public static Graveyard instance;
     /// <summary>
     /// Végrehajtja a halál folyamatát — HULLÁMOKBAN, nem egyesével.
     /// Az egyszerre haló lények így nem kapják meg egymás halálhörgés-buffját:
@@ -66,7 +68,7 @@ public class Graveyard
                 // MINDEN halott ide kerül, nem csak akinek van deathrattle-je —
                 // különben a "ha meghal egy lény" típusú triggerek (Shoebill)
                 // nem értesülnének a deathrattle nélküli halálokról.
-                var dead = new List<(ushort id, List<Effect> effects)>();
+                var dead = new List<(ushort id, List<Effect> effects, PlayerController owner)>();
 
                 // ── 1. FÁZIS: mindenki EGYSZERRE hal meg ──────────────────
                 // Se esemény, se effekt nem fut itt — csak pillanatkép és levétel.
@@ -78,18 +80,24 @@ public class Graveyard
                     // ÚJRAELLENŐRZÉS: a jelölés óta meggyógyulhatott
                     // (pl. egy korábbi hullám deathrattle-je). Ilyenkor túlél.
                     //if (minion.Health > 0) continue;
-                     
+                    var owner = GameManager.instance.GetOwnerOf(id);
+                    bool isAlly = GameManager.instance.isAllyMinion(id);
+                    int index = GameManager.instance.GetBoardIndex(id);
+                    GameManager.instance.PutInMinionToTmpCementary(index, id, isAlly);
                     // A pillanatkép a deathrattle ELŐTT készül: a saját halála által
                     // adott buff már nem érvényes rá.
                     DeadCards.Add(minion.cardId);
 
-                    var deathEffects = TriggerChecker.instance.GetOnDeathEffect(id);
+                    List<Effect> deathEffects = TriggerChecker.instance.GetOnDeathEffect(id);
+                    UnityEngine.Debug.Log(" death : " + deathEffects.Count); 
+                    
 
-                    GameManager.instance.RemoveFromBoard(id);
-
-                    dead.Add((id, deathEffects));
+                    dead.Add((id, deathEffects,owner));
                 }
-
+                foreach( var (id, effects, owner) in dead)
+                {
+                    GameManager.instance.RemoveFromBoard(id);
+                }
                 if (dead.Count == 0) continue;
 
                 // ── KÖZÖS HALÁLANIMÁCIÓ: egy ClientEvent az egész hullámra ──
@@ -97,7 +105,7 @@ public class Graveyard
                 for (int i = 0; i < dead.Count; i++)
                     deadIds[i] = dead[i].id;
 
-                GameManager.instance.RecieveEvent(new ClientEvent
+                GameManager.instance.SendClientEvent(new ClientEvent
                 {
                     effectType = (ushort)Effect.Type.death,
                     targetIds = deadIds,
@@ -107,9 +115,9 @@ public class Graveyard
                 // ── 2. FÁZIS: csak most jönnek az események és a halálhörgések ──
                 // Ekkor már mindenki lekerült a pályáról, tehát a buffok
                 // CSAK A TÚLÉLŐKET érhetik el.
-                foreach (var (id, effects) in dead)
+                foreach (var (id, effects,owner) in dead)
                 {
-                     //GameEvents.Instance.RaiseMinionDied(id);
+                     GameEvents.Instance.RaiseMinionDied(GameManager.instance.GetMinionLogic(id));
 
                     if (effects.Count == 0) continue;
 
@@ -126,10 +134,10 @@ public class Graveyard
                             effects.Remove(item);
                     }
                     */
-
-                    GameManager.instance.DoEffects(effects.ToArray(), id, null);
+                    UnityEngine.Debug.Log("Owner is " +owner);
+                    GameManager.instance.DoEffects(effects.ToArray(), id, owner);
                 }
-
+                GameManager.instance.ClearCementary();
                 // Ha ezek újabb halált okoztak, azok már a KÖVETKEZŐ hullámban vannak.
             }
         }

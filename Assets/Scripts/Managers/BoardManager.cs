@@ -1,5 +1,6 @@
 ﻿using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,6 +52,7 @@ public class BoardManager : MonoBehaviour
 
     private void HandleBoardChange(SyncListOperation op, int index, MinionState newItem, bool asServer, bool isHome)
     {
+        /*Debug.Log($"RemoveAt: index={op.ToString()}, sequenceId={newItem.sequenceId}, cardId={newItem.cardId}");
         if (asServer) return;
 
         List<GameObject> list = isHome ? home : abroad;
@@ -67,6 +69,7 @@ public class BoardManager : MonoBehaviour
                     Destroy(list[index]);
                     list.RemoveAt(index);
                 }
+                Debug.Log($"RemoveAt: index={index}, sequenceId={newItem.sequenceId}, cardId={newItem.cardId}");
                 break;
 
             case SyncListOperation.Clear:
@@ -74,11 +77,7 @@ public class BoardManager : MonoBehaviour
                 list.Clear();
                 break;
 
-            // Késői csatlakozás / reconnect: a teljes lista EGYSZERRE érkezik.
-            // Enélkül egy közben belépő játékos üres pályát látna.
-            case SyncListOperation.Complete:
-                RebuildSide(isHome);
-                break;
+           
 
             // Set: szándékosan nincs kezelve. A vizuális frissítés az
             // EffectClient sorából jön, különben a szerver előrébb járna
@@ -87,7 +86,7 @@ public class BoardManager : MonoBehaviour
                 break;
         }
 
-        Arrangecards();
+        Arrangecards();*/
     }
 
     private void RebuildSide(bool isHome)
@@ -114,7 +113,47 @@ public class BoardManager : MonoBehaviour
         var lm = GetLiveMinion(id);
         return lm != null ? lm.GetComponent<MinionView>() : null;
     }
+    public void SpawnMinion(MinionState state, bool isHome)
+    {
+        List<GameObject> list = isHome ? home : abroad;
+        list.Add(CreateMinionUI(state, isHome));
+        Arrangecards();          // ← enélkül (0,0,0)-ban marad
+    }
 
+    public void DestroyMinion(ushort sequenceId)
+    {
+        foreach (var list in new[] { home, abroad })
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var lm = list[i].GetComponent<LiveMinion>();
+                if (lm == null || lm.sequenceId != sequenceId) continue;
+
+                var go = list[i];
+                list.RemoveAt(i);
+                StartCoroutine(DieAndDestroy(go));
+                Arrangecards();          // ← a többiek összezáródnak
+                return;
+            }
+        }
+        Debug.LogWarning($"[BoardManager] DestroyMinion: {sequenceId} nincs a listában.");
+    }
+
+    private IEnumerator DieAndDestroy(GameObject go)
+    {
+        float t = 0f, dur = 0.4f;
+        var tr = go.transform;
+        Vector3 start = tr.localScale;
+
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            tr.localScale = start * (1f - t / dur);
+            tr.Rotate(0, 0, 720f * Time.deltaTime);
+            yield return null;
+        }
+        Destroy(go);
+    }
     public LiveMinion GetLiveMinion(ushort id)
     {
         foreach (Transform side in boardMinions)

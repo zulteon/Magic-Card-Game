@@ -30,11 +30,12 @@ public class EffectClient : NetworkBehaviour
         _visualQueue.Clear();
         _isPlaying = false;
     }
+    
 
     [Client]
     public void AddEvent(ClientEvent _event)
     {
-        print("adding event" + _event.effectType);
+        print("adding event" + _event.effectType.ToString());
         _visualQueue.Enqueue(_event);
 
         if (!_isPlaying)
@@ -87,9 +88,42 @@ public class EffectClient : NetworkBehaviour
             case Effect.Type.buff:
                 yield return HandleBuffVisual(e);
                 break;
+            case Effect.Type.summon:
+                yield return HandleSummonVisual(e);
+                break;
+            case Effect.Type.doubleStats:
+                yield return HandleBuffVisual(e);//HandleDoubleStatsVisual(e);
+                break;
             default:
                 Debug.LogWarning($"Unknown effect type: {e.effectType}");
                 yield break;
+        }
+    }
+    private IEnumerator HandleDoubleStatsVisual(ClientEvent e)
+    {
+        for (int i = 0; i < e.targetIds.Length; i++)
+        {
+            MinionView view = GameManager.instance.GetMinionView(e.targetIds[i]);
+
+            int valueIndex = i * 2;
+            if (e.newValues == null || e.newValues.Length <= valueIndex + 1)
+            {
+                Debug.LogWarning("DoubleStats ClientEvent newValues is invalid.");
+                continue;
+            }
+
+            int newAttack = e.newValues[valueIndex];
+            int newHealth = e.newValues[valueIndex + 1];
+
+            if (view == null) continue;
+
+            if (i == e.targetIds.Length - 1)
+                yield return StartCoroutine(view.PlayBuffAnimation(newAttack, newHealth, e.value));
+            else
+            {
+                StartCoroutine(view.PlayBuffAnimation(newAttack, newHealth, e.value));
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
     private IEnumerator HandleBuffVisual(ClientEvent e)
@@ -98,7 +132,7 @@ public class EffectClient : NetworkBehaviour
         {
             MinionView view =
                 GameManager.instance.GetMinionView(e.targetIds[i]);
-
+            Vector2Int oldStats=view.GetStats();
             // ── 1. Előbb az értékek, MÉG a null-vizsgálat előtt ──
             int valueIndex = i * 2;
 
@@ -171,7 +205,29 @@ public class EffectClient : NetworkBehaviour
         }
         yield return new WaitForSeconds(0.5f);
     }
+    private IEnumerator HandleSummonVisual(ClientEvent e)
+    {
+        if (e.newValues == null || e.newValues.Length == 0)
+            yield break;
 
+        bool ownerIsAlly = e.newValues[0] == 1;
+        bool isHome = (ownerIsAlly == GameManager.instance.AreWeHomePlayer());
+
+        foreach (var id in e.targetIds)
+        {
+            var state = GameManager.instance.GetMinionById(id);
+
+            if (state.cardId == 0)
+            {
+                Debug.LogWarning($"[Summon] {id} már nincs a boardon, kihagyva.");
+                continue;
+            }
+
+            BoardManager.instance.SpawnMinion(state, isHome);
+        }
+
+        yield return  null;
+    }
     private IEnumerator HandleHealVisual(ClientEvent e)
     {
         yield return null;
@@ -196,11 +252,12 @@ public class EffectClient : NetworkBehaviour
     }
 
     private IEnumerator HandleDeathVisual(ClientEvent e)
-    {yield return
-        // TODO: Halál animáció
-        new WaitForSeconds(0.8f);
+    {
+        foreach (var id in e.targetIds)
+            BoardManager.instance.DestroyMinion(id);
+        yield return null;
     }
-    
+
     public List<MinionView> getTargets(ClientEvent e)
     {
         List<MinionView> minions=new List<MinionView>();

@@ -598,7 +598,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 438868777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efc882e08deb0cf43827df6976369060, type: 3}
+  m_Script: {fileID: 11500000, guid: 908e8a4d555e29249b72fe1bd9421829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &438868783
@@ -638,11 +638,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allEffects:
-  - {fileID: 11400000, guid: a5897e4d0c78158488f13c4aa9caa90f, type: 2}
-  - {fileID: 11400000, guid: 765511b8d10f73b4087cefadb1e602c3, type: 2}
-  - {fileID: 11400000, guid: 80700195bddacb04abf1e9daaf615d6e, type: 2}
-  - {fileID: 11400000, guid: 6c6db03d77015b14590e4472f3b05746, type: 2}
-  - {fileID: 11400000, guid: 5b78b36d6e43be64b8b1f4146e7f4820, type: 2}
+  - {fileID: 11400000, guid: b6ad75e7b3fd0534ca6106b9ba3d45f3, type: 2}
+  - {fileID: 11400000, guid: 55e357e8ede48aa4db16155865ae3532, type: 2}
+  - {fileID: 11400000, guid: e3fb6118e598c83479bc1caac2458c27, type: 2}
+  - {fileID: 11400000, guid: cbef841d80ea8874784fe5cf9cc5ef4e, type: 2}
+  - {fileID: 11400000, guid: c60e9af8477690c4ca9f3559b03fa6d0, type: 2}
+  - {fileID: 11400000, guid: c75e3cb53c8339c4499ad748151c2e31, type: 2}
 --- !u!114 &438868795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1359,10 +1360,10 @@ PrefabInstance:
     - target: {fileID: 3880822995401427276, guid: 3a79029ee1fcd87439edb2f76d29b482, type: 3}
       propertyPath: testDeck
       value: 
-      objectReference: {fileID: 11400000, guid: ad88f286890cda0429f5b5dc6a9a8da9, type: 2}
+      objectReference: {fileID: 11400000, guid: cb703a6644575204589a9eacd72d0b35, type: 2}
     - target: {fileID: 3880822995401427276, guid: 3a79029ee1fcd87439edb2f76d29b482, type: 3}
       propertyPath: offlineTestMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7008421958268200181, guid: 3a79029ee1fcd87439edb2f76d29b482, type: 3}
       propertyPath: _isSpawnable
