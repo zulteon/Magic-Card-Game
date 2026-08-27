@@ -1,80 +1,376 @@
 {
   "cards": [
     {
-      "attack": 5,
-      "health": 5,
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 137,
+      "cost": 5,
+      "description": "Varánusz gazdaság-duplázó",
+      "cardType": "minion",
+      "sprite": "id_00198_001_tuatara_government_office_clerk",
+      "effectIds": [
+        46
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 105,
+      "cost": 4,
+      "description": "Könyvelő (+1/+1 kézben lévő lapért)",
+      "cardType": "minion",
+      "sprite": "id_00105_020_platypus_accountant_bill_puzzled",
+      "effectIds": [
+        26
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 2,
+      "cost": 5,
+      "description": "Shoebill — Temetői Scaling",
+      "cardType": "minion",
+      "sprite": "id_00082_009_shoebill_stork_funeral_director",
+      "effectIds": [
+        7
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 6,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 134,
-      "cost": 0,
+      "cost": 5,
       "description": "Each second hit is blocked",
       "cardType": "minion",
-      "sprite": "id_00182_005_tenrec_fakir_street_performer.png",
+      "sprite": "id_00182_005_tenrec_fakir_street_performer",
       "effectIds": [
         20
       ],
       "dynamicValues": {}
     },
     {
-      "attack": 1,
-      "health": 1,
+      "effect": "",
+      "cardId": 1011,
+      "cost": 1,
+      "description": "Alvó Darukezelő\" Egy véletlenszerű minion (bárkié!) átkerül a board másik végére — a daru felkap valakit, és senki nem tudja, hova teszi le.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (33)",
+      "effectIds": [
+        61
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1011,
+      "cost": 1,
+      "description": "Alvó Darukezelő\" Egy véletlenszerű minion (bárkié!) átkerül a board másik végére — a daru felkap valakit, és senki nem tudja, hova teszi le.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (33)",
+      "effectIds": [
+        61
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1011,
+      "cost": 1,
+      "description": "Alvó Darukezelő\" Egy véletlenszerű minion (bárkié!) átkerül a board másik végére — a daru felkap valakit, és senki nem tudja, hova teszi le.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (33)",
+      "effectIds": [
+        61
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1010,
+      "cost": 4,
+      "description": "Galamb tánccsapat → \"Szinkron-tánc\" Minden barátságos minion statja kiegyenlítődik az átlagukra — mindenki ugyanazt a lépést járja.",
+      "cardType": "spell",
+      "sprite": "balansz",
+      "effectIds": [
+        62
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1007,
+      "cost": 3,
+      "description": "Órásmester teknős → \"Jövőbe küldés\" Egy minion eltűnik a következő körödig, majd visszatér — az óramutató átugrik rajta.",
+      "cardType": "spell",
+      "sprite": "teknosjovo",
+      "effectIds": [
+        60
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1041,
+      "cost": 2,
+      "description": "Discover",
+      "cardType": "spell",
+      "sprite": "id_00246_005_mantis_shrimp_metro_electrician",
+      "effectIds": [
+        59
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1024,
+      "cost": 3,
+      "description": "Secretary Bird Inspector → a) Deal 4 damage, ignoring blocks/shields",
+      "cardType": "spell",
+      "sprite": "id_00288_007_secretary_bird_pest_control",
+      "effectIds": [
+        40
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1023,
+      "cost": 2,
+      "description": "Leafcutter Ant Mover → A friendly minion gains +4/+4 but can't attack this turn",
+      "cardType": "spell",
+      "sprite": "id_00239_008_tiny_leafcutter_ant_mover",
+      "effectIds": [
+        58
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1018,
+      "cost": 3,
+      "description": "Pistol Shrimp Plumber** → Deal 3 damage to a minion AND 1 to its neighbors",
+      "cardType": "spell",
+      "sprite": "id_00282_001_pistol_shrimp_plumber_snapping",
+      "effectIds": [
+        57
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1004,
+      "cost": 5,
+      "description": "Elefánt a porcelánboltban → \"Porcelánbolt\" Pusztíts el egy barátságos miniont: minden ellenséges minion sebzést kap a statjai alapján",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (24)",
+      "effectIds": [
+        54
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1003,
+      "cost": 1,
+      "description": "Ments meg egy barátságos miniont: vedd vissza a kezedbe a harc közepéről",
+      "cardType": "spell",
+      "sprite": "goat",
+      "effectIds": [
+        51
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
       "effect": "",
       "raceId": 0,
       "charge": false,
-      "cardId": 129,
-      "cost": 0,
-      "description": "+1 Gold ebben a körben",
+      "cardId": 113,
+      "cost": 2,
+      "description": "Sleep For An Extra Turn",
       "cardType": "minion",
-      "sprite": "id_00231_016_prompt_happy_crow_wearing.png",
+      "sprite": "id_00103_018_koala_call_center_worker",
       "effectIds": [
-        18
+        8
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1001,
+      "cost": 4,
+      "description": "Tortacsata a pékségben → \"Tortacsata\" Minden minion (mindkét oldal) véletlenszerűen 1-3 sebzést kap — Okozz 4 sebzést egy minionnak ÉS 1-et a saját hősödnek — a káosz ára van, de a mézborz tudja, mit csinál. (A \"nyugodt arc a tűzben\" flavor = a self-damage trade-off.)",
+      "cardType": "spell",
+      "sprite": "aoe_1",
+      "effectIds": [
+        48
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1000,
+      "cost": 4,
+      "description": "Hipopotamusz a fürdőkádban → \"Zsúfolt Medence\"",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (16)",
+      "effectIds": [
+        47
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": "",
+      "cardId": 1032,
+      "cost": 2,
+      "description": "Mantis Shrimp Electrician → a) Look at 3 cards from your deck, draw 1. b) Reveal the enemy's hand this turn.",
+      "cardType": "spell",
+      "sprite": "id_00246_005_mantis_shrimp_metro_electrician",
+      "effectIds": [
+        33
       ],
       "dynamicValues": {}
     },
     {
       "attack": 1,
-      "health": 1,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 104,
+      "cost": 3,
+      "description": "Summon a bomb for enemy (that dies in next turn)",
+      "cardType": "minion",
+      "sprite": "id_00155_018_proud_dung_beetle_waste",
+      "effectIds": [
+        27
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 139,
+      "cost": 5,
+      "description": "End of turn give a friendly minion +3 3",
+      "cardType": "minion",
+      "sprite": "id_00171_014_fossa_personal_trainer_checking",
+      "effectIds": [
+        2
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 7,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 132,
+      "cost": 5,
+      "description": "Blokk / csapattárs elé ugrás",
+      "cardType": "minion",
+      "sprite": "id_00116_031_fire_salamander_firefighter_glossy",
+      "effectIds": [
+        43
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 111,
+      "cost": 5,
+      "description": "Ha buffolnak valakit, őt is buffolják (listener)",
+      "cardType": "minion",
+      "sprite": "Gemini_Generated_Image_1upkwl1upkwl1upk",
+      "effectIds": [
+        21
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 4,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 130,
-      "cost": 0,
+      "cost": 4,
       "description": "Cleave",
       "cardType": "minion",
-      "sprite": "id_00058_005_stylized_monitor_lizard_sauna.png",
+      "sprite": "id_00058_005_stylized_monitor_lizard_sauna",
       "effectIds": [
         19
       ],
       "dynamicValues": {}
     },
     {
-      "attack": 1,
-      "health": 1,
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 129,
+      "cost": 2,
+      "description": "+1 Gold ebben a körben",
+      "cardType": "minion",
+      "sprite": "id_00231_016_prompt_happy_crow_wearing",
+      "effectIds": [
+        18
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 4,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 116,
-      "cost": 0,
+      "cost": 4,
       "description": "OnDeath: visszatér 1 körre gyengült formában",
       "cardType": "minion",
-      "sprite": "id_00035_007_stylized_pink_axolotl_pharmacist.png",
+      "sprite": "id_00035_007_stylized_pink_axolotl_pharmacist",
       "effectIds": [
         12
       ],
       "dynamicValues": {}
     },
     {
-      "attack": 1,
-      "health": 1,
+      "attack": 7,
+      "health": 5,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 146,
-      "cost": 0,
+      "cost": 8,
       "description": "Charge",
       "cardType": "minion",
-      "sprite": "id_00136_051_sugar_glider_window_cleaner.png",
+      "sprite": "id_00136_051_sugar_glider_window_cleaner",
       "effectIds": [
         1
       ],
@@ -86,24 +382,40 @@
       "effect": "",
       "raceId": 0,
       "charge": false,
+      "cardId": 1,
+      "cost": 4,
+      "description": "Albatrosz — Élethosszig Tartó Pár",
+      "cardType": "minion",
+      "sprite": "Gemini_Generated_Image_",
+      "effectIds": [
+        29
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
       "cardId": 118,
-      "cost": 0,
+      "cost": 3,
       "description": "3 sebzés random ellenfélnek",
       "cardType": "minion",
-      "sprite": "id_00114_029_poison_dart_frog_dj.png",
+      "sprite": "id_00114_029_poison_dart_frog_dj",
       "effectIds": [
         9
       ],
       "dynamicValues": {}
     },
     {
-      "attack": 1,
-      "health": 1,
+      "attack": 2,
+      "health": 2,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 123,
-      "cost": 0,
+      "cost": 4,
       "description": "Random barát duplázza HP-ját",
       "cardType": "minion",
       "sprite": "",
@@ -113,13 +425,13 @@
       "dynamicValues": {}
     },
     {
-      "attack": 1,
-      "health": 1,
+      "attack": 2,
+      "health": 2,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 123,
-      "cost": 0,
+      "cost": 4,
       "description": "Random barát duplázza HP-ját",
       "cardType": "minion",
       "sprite": "",
@@ -129,50 +441,34 @@
       "dynamicValues": {}
     },
     {
-      "attack": 1,
-      "health": 1,
-      "effect": "",
-      "raceId": 0,
-      "charge": false,
-      "cardId": 113,
-      "cost": 0,
-      "description": "Sleep For An Extra Turn",
-      "cardType": "minion",
-      "sprite": "id_00103_018_koala_call_center_worker.png",
-      "effectIds": [
-        8
-      ],
-      "dynamicValues": {}
-    },
-    {
-      "attack": 1,
-      "health": 1,
-      "effect": "",
-      "raceId": 0,
-      "charge": false,
-      "cardId": 115,
-      "cost": 0,
-      "description": "OnDeath: a szomszédos token minionok +stat-ot kapnak",
-      "cardType": "minion",
-      "sprite": "id_00105_020_platypus_accountant_bill_puzzled.png",
-      "effectIds": [
-        10
-      ],
-      "dynamicValues": {}
-    },
-    {
-      "attack": 1,
-      "health": 1,
+      "attack": 3,
+      "health": 5,
       "effect": "",
       "raceId": 0,
       "charge": false,
       "cardId": 141,
-      "cost": 0,
+      "cost": 4,
       "description": "TAUNT",
       "cardType": "minion",
-      "sprite": "id_00071_001_babirusa_wild_pig_butcher.png",
+      "sprite": "id_00071_001_babirusa_wild_pig_butcher",
       "effectIds": [
         11
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 115,
+      "cost": 3,
+      "description": "OnDeath: a szomszédos token minionok +stat-ot kapnak",
+      "cardType": "minion",
+      "sprite": "id_00105_020_platypus_accountant_bill_puzzled",
+      "effectIds": [
+        10
       ],
       "dynamicValues": {}
     },
@@ -188,6 +484,38 @@
       "cardType": "minion",
       "sprite": "",
       "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 8,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 8,
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "",
+      "effectIds": [
+        8
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 0,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 150,
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "",
+      "effectIds": [
+        28
+      ],
       "dynamicValues": {}
     }
   ]

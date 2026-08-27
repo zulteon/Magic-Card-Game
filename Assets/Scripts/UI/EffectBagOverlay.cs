@@ -385,8 +385,8 @@ public class EffectBagOverlay : MonoBehaviour
                     if (effect.charges >= 0)
                         details += $"     •     MARADT: {effect.charges}";
 
-                    if (effect.expiresOnTurn >= 0)
-                        details += $"     •     LEJÁR: {effect.expiresOnTurn}. KÖR";
+                    if (effect.remainingTurns >= 0)
+                        details += $"     •     LEJÁR: {effect.remainingTurns}. KÖR";
 
                     return details;
                 }

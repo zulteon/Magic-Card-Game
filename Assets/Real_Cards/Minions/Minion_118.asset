@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_118
   m_EditorClassIdentifier: 
-  attack: 2
-  health: 1
-  sprite: id_00114_029_poison_dart_frog_dj.png
+  attack: 3
+  health: 2
+  sprite: id_00114_029_poison_dart_frog_dj
   description: "3 sebz\xE9s random ellenf\xE9lnek"
   effect: 
   e:
   - {fileID: 11400000, guid: e3fb6118e598c83479bc1caac2458c27, type: 2}
   race: 0
-  charge: 0

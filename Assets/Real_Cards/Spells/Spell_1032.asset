@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1032
   m_EditorClassIdentifier: 
-  sprite: id_00246_005_mantis_shrimp_metro_electrician.png
+  sprite: id_00246_005_mantis_shrimp_metro_electrician
   description: "Mantis Shrimp Electrician \u2192 a) Look at 3 cards from your deck,
     draw 1. b) Reveal the enemy's hand this turn."
   effect: 

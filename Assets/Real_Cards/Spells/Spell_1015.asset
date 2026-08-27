@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1015
   m_EditorClassIdentifier: 
-  sprite: id_00327_016_naked_mole_rat_sauna.png
+  sprite: id_00327_016_naked_mole_rat_sauna
   description: "Mole-Rat Sauna Master \u2192 a) All OTHER minions -1 Attack this
     turn"
   effect: 

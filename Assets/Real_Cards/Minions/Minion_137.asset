@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_137
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00198_001_tuatara_government_office_clerk.png
+  attack: 2
+  health: 2
+  sprite: id_00198_001_tuatara_government_office_clerk
   description: "Var\xE1nusz gazdas\xE1g-dupl\xE1z\xF3"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 63781925119ce4f438b41f9e9fdc880d, type: 2}
   race: 0
-  charge: 0

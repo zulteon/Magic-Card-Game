@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1026
   m_EditorClassIdentifier: 
-  sprite: id_00265_004_an_electric_eel_metro.png
+  sprite: id_00265_004_an_electric_eel_metro
   description: "4 Electric Eel Metro (jump-start)** \u2192 Reactivate a friendly
     minion that already attacked:"
   effect: 

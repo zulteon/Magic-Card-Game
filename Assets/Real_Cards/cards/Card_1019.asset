@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Card_1019
   m_EditorClassIdentifier: 
   cardId: 1019
-  Cost: 0
+  Cost: 2
   description: "Cassowary Inspector** \u2192 Destroy an enemy minion with 3 or less
     Health"
   m: {fileID: 0}

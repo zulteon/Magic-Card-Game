@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1028
   m_EditorClassIdentifier: 
-  sprite: id_00279_018_pangolin_street_sweeper_rolled.png
+  sprite: id_00279_018_pangolin_street_sweeper_rolled
   description: "Pangolin Street Sweeper** \u2192 Blocks ALL damage this turn but
     can't attack"
   effect: 

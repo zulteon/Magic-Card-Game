@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 1
   health: 1
-  sprite: id_00094_009_gal_pagos_penguin_bus.png
+  sprite: id_00094_009_gal_pagos_penguin_bus
   description: OnPlay Summon a minion from hand that has less attack than him
   effect: 
   e: []
   race: 0
-  charge: 0

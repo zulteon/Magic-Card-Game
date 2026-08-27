@@ -44,7 +44,6 @@ public class TargetSelector : MonoBehaviour
         {
             print(target.ToString());
         }
-        print("Juhuuuu" +validTargets.Count.ToString());
         _valid = validTargets;
         _onPicked = onPicked;
 
@@ -84,33 +83,57 @@ public class TargetSelector : MonoBehaviour
 
     private void Update()
     {
-        if (!_active) return;
 
-        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+        if (!_active)
+            return;
+
+        if (Input.GetMouseButtonDown(1) ||
+            Input.GetKeyDown(KeyCode.Escape))
         {
             Cancel();
-            return;
         }
+        /* régi verzió physic raycastos if (!_active) return;
 
-        if (!Input.GetMouseButtonDown(0)) return;
-        print("thats");
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Collider2D hit = Physics2D.OverlapPoint(mousePos);   // pont-találat, nem sugár
+         if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+         {
+             Cancel();
+             return;
+         }
 
-        if (hit == null)
-        {
-            Cancel();          // üres helyre kattintás = megszakítás
+         if (!Input.GetMouseButtonDown(0)) return;
+         print("thats");
+         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+         Collider2D hit = Physics2D.OverlapPoint(mousePos);   // pont-találat, nem sugár
+
+         if (hit == null)
+         {
+             Cancel();          // üres helyre kattintás = megszakítás
+             return;
+         }
+
+         ushort id = ResolveId(hit.transform);
+         print("IT is id:" + id.ToString());
+         if (id == ushort.MaxValue || !_valid.Contains(id))
+             return;            // érvénytelen célpont: NEM szakítjuk meg, hadd próbálja újra
+
+         var callback = _onPicked;
+         Cancel();              // elõbb lezárjuk, csak utána hívunk
+
+         callback?.Invoke(id);*/
+    }
+    public void TryPick(ushort id)
+    {
+        print("trying pick" +id.ToString());
+        if (!_active)
             return;
-        }
         
-        ushort id = ResolveId(hit.transform);
-        print("IT is id:" + id.ToString());
-        if (id == ushort.MaxValue || !_valid.Contains(id))
-            return;            // érvénytelen célpont: NEM szakítjuk meg, hadd próbálja újra
-
+        if (_valid == null || !_valid.Contains(id))
+            return;
+        
         var callback = _onPicked;
-        Cancel();              // elõbb lezárjuk, csak utána hívunk
-        
+
+        Cancel();
+        print("invoke");
         callback?.Invoke(id);
     }
 

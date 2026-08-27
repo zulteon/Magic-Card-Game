@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 1
   health: 1
-  sprite: id_00105_020_platypus_accountant_bill_puzzled.png
+  sprite: id_00105_020_platypus_accountant_bill_puzzled
   description: "K\xF6nyvel\u0151 (+1/+1 k\xE9zben l\xE9v\u0151 lap\xE9rt)"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 115a5b55bdae88647828ad59b8542735, type: 2}
   race: 0
-  charge: 0

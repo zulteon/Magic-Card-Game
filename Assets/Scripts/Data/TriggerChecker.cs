@@ -133,7 +133,20 @@ public class TriggerChecker : MonoBehaviour
     }
     // TriggerChecker — új overload
     public List<Effect> CheckTrigger(Trigger.time trigger, CardData card)
-        => FilterByTrigger(EffectManagerClient.instance.GetEffectData(GetEffectIds(card)), trigger);
+    {
+        var ids = GetEffectIds(card);
+        Debug.Log($"[CheckTrigger] card={card.cardId} type={card.GetCardType()} ids={string.Join(",", ids)}");
+
+        var effects = EffectManagerClient.instance.GetEffectData(ids);
+        Debug.Log($"[CheckTrigger] betöltött effektek: {effects.Count}");
+        foreach (var e in effects)
+            Debug.Log($"  - {e.name} type={e.type} triggerCount={e.triggers?.Length ?? 0}");
+
+        var filtered = FilterByTrigger(effects, trigger);
+        Debug.Log($"[CheckTrigger] szűrt eredmény ({trigger}): {filtered.Count}");
+
+        return filtered;
+    }
 
     private static List<ushort> GetEffectIds(CardData card) => card switch
     {

@@ -1,0 +1,50 @@
+ID;Name;Tempo / Midrange;Cost;Atk;health
+1;Albatrosz — Élethosszig Tartó Pár -+3/3 ;Tempo / Midrange;4;2;1
+2;Shoebill — Temetõi Scaling;;5;1;2
+100;Force two minions attack each other;;6;2;4
+101;Force two minions attack him;Control / Removal;4;3;5
+102;Jóga +3 3 -1/1;;4;2;2
+103;3 maki légitámadás;;5;3;4
+104;késletett bomba;;3;1;4
+105;könyvelõ +1 1 kézben;;4;1;1
+106;Copy opposite minion's Attack;;4;1;4
+107;Set Highest minion attack to 1;;5;1;4
+108;Copy opposite minion's Attack;Value / Draw;4;1;5
+109;Swap Attack/Health StartOfCombat;Tempo / Midrange;3;2;4
+110;3 sebzés random ellenfélnek StartOfCombat;;3;3;2
+111;Ha buffolnak valakit, õt is buffolják (listener);Buff / Aura;5;1;4
+112;Sleep For An Extra Turn;Control / Removal;3;4;5
+113;Ha egyedül van kap a boardon+2/2;Token;2;2;2
+114;Ha egyedül van kap a boardon+2/2;Token;2;2;2
+115;OnDeath: a szomszédos token minionok +2/1stat-ot kapnak;;3;2;2
+116;OnDeath: visszatér 1 körre gyengült formában;Death / Recursion;4;3;4
+117;Idézz egy 2/2-t;Token;4;2;3
+118;3 sebzés random ellenfélnek;Control / Removal;3;3;2
+119;Gyógyíts 4-et egy barátnak;Buff / Aura;3;2;2
+120;Szomszédok +2/+1;Buff / Aura;4;3;3
+121;Idézz 3 lényt;Token;4;2;1
+122;Minden barát +1/+1;Buff / Aura;4;3;2
+123;Random barát duplázza HP-ját;Buff / Aura;4;2;2
+124;Barátnak +3 hp;Buff / Aura;3;2;3
+125;when dies gain 2 mana next turn;Death / Recursion;3;2;1
+126;1/1 in hand every eot;Token;4;3;2
+127;3 attack All;Buff / Aura;5;2;2
+128;Cant be attacked;Taunt / Védelem;3;4;2
+129;+1 Gold ebben a körben;Erõforrás / Gazdaság;2;2;3
+130;Cleave;Control / Removal;4;3;4
+;;;;;
+132;Blokk / csapattárs elé ugrás;Taunt / Védelem;5;1;7
+;;;;;
+134;Each second hit is blocked;Taunt / Védelem;5;3;6
+135;When dies: summon half of original stats;Token;4;2;4
+136;Kölcsön Erõ (1. kör +4/+4, 2. kör -3/-3);Buff / Aura;4;2;2
+137;Varánusz gazdaság-duplázó;Erõforrás / Gazdaság;5;2;2
+138;Silence An Enemy;Control / Removal;4;3;2
+139;End of turn give a friendly minion +3 3;Buff / Aura;5;2;3
+140;Bezár egy enemyt egy körig;Control / Removal;4;2;3
+141;TAUNT;;4;3;5
+142;;;;;
+143;;;;;
+144;Charge;Control / Removal;2;2;3
+145;Charge;;5;5;1
+146;Charge;;8;7;5

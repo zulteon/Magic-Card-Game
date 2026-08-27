@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1021
   m_EditorClassIdentifier: 
-  sprite: id_00230_015_prompt_sad_exhausted_badger.png
+  sprite: id_00230_015_prompt_sad_exhausted_badger
   description: "Szomor\xFA borz a meg\xE1ll\xF3ban \u2192 Dobd el a kezed 1 lapj\xE1t:
     h\xFAzz 2-t a k\xF6vetkez\u0151 k\xF6rben"
   effect: 

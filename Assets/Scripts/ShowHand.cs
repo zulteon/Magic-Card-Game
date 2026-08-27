@@ -39,7 +39,6 @@ public class ShowHand : MonoBehaviour
 
     public void OnHandChanged(SyncListOperation op, int index, CardState oldItem, CardState newItem, bool asServer)
     {
-       // print($"Új lap érkezett a kézbe: {newItem.cardId} {newItem.ToString()}(index {index}) op :{op.ToString()} isServer:{asServer}" );
         
         if (asServer)
             return;
@@ -127,7 +126,9 @@ public class ShowHand : MonoBehaviour
 
     float margin = 0.5f;
     float cardSize = 1f;
+    [SerializeField]
     float minusYHeight=-4f;
+    [SerializeField]
     float YHeight=4f;
     public void ArrangeCards()
     {

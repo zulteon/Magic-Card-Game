@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;// majd vedd ki ezt a sort
 public class EffectContext  // ← Vissza class-ra
@@ -9,6 +10,7 @@ public class EffectContext  // ← Vissza class-ra
     public int value;
     public ushort[] targetIds;
     public PlayerController playerController;
+    public Vector2Int buff;
     public EffectContext(Effect e, ushort doerId, List<ushort> targetIds=null, ushort extraValue = 0,PlayerController source=null)
     {
         if (source == null)
@@ -25,33 +27,58 @@ public class EffectContext  // ← Vissza class-ra
         this.effect = e;
         this.doerId = doerId;
         this.value = e.value + extraValue;
-        this.targetIds = targetIds.ToArray();
-        /*
-          if (e.toHand) Effekthez megcsinálni mikro optim.
+        this.buff = effect.buff;
+        if (targetIds != null && targetIds.Count > 0)
         {
-            this.targets = Array.Empty<MinionLogic>();
-            return;
-        }
-         */
-        // Egy iteráció temp tömbbel
-        MinionLogic[] temp = new MinionLogic[targetIds.Count];
-        int count = 0;
+            this.targetIds = targetIds.ToArray();
 
-        for (int i = 0; i < targetIds.Count; i++)
-        {
-            var m = GameManager.instance.GetMinionLogic(targetIds[i]);
-            if (m != null)
+            int count = 0;
+            // Egy iteráció temp tömbbel
+            MinionLogic[] temp = new MinionLogic[targetIds.Count];
+            for (int i = 0; i < targetIds.Count; i++)
             {
-                temp[count] = m;
-                count++;
+                var m = GameManager.instance.GetMinionLogic(targetIds[i]);
+                if (m != null)
+                {
+                    temp[count] = m;
+                    count++;
+                }
+                else UnityEngine.Debug.Log($"<color=red> whaat </color> {targetIds[i]}");
             }
-            else UnityEngine.Debug.Log($"<color=red> whaat </color> {targetIds[i]}");
+        }
+        
+
+        
+
+        UnityEngine.Debug.Log(" csekkoljuk  a value triggert");
+        OverWriteValueTrigger();
+    }
+    public ClientEvent ToClientEvent()
+    {
+        ushort[] ids = Array.Empty<ushort>();
+        int[] healthValues = Array.Empty<int>();
+
+        if (targets != null && targets.Length > 0)
+        {
+            ids = new ushort[targets.Length];
+            healthValues = new int[targets.Length];
+
+            for (int i = 0; i < targets.Length; i++)
+            {
+                ids[i] = targets[i]._sequenceId;
+                healthValues[i] = targets[i].Health;
+            }
         }
 
-        // Pontos méret
-        this.targets = new MinionLogic[count];
-        System.Array.Copy(temp, this.targets, count);
-    }
+        return new ClientEvent
+        {
+            effectType = (ushort)effect.type,
+            targetIds = ids,
+            value = value,
+            doerId = doerId,
+            newValues = healthValues
+        };
+    }/*
 
     public ClientEvent ToClientEvent()
     {
@@ -72,6 +99,44 @@ public class EffectContext  // ← Vissza class-ra
             doerId = doerId,
             newValues = healthValues // ✨ Pillanatkép!
         };
+    }*/
+    void OverWriteValueTrigger()
+    {
+        if (this.effect.triggers.Length <= 1) return;
+
+        bool ally = GameManager.instance.isAllyMinion(this.doerId);
+
+        for (int i = 1; i < this.effect.triggers.Length; i++)
+        {
+            Trigger t = this.effect.triggers[i];
+
+            if (t.t == Trigger.time.value)
+            {
+                this.value = GetSubjectValue(t, ally) * (t.value > 0 ? t.value : 1);
+            }
+            else if (t.t == Trigger.time.buff)
+            {
+                int subject = GetSubjectValue(t, ally);
+                this.buff = new Vector2Int(
+                    (int)(t.stats.x * subject),
+                    (int)(t.stats.y * subject));
+            }
+        }
+    }
+    int GetSubjectValue(Trigger t, bool ally)
+    {// ide jönnek amiket megkell majd adni hozzá pl kártya 
+        switch (t.sub)
+        {
+            case Trigger.subject.HandCount:
+                bool wantsOwnHand = t.tar != Trigger.Target.enemy;
+                return GameManager.instance.GetHandCount(wantsOwnHand ? ally : !ally);
+            case Trigger.subject.RemainingMana:
+                UnityEngine.Debug.Log(" RemainingManA!!!! ");
+                return playerController.GetRemainingMana()*t.multiValue;
+        }
+        return -888;// elvileg sose jutunk ide
+
+
     }
 }
 [System.Serializable]

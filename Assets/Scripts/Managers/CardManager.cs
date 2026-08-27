@@ -58,7 +58,7 @@ public class CardManager : MonoBehaviour
         {
             string cardJson = JsonConvert.SerializeObject(raw);
             CardData card = CardJsonConverter.DeserializeCard(cardJson);
-            if (card != null)
+                if (card != null)
             {
                 allCards.Add(card);
             }

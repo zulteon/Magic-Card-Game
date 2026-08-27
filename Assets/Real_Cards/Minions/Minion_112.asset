@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_112
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00180_003_an_aye_aye_goa.png
+  attack: 4
+  health: 5
+  sprite: id_00180_003_an_aye_aye_goa
   description: "Counter Spell / StartOfCombat (a sorban els\u0151t semleges\xEDti)"
   effect: 
   e: []
   race: 0
-  charge: 0

@@ -79,6 +79,7 @@ public class LiveMinion : MonoBehaviour
     [Client]
     public bool CanAttack()
     {
+        
         if (!GameManager.instance.GetMinionById(sequenceId).canAttack) return false;
         return true;
     }

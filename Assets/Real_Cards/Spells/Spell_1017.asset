@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1017
   m_EditorClassIdentifier: 
-  sprite: id_00332_001_young_sugar_glider_on.png
+  sprite: id_00332_001_young_sugar_glider_on
   description: "Sugar Glider on Swing \u2192 a) A friendly minion gains +2/+2 and
     \"when this dies, return to hand\""
   effect: 

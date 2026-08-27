@@ -9,6 +9,7 @@ using Unity.VisualScripting.FullSerializer;
 //  NEM azt mondja meg, hogy mit csinál — azt továbbra is az
 //  Effect.Type + EffectCommands.Registry dönti el.
 // ─────────────────────────────────────────────────────────────
+
 public enum EffectRole
 {
     Trigger,   // eseményre iratkozik fel (OnTurnEnd stb.)
@@ -54,10 +55,14 @@ public class LiveEffect
     public int seen;
 
     /// <summary>Melyik kör elején jár le. -1 = nem jár le.</summary>
-    public int expiresOnTurn = -1;
+    
 
     public int howOften=1;
 
+    public int remainingTurns = -1;   // -1 = sosem jár le
+
+    public bool IsExpired => remainingTurns == 0;
+    public ushort watchedId;
     public Effect.Type toBlock = Effect.Type.none;
 
     // ===== DEFINÍCIÓ (lazy, sosem szerializálódik) =====
@@ -71,13 +76,7 @@ public class LiveEffect
 
     public bool IsSpent => charges == 0;
 
-    public bool IsExpired(int currentTurn)
-    {
-        if (expiresOnTurn < 0)
-            return false;              // -1 = örökké tart, sosem jár le
-
-        return currentTurn >= expiresOnTurn;
-    }
+    
 
 
     /// <summary>
@@ -108,7 +107,36 @@ public class EffectBag
 {
     private readonly List<LiveEffect> _list = new(); // nagyon sok effectnél érdemes 3 listára szedni
     private readonly ushort _ownerId;
+    public ushort OwnerId => _ownerId;
+    
+    #region Lock
+    public MinionState LockedState { get; private set; }
+    public bool LockedIsAlly { get; private set; }
+    private bool _locked;
+    private int _lockedTurnsRemaining;
 
+    public bool IsLocked => _locked;
+
+    public void Lock(int turns, MinionState state, bool isAlly)
+    {
+        _locked = true;
+        _lockedTurnsRemaining = turns;
+        LockedState = state;
+        LockedIsAlly = isAlly;
+    }
+    
+    /// <summary>Egy körrel csökkenti a hátralévő zárolást. Ha elérte a 0-t, feloldja és true-t ad.</summary>
+    public bool TickLock()
+    {
+        if (!_locked) return false;
+
+        _lockedTurnsRemaining--;
+        if (_lockedTurnsRemaining > 0) return false;
+
+        _locked = false;
+        return true;
+    }
+    #endregion
     public EffectBag(ushort ownerId) => _ownerId = ownerId;
 
     /// <summary>Olvasható nézet. Add/Remove nincs rajta — szándékosan.</summary>
@@ -131,10 +159,9 @@ idő — FilterByTrigger(effects, time) → kit érdekel ez az esemény egyálta
 scope — self / ally / enemy → engem érint-e ez a konkrét esemény 
 feltétel — IfSoTrigger → teljesül-e a szám-feltétel
     */
-    public LiveEffect Add(Effect def, ushort sourceId,
-                      EffectRole role,
+    public LiveEffect Add(Effect def, ushort sourceId, EffectRole role,
                       int charges = 1, int howOften = 1,
-                      int expiresOnTurn = -1,
+                      int expiresInTurns = -1,          // ÁTNEVEZVE
                       Effect.Type toBlock = Effect.Type.none)
     {
         if (howOften == -1) howOften = 1;
@@ -147,7 +174,7 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
             toBlock = toBlock,
             charges = charges,
             howOften = howOften,
-            expiresOnTurn = expiresOnTurn
+            remainingTurns = expiresInTurns
         };
 
         _list.Add(live);
@@ -157,6 +184,7 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
 
     public bool Has(Effect.Type type)
     {
+        if (_locked) return false;
         for (int i = 0; i < _list.Count; i++)
         {
             var e = _list[i];
@@ -176,6 +204,7 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
 
     public bool TryConsumeGuard(Effect.Type kind)
     {
+        if (_locked) return false;
         if (guardCount == 0) return false;
 
         for (int i = 0; i < _list.Count; i++)
@@ -191,9 +220,45 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
         }
         return false;
     }
+    public List<Effect> ConsumeByTrigger(Trigger.time when, Effect.Type activity)
+    {
+        if (_locked) return new List<Effect>();
+        var result = new List<Effect>();
+        for (int i = _list.Count - 1; i >= 0; i--)
+        {
 
+            var e = _list[i];
+            if (e.Def == null || e.IsSpent) continue;
+            if (e.Def.triggers == null || e.Def.triggers.Length == 0) continue;
+
+            var t = e.Def.triggers[0];
+            if (t.t != when || t.activity != activity) continue;
+
+            if (!e.TryConsume()) continue;
+            result.Add(e.Def);
+            if (e.IsSpent) RemoveAt(i);
+        }
+        return result;
+    }
+    /// <summary>Ki védi ezt a lényt? 0 = senki.</summary>
+    public ushort GetProtector()
+    {
+        if (_locked) return 0;
+        for (int i = 0; i < _list.Count; i++)
+        {
+            var e = _list[i];
+            if (e.Def != null && e.Def.type == Effect.Type.bodyguard && !e.IsSpent)
+            {
+                UnityEngine.Debug.Log("Találtunk protectort " + e.Def.effectId);
+                return e.sourceId;
+                
+            }
+        }
+        return 0;
+    }
     public bool ConsumeSleep()
     {
+        if ( _locked) return false;
         for (int i = 0; i < _list.Count; i++)
         {
             var e = _list[i];
@@ -218,11 +283,19 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
                 RemoveAt(i);              // <- nem _list.RemoveAt
     }
 
-    public void TickExpiry(int currentTurn)
+    public void TickExpiry()
     {
+        if (_locked) return;
+
         for (int i = _list.Count - 1; i >= 0; i--)
-            if (_list[i].IsExpired(currentTurn))
-                RemoveAt(i);              // <- ugyanígy
+        {
+            var e = _list[i];
+            if (e.remainingTurns < 0) continue;   // -1 = sosem jár le
+
+            e.remainingTurns--;
+            if (e.remainingTurns <= 0)
+                RemoveAt(i);
+        }
     }
 
 

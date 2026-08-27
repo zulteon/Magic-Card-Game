@@ -8,23 +8,28 @@ public class MinionView : MonoBehaviour
 {
     // Caching a referenciákat a "minimalista" elv szerint
     [SerializeField] private TextMeshProUGUI attackText;
-    [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] protected TextMeshProUGUI healthText;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    LiveMinion _liveMinion;
+    protected LiveMinion _liveMinion;
     // A view fogadja az adatokat, nem kéri le őket!
-    public void Initialize(string sprite, short attack, ushort health)
+    public virtual void Init(string sprite, short attack, ushort health)
     {
         if (spriteRenderer == null) transform.Find("Sprite").GetComponent<SpriteRenderer>();
         // Minimalista megoldás: a view megkapja az adatokat
         // a GameManager vagy egy másik View/Controller osztálytól.
-       // spriteRenderer.sprite = ImageManager.GetImage(sprite);
+        // spriteRenderer.sprite = ImageManager.GetImage(sprite);
         attackText.text = attack.ToString();
         healthText.text = health.ToString();
-        
-        _liveMinion=GetComponent<LiveMinion>();
-        if (sprite != "")
 
-            spriteRenderer.sprite=(Sprite)Resources.Load<Sprite>("Sprites/" + sprite);
+        _liveMinion = GetComponent<LiveMinion>();
+        
+        if (sprite != "")
+        {
+            if (sprite.Contains(".png"))
+                sprite = sprite.Substring(0, sprite.Length - 4);
+            print(" Load " + sprite);
+            spriteRenderer.sprite = (Sprite)Resources.Load<Sprite>("Sprites/" + sprite);
+        }
     }
     // ✨ Csak HP frissítése (ezt hívja az EffectClient)
     public void UpdateHealthVisual(int newHealth)
@@ -184,8 +189,16 @@ public class MinionView : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (TargetSelector.instance.IsActive) return;
-        if (_liveMinion != null) _liveMinion.StartAttackClick();
+        if (_liveMinion == null)
+            return;
+
+        if (TargetSelector.instance.IsActive)
+        {
+            TargetSelector.instance.TryPick(_liveMinion.sequenceId);
+            return;
+        }
+
+        _liveMinion.StartAttackClick();
     }
     private void OnMouseEnter()
     {
@@ -199,7 +212,7 @@ public class MinionView : MonoBehaviour
     {
         MinionInspectView.Instance?.Hide();
     }
-    public void SetTargetHighlight(bool on)
+    public virtual void SetTargetHighlight(bool on)
     {
         // pl. a SpriteRenderer színe, vagy egy kontúr GameObject
         spriteRenderer.color = on ? new Color(1f, 0.6f, 0.6f) : Color.white;
@@ -216,5 +229,9 @@ public class MinionView : MonoBehaviour
         vector2Int.x = Int16.Parse( attackText.text);
         vector2Int.y = Int16.Parse( healthText.text);
         return vector2Int;
+    }
+    public LiveMinion GetLiveMinion()
+    {
+        return _liveMinion;
     }
 }

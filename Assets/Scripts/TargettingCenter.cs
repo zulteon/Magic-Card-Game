@@ -8,8 +8,9 @@ public  static class TargetingCenter
     public static GameManager GameManager { get; private set; }
     public static List<ushort> GetTargets(Effect e, ushort doerId, PlayerController source=null)
     {// az egész playercontroller lekérést kilehetne szedni , fölösleges elég annyit tudni hogy ally vagy nem 
-       
-        
+        if (Trigger.Target.none==e.target) return null;
+        if(e.targetCast==Effect.TargetCast.single&& e.target==Trigger.Target.self)
+            return new List<ushort>() { doerId};
         if (source == null)
         {
             source = GameManager.instance.GetOwnerOf(doerId);
@@ -55,6 +56,7 @@ public  static class TargetingCenter
                 targetIds.AddRange(
                 GameManager.instance.GetNeighbours(doerId, GameManager.instance.isAlly(source)));
                 break;
+            
         }
         if(e.other)targetIds.Remove(doerId);
         Debug.Log($"[GetTargets] targetType={e.targetType} targetIds count ELÕTTE={targetIds.Count}");
@@ -125,9 +127,7 @@ public  static class TargetingCenter
                 }
                 else
                 {
-                    Debug.LogWarning($"[{e.name}] single target, de nincs kiválasztás — az elsõt veszem.");
-                    result.Add(targetIds[0]);
-                    return result;
+                    return targetIds;
                     //Debug.Log("TODO: Player manual target selection");
                    // return null;
                 }

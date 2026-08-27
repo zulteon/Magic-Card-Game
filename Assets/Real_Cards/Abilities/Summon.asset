@@ -15,7 +15,7 @@ MonoBehaviour:
   type: 16
   targetType: 0
   targetCast: 0
-  target: 0
+  target: 2
   value: 0
   buff: {x: 0, y: 0}
   summonableId: 147

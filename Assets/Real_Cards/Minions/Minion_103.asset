@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_103
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00026_001_stylized_an_andean_cock.png;id_00088_003_an_andean_cock_rock.png
+  attack: 3
+  health: 4
+  sprite: id_00026_001_stylized_an_andean_cock.png;id_00088_003_an_andean_cock_rock
   description: "3 maki l\xE9git\xE1mad\xE1s"
   effect: 
   e: []
   race: 0
-  charge: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1006
   m_EditorClassIdentifier: 
-  sprite: id_00095_010_an_emu_bus_driver.png
+  sprite: id_00095_010_an_emu_bus_driver
   description: "Emu villamosvezet\u0151 \u2192 \"A 4-6-os \xE9rkezik\" Sebz\xE9s
     egy oszlopban: a szemben \xE1ll\xF3 minion \xE9s szomsz\xE9dai 2-2 sebz\xE9st
     kapnak \u2014"

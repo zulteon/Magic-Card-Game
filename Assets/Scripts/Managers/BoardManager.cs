@@ -10,8 +10,8 @@ public class BoardManager : MonoBehaviour
 
     float margin = 0.5f;
     float minionsize = 1.7f;
-    float YHeight = 3f;
-    float minusYheight = -3f;
+    public float YHeight = 3f;
+    public float minusYheight = -3f;
 
     Transform boardMinions;
     public GameObject minionPrefab;
@@ -156,6 +156,7 @@ public class BoardManager : MonoBehaviour
     }
     public LiveMinion GetLiveMinion(ushort id)
     {
+        if(id<2) return id==0?GameManager.instance.homeHeroView.GetLiveMinion(): GameManager.instance.enemyHeroView.GetLiveMinion();
         foreach (Transform side in boardMinions)
         {
             foreach (Transform minionTransform in side)
@@ -168,6 +169,42 @@ public class BoardManager : MonoBehaviour
 
         Debug.LogWarning($"[GetLiveMinion] Nem találtam a(z) {id} ID-t a Home/Abroad csoportokban.");
         return null;
+    }
+    public void ReturnMinionToHand(ushort sequenceId)
+    {
+        foreach (var list in new[] { home, abroad })
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var lm = list[i].GetComponent<LiveMinion>();
+                if (lm == null || lm.sequenceId != sequenceId) continue;
+
+                var go = list[i];
+                list.RemoveAt(i);
+                StartCoroutine(FlyToHandAndDestroy(go));
+                Arrangecards();
+                return;
+            }
+        }
+        Debug.LogWarning($"[BoardManager] ReturnMinionToHand: {sequenceId} nincs a listában.");
+    }
+
+    private IEnumerator FlyToHandAndDestroy(GameObject go)
+    {
+        float t = 0f, dur = 0.4f;
+        var tr = go.transform;
+        Vector3 start = tr.position;
+        Vector3 handPos = new Vector3(0, -5f, 0);   // ahol a kéz UI-ja van, igazítsd a sajátodhoz
+
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float p = t / dur;
+            tr.position = Vector3.Lerp(start, handPos, p);
+            tr.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.3f, p);
+            yield return null;
+        }
+        Destroy(go);
     }
 
     public GameObject CreateMinionUI(MinionState minion, bool home = true)
@@ -183,7 +220,7 @@ public class BoardManager : MonoBehaviour
         }
 
         newMinion.GetComponent<MinionView>()
-            .Initialize(def.sprite, minion.attack, minion.currentHealth);
+            .Init(def.sprite, minion.attack, minion.currentHealth);
 
         return newMinion;
     }
@@ -208,5 +245,122 @@ public class BoardManager : MonoBehaviour
             float pos = startingPoint + i * (margin + minionsize);
             list[i].transform.position = new Vector3(pos, y, 0);
         }
+    }
+    
+    [SerializeField]
+    float arcHeight = 1.2f;
+    public int GetIndexOfMinion(GameObject go,bool enemy)
+    {
+        int index = 0;
+        foreach (var i in enemy ? abroad : home)
+        {
+            if (i == go) return index;
+            index++;
+        }
+        return -1;
+    }
+    public IEnumerator AnimateArcTo(ushort sequenceId, int newIndex)
+    {
+        var lm = GetLiveMinion(sequenceId);
+        if (lm == null) yield break;
+
+        var go = lm.gameObject;
+        bool isEnemySide = !GameManager.instance.isAllyMinion(sequenceId);
+        if (!GameManager.instance.AreWeHomePlayer()) isEnemySide = !isEnemySide;
+
+        var board = isEnemySide ? abroad : home;
+        int myIndex = GetIndexOfMinion(go, isEnemySide);
+
+        if (myIndex == newIndex || myIndex > board.Count - 1 || newIndex > board.Count - 1)
+        {
+            RebuildSide(true);
+            RebuildSide(false);
+            yield break;
+        }
+
+        bool toLeft = myIndex > newIndex;
+
+        float y = isEnemySide ? YHeight : minusYheight;
+        Vector3 start = go.transform.position;
+        Vector3 target = CalculatePositionAtIndex(newIndex, board.Count, y);
+        float liftDirection = !isEnemySide ? -1f : 1f;
+        Vector3 mid = new Vector3((start.x + target.x) / 2f, start.y + arcHeight * liftDirection, 0);
+
+        float shiftAmount = margin + minionsize;
+
+        Transform whomSwapWith = board[newIndex].transform;
+        Vector3 tmpPosition = whomSwapWith.position;
+
+        int minionsBetween = Mathf.Abs(myIndex - newIndex) - 1;
+        Transform[] thingsToMove = new Transform[Mathf.Max(0, minionsBetween)];
+        Vector3[] thingsToMovePositions = new Vector3[Mathf.Max(0, minionsBetween)];
+        int ind = 0;
+
+        Vector3 whomDirection = tmpPosition + new Vector3((toLeft ? shiftAmount : -shiftAmount), 0, 0);
+        Vector3 whomSwapMidArc = new Vector3(
+            (tmpPosition.x + whomDirection.x) / 2f,
+            tmpPosition.y - liftDirection * arcHeight * 0.58f,   // ELLENTÉTES irány, kisebb ív
+            0);
+
+        if (minionsBetween > 0)
+        {
+            for (int i = 0; i < board.Count; i++)
+            {
+                if (toLeft && i > newIndex && i < myIndex)
+                {
+                    thingsToMove[ind] = board[i].transform;
+                    thingsToMovePositions[ind] = board[i].transform.position;
+                    ind++;
+                }
+                else if (!toLeft && i < newIndex && i > myIndex)
+                {
+                    thingsToMove[ind] = board[i].transform;
+                    thingsToMovePositions[ind] = board[i].transform.position;
+                    ind++;
+                }
+            }
+        }
+
+        float t = 0f, dur = 3.5f;
+        float startDelay = 0.55f;
+        
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float k = t / dur;
+            float delayedK = (t - startDelay * dur) / ((1f - startDelay) * dur);
+            go.transform.position = QuadraticBezier(start, mid, target, k);
+            if (delayedK > 0f)
+            {
+                whomSwapWith.position = QuadraticBezier(tmpPosition, whomSwapMidArc, whomDirection, delayedK);
+
+                for (int i = 0; i < thingsToMove.Length; i++)
+                {
+                    thingsToMove[i].position = thingsToMovePositions[i] +
+                         new Vector3((toLeft ? shiftAmount : -shiftAmount) * delayedK*delayedK, 0, 0);
+                }
+            }
+
+            yield return null;
+        }
+
+        go.transform.position = target;
+        RebuildSide(!isEnemySide);
+        Arrangecards();
+    }
+
+    private Vector3 CalculatePositionAtIndex(int index, int count, float y)
+    {
+        float size = margin * (count - 1) + minionsize * count;
+        float startingPoint = -size / 2 + minionsize / 2;
+        float pos = startingPoint + index * (margin + minionsize);
+        return new Vector3(pos, y, 0);
+    }
+
+    private Vector3 QuadraticBezier(Vector3 a, Vector3 b, Vector3 c, float t)
+    {
+        Vector3 ab = Vector3.Lerp(a, b, t);
+        Vector3 bc = Vector3.Lerp(b, c, t);
+        return Vector3.Lerp(ab, bc, t);
     }
 }

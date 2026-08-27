@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Card_1031
   m_EditorClassIdentifier: 
   cardId: 1031
-  Cost: 0
+  Cost: 6
   description: "Leafcutter Ant Mover \u2192 A friendly minion gains +4/+4 but can't
     attack this turn"
   m: {fileID: 0}

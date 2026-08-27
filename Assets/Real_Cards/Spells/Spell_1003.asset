@@ -16,4 +16,5 @@ MonoBehaviour:
   description: "Ments meg egy bar\xE1ts\xE1gos miniont: vedd vissza a kezedbe a harc
     k\xF6zep\xE9r\u0151l"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: ededd6bff51cb7949912a8ad3a6d2812, type: 2}

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1018
   m_EditorClassIdentifier: 
-  sprite: id_00282_001_pistol_shrimp_plumber_snapping.png
+  sprite: id_00282_001_pistol_shrimp_plumber_snapping
   description: "Pistol Shrimp Plumber** \u2192 Deal 3 damage to a minion AND 1 to
     its neighbors"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: ce107ce8dc20e3d4989e8d57858aa805, type: 2}

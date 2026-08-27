@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f2420768e43a344a85b61d9ae964330, type: 3}
+  m_Name: Synchron Dance
+  m_EditorClassIdentifier: 
+  cardId: 1010
+  Cost: 4
+  description: "Galamb t\xE1nccsapat \u2192 \"Szinkron-t\xE1nc\" Minden bar\xE1ts\xE1gos
+    minion statja kiegyenl\xEDt\u0151dik az \xE1tlagukra \u2014 mindenki ugyanazt
+    a l\xE9p\xE9st j\xE1rja."
+  m: {fileID: 0}
+  spell: {fileID: 11400000, guid: e1fcea36b51f03a4699148f7f985f185, type: 2}

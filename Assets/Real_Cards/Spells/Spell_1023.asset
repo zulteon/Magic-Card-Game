@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1023
   m_EditorClassIdentifier: 
-  sprite: id_00239_008_tiny_leafcutter_ant_mover.png
+  sprite: id_00239_008_tiny_leafcutter_ant_mover
   description: "Leafcutter Ant Mover \u2192 A friendly minion gains +4/+4 but can't
     attack this turn"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 29ccc4292720e6c4aa6f26be16737503, type: 2}

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1000
   m_EditorClassIdentifier: 
-  sprite: Gemini_Generated_Image_ (16).png
+  sprite: Gemini_Generated_Image_ (16)
   description: "Hipopotamusz a f\xFCrd\u0151k\xE1dban \u2192 \"Zs\xFAfolt Medence\""
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 492f40c944b8fdf4fa258a3dbb982c0d, type: 2}

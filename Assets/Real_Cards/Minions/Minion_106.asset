@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Minion_106
   m_EditorClassIdentifier: 
   attack: 1
-  health: 1
-  sprite: id_00086_001_fossa_lawyer_sleek_reddish.png
+  health: 4
+  sprite: id_00086_001_fossa_lawyer_sleek_reddish
   description: Steal 3 Attack before attack
   effect: 
   e: []
   race: 0
-  charge: 0

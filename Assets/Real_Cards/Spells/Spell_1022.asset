@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1022
   m_EditorClassIdentifier: 
-  sprite: id_00225_010_prompt_determined_caterpillar_wearing.png
+  sprite: id_00225_010_prompt_determined_caterpillar_wearing
   description: "Herny\xF3 tervez \u2192 H\xFAzz 2 lapot, dobj el 1-et"
   effect: 
   e: []

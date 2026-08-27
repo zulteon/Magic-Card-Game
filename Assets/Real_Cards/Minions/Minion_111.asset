@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Minion_111
   m_EditorClassIdentifier: 
   attack: 1
-  health: 1
-  sprite: Gemini_Generated_Image_1upkwl1upkwl1upk.png
+  health: 4
+  sprite: Gemini_Generated_Image_1upkwl1upkwl1upk
   description: "Ha buffolnak valakit, \u0151t is buffolj\xE1k (listener)"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 09f8a11b81b4689499a25b579f3de3bc, type: 2}
   race: 0
-  charge: 0

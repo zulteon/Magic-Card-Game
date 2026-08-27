@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1016
   m_EditorClassIdentifier: 
-  sprite: id_00330_019_sea_cucumber_escape_artist.png
+  sprite: id_00330_019_sea_cucumber_escape_artist
   description: "Sea Cucumber Escape Artist \u2192 a) Escape any negative effect"
   effect: 
   e: []

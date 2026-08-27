@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_115
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00105_020_platypus_accountant_bill_puzzled.png
+  attack: 2
+  health: 2
+  sprite: id_00105_020_platypus_accountant_bill_puzzled
   description: "OnDeath: a szomsz\xE9dos token minionok +stat-ot kapnak"
   effect: 
   e:
   - {fileID: 11400000, guid: cbef841d80ea8874784fe5cf9cc5ef4e, type: 2}
   race: 0
-  charge: 0

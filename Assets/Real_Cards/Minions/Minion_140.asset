@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_140
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00181_004_chameleon_street_mime_classic.png
+  attack: 2
+  health: 3
+  sprite: id_00181_004_chameleon_street_mime_classic
   description: "Bez\xE1r egy enemyt egy k\xF6rig"
   effect: 
   e: []
   race: 0
-  charge: 0

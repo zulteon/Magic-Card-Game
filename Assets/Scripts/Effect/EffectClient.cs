@@ -27,13 +27,13 @@ public class EffectClient : NetworkBehaviour
         base.OnStopClient();
 
         StopAllCoroutines();
-        _visualQueue.Clear();
+        _queue.Clear();
         _isPlaying = false;
     }
     
 
     [Client]
-    public void AddEvent(ClientEvent _event)
+    public void AddEvent(ClientEvent _event) //elavult
     {
         print("adding event" + _event.effectType.ToString());
         _visualQueue.Enqueue(_event);
@@ -43,29 +43,20 @@ public class EffectClient : NetworkBehaviour
             StartCoroutine(ProcessQueue()); 
         }
     }
+    private IEnumerator HandleReturnToHandVisual(ClientEvent e)
+    {
+        foreach (var id in e.targetIds)
+            BoardManager.instance.ReturnMinionToHand(id);
+        yield return null;
+    }
     private IEnumerator ProcessQueue()
     {
         _isPlaying = true;
-
-        while (_visualQueue.Count > 0)
+        while (_queue.Count > 0)
         {
-            ClientEvent currentEvent = _visualQueue.Dequeue();
-
-            // Opcionális: validálás
-            if (currentEvent.targetIds == null || currentEvent.targetIds.Length == 0)
-            {
-                Debug.LogWarning($"Invalid event skipped: {currentEvent.effectType}");
-                continue; // Skip és következő
-            }
-
-            yield return StartCoroutine(PlayVisualEffect(currentEvent));
-
-            if (_visualQueue.Count > 0)
-            {
-                yield return new WaitForSeconds(delayBetweenEffects);
-            }
+            var batch = _queue.Dequeue();
+            yield return StartCoroutine(HandleBatch(batch));
         }
-
         _isPlaying = false;
     }
 
@@ -94,11 +85,41 @@ public class EffectClient : NetworkBehaviour
             case Effect.Type.doubleStats:
                 yield return HandleBuffVisual(e);//HandleDoubleStatsVisual(e);
                 break;
+
+            case Effect.Type.returnToHand:
+                    yield return HandleReturnToHandVisual(e); break;
+            case Effect.Type.sendToFuture:
+                    yield return HandleSendToFutureVisual(e);break;
+            case Effect.Type.minionSwap:
+                yield return HandleMinionSwapVisual(e); break;
             default:
                 Debug.LogWarning($"Unknown effect type: {e.effectType}");
                 yield break;
         }
     }
+
+
+    #region BatchProcess
+    private readonly Queue<ClientEvent[]> _queue = new();
+
+    public void AddEventBatch(ClientEvent[] batch)
+    {
+        if (batch == null || batch.Length == 0) return;
+        _queue.Enqueue(batch);
+        if (!_isPlaying) StartCoroutine(ProcessQueue());
+    }
+    private IEnumerator HandleBatch(ClientEvent[] batch)
+    {
+        var running = new List<Coroutine>();
+
+        foreach (var e in batch)
+            running.Add(StartCoroutine(PlayVisualEffect(e)));
+
+        foreach (var c in running)
+            yield return c;                    // mind lefut, aztán jön a következő ütem
+    }
+
+    #endregion
     private IEnumerator HandleDoubleStatsVisual(ClientEvent e)
     {
         for (int i = 0; i < e.targetIds.Length; i++)
@@ -122,22 +143,30 @@ public class EffectClient : NetworkBehaviour
             else
             {
                 StartCoroutine(view.PlayBuffAnimation(newAttack, newHealth, e.value));
-                yield return new WaitForSeconds(0.1f);
+               // yield return new WaitForSeconds(0.1f);
             }
         }
     }
+    private IEnumerator HandleMinionSwapVisual(ClientEvent e)
+    {
+        yield return BoardManager.instance.AnimateArcTo(e.targetIds[0], e.value);
+    }
+    // EffectClient
+    private IEnumerator HandleSendToFutureVisual(ClientEvent e)
+    {
+        foreach (var id in e.targetIds)
+            BoardManager.instance.ReturnMinionToHand(id);   // ugyanaz az animáció újrahasznosítva, vagy egyedi "eltűnés" animáció
+        yield return null;
+    }
     private IEnumerator HandleBuffVisual(ClientEvent e)
     {
+        var running = new List<Coroutine>();
+
         for (int i = 0; i < e.targetIds.Length; i++)
         {
-            MinionView view =
-                GameManager.instance.GetMinionView(e.targetIds[i]);
-            Vector2Int oldStats=view.GetStats();
-            // ── 1. Előbb az értékek, MÉG a null-vizsgálat előtt ──
             int valueIndex = i * 2;
 
-            if (e.newValues == null ||
-                e.newValues.Length <= valueIndex + 1)
+            if (e.newValues == null || e.newValues.Length <= valueIndex + 1)
             {
                 Debug.LogWarning("Buff ClientEvent newValues is invalid.");
                 continue;
@@ -146,45 +175,25 @@ public class EffectClient : NetworkBehaviour
             int newAttack = e.newValues[valueIndex];
             int newHealth = e.newValues[valueIndex + 1];
 
-            // ── 2. Nincs MinionView → a célpont a KÉZBEN van ──
+            MinionView view = GameManager.instance.GetMinionView(e.targetIds[i]);
+
             if (view == null)
             {
-                var cardView = GameManager.instance
-                    .GetPlayer()
-                    .showHand
+                var cardView = GameManager.instance.GetPlayer().showHand
                     .FindCardView(e.targetIds[i]);
-
-                if (cardView != null)
-                    cardView.PlayBuffFlash(newAttack, newHealth);
-
+                cardView?.PlayBuffFlash(newAttack, newHealth);
                 continue;
             }
 
-            // ── 3. Pályán lévő lény: a meglévő logika ──
-            if (i == e.targetIds.Length - 1)
-            {
-                yield return StartCoroutine(
-                    view.PlayBuffAnimation(
-                        newAttack,
-                        newHealth,
-                        e.value
-                    )
-                );
-            }
-            else
-            {
-                StartCoroutine(
-                    view.PlayBuffAnimation(
-                        newAttack,
-                        newHealth,
-                        e.value
-                    )
-                );
+            Vector2Int oldStats = view.GetStats();
+            if (oldStats.x == newAttack && oldStats.y == newHealth) continue;
 
-                yield return new WaitForSeconds(0.1f);
-            }
+            running.Add(StartCoroutine(
+                view.PlayBuffAnimation(newAttack, newHealth, e.value)));
         }
 
+        foreach (var c in running)
+            yield return c;
     }
     private IEnumerator HandleAttackVisual(ClientEvent e)
     {
@@ -266,6 +275,7 @@ public class EffectClient : NetworkBehaviour
             
         }return minions;
     }
+    
 }
 /* Effect COntextbe van iderakom a könnyü olvasásért 
 /*[System.Serializable]

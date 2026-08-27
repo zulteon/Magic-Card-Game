@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_145
   m_EditorClassIdentifier: 
-  attack: 1
+  attack: 5
   health: 1
   sprite: 
   description: Charge
@@ -20,4 +20,3 @@ MonoBehaviour:
   e:
   - {fileID: 11400000, guid: b6ad75e7b3fd0534ca6106b9ba3d45f3, type: 2}
   race: 0
-  charge: 0

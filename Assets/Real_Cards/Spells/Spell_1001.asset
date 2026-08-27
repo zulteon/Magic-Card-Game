@@ -19,4 +19,5 @@ MonoBehaviour:
     \xE1ra van, de a m\xE9zborz tudja, mit csin\xE1l. (A \"nyugodt arc a t\u0171zben\"
     flavor = a self-damage trade-off.)"
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 642292b38e108a746a2c38a7865344d6, type: 2}

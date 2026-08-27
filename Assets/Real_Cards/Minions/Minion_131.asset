@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 1
   health: 1
-  sprite: id_00037_009_stylized_beaver_plumber_blue.png
+  sprite: id_00037_009_stylized_beaver_plumber_blue
   description: "Visszacsap\xE1s (Reflect Damage)"
   effect: 
   e: []
   race: 0
-  charge: 0

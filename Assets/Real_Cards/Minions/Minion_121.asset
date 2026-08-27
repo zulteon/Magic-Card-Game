@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_121
   m_EditorClassIdentifier: 
-  attack: 1
+  attack: 2
   health: 1
-  sprite: id_00141_004_chinchilla_luxury_fur_salon.png
+  sprite: id_00141_004_chinchilla_luxury_fur_salon
   description: "Id\xE9zz 3 l\xE9nyt"
   effect: 
   e: []
   race: 0
-  charge: 0

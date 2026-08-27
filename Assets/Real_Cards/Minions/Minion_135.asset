@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_135
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00237_006_an_axolotl_caf_worker.png
+  attack: 2
+  health: 4
+  sprite: id_00237_006_an_axolotl_caf_worker
   description: 'When dies: summon half of original stats'
   effect: 
   e: []
   race: 0
-  charge: 0

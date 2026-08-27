@@ -20,7 +20,20 @@ using Unity.VisualScripting;
        szabály kell (HS-ben a kijátszás sorrendje dönt), a wave-et rendezni kell.
     //A RaiseMinionDied továbbra is kommentben van, mert a GameEvents-ben MinionLogic
    ════════════════════════════════════════════════════════════════════ */
-
+// TEMETŐ — előkészítés feltámasztó / temetőből-kézbe-vevő lapokhoz
+//
+// Jelenleg csak cardId-kat tárolunk, közösen mindkét játékosnak.
+// Ha lesz ilyen lap, két irány van:
+//
+//   A) cardId marad (HS-modell): a lény az EREDETI statokkal jön vissza.
+//      Elég a mostani lista, csak a tulajdonost kell mellétenni: (cardId, wasAlly).
+//
+//   B) MinionState-et tárolunk: a lény a HALÁLKORI statokkal jön vissza.
+//      Ehhez a maxhealth is kellene, ami most csak a MinionLogic-ban van —
+//      vagy átkerül a MinionState-be, vagy külön párként tároljuk.
+//
+// MinionLogic-ot NE tároljunk a temetőben: az élő objektum feliratkozásokkal,
+// és egy halott lény nem viselkedhet, csak adat lehet.
 public class Graveyard
 {
     /// <summary>Halálra ítéltek, akiket még nem takarítottunk el.</summary>
@@ -68,7 +81,7 @@ public class Graveyard
                 // MINDEN halott ide kerül, nem csak akinek van deathrattle-je —
                 // különben a "ha meghal egy lény" típusú triggerek (Shoebill)
                 // nem értesülnének a deathrattle nélküli halálokról.
-                var dead = new List<(ushort id, List<Effect> effects, PlayerController owner)>();
+                var dead = new List<(ushort id, List<Effect> effects, PlayerController owner,MinionLogic logic)>();
 
                 // ── 1. FÁZIS: mindenki EGYSZERRE hal meg ──────────────────
                 // Se esemény, se effekt nem fut itt — csak pillanatkép és levétel.
@@ -83,7 +96,7 @@ public class Graveyard
                     var owner = GameManager.instance.GetOwnerOf(id);
                     bool isAlly = GameManager.instance.isAllyMinion(id);
                     int index = GameManager.instance.GetBoardIndex(id);
-                    GameManager.instance.PutInMinionToTmpCementary(index, id, isAlly);
+                    GameManager.instance.PutInMinionToTmpCementary(index, id, isAlly,minion);
                     // A pillanatkép a deathrattle ELŐTT készül: a saját halála által
                     // adott buff már nem érvényes rá.
                     DeadCards.Add(minion.cardId);
@@ -92,9 +105,9 @@ public class Graveyard
                     UnityEngine.Debug.Log(" death : " + deathEffects.Count); 
                     
 
-                    dead.Add((id, deathEffects,owner));
+                    dead.Add((id, deathEffects,owner,minion));
                 }
-                foreach( var (id, effects, owner) in dead)
+                foreach( var (id, effects, owner,logic) in dead)
                 {
                     GameManager.instance.RemoveFromBoard(id);
                 }
@@ -115,9 +128,8 @@ public class Graveyard
                 // ── 2. FÁZIS: csak most jönnek az események és a halálhörgések ──
                 // Ekkor már mindenki lekerült a pályáról, tehát a buffok
                 // CSAK A TÚLÉLŐKET érhetik el.
-                foreach (var (id, effects,owner) in dead)
+                foreach (var (id, effects,owner, logic) in dead)
                 {
-                     GameEvents.Instance.RaiseMinionDied(GameManager.instance.GetMinionLogic(id));
 
                     if (effects.Count == 0) continue;
 
@@ -136,6 +148,10 @@ public class Graveyard
                     */
                     UnityEngine.Debug.Log("Owner is " +owner);
                     GameManager.instance.DoEffects(effects.ToArray(), id, owner);
+                }
+                foreach (var (id, effects, owner, logic) in dead)
+                {
+                    GameEvents.Instance.RaiseMinionDied(logic);
                 }
                 GameManager.instance.ClearCementary();
                 // Ha ezek újabb halált okoztak, azok már a KÖVETKEZŐ hullámban vannak.

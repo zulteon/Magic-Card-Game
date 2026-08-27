@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Card_1009
   m_EditorClassIdentifier: 
   cardId: 1009
-  Cost: 0
+  Cost: 2
   description: "Borz ment\u0151s \u2192 \"Szir\xE9n\xE1z\xF3 Ment\u0151\" Gy\xF3gy\xEDts
     6-ot egy bar\xE1ts\xE1gos karakternek"
   m: {fileID: 0}

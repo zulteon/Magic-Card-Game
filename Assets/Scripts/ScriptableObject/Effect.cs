@@ -8,18 +8,11 @@ public class Effect : ScriptableObject
     public enum Type
     {
         none, damage, heal, give, death, attack, buff, steal, swapAttackHealth, setStats, copyStats, gainEconomy, counter, spell, cardDestroyed,
-        charge, summon,sleep,taunt,doubleStats,cleave
+        charge, summon,sleep,taunt,doubleStats,cleave,albatros, debuff,unattackable,reflect, bodyguard,discard,draw, returnToHand,trueDamage,summonHalfOf,
+        gainEconomyNextTurn, damageBoardEdges, sacrificeAndDamageAll,randomDamage, cantAttackForTurn, damageAndNeighbours, buffAndCantAttack,discover,sendToFuture,umbrella,
+        minionSwap, syncDance, 
     }
-    /*public enum Type{none,all,cleave,windfury,buff,have,ranged,
-        damaged,arrange,execute,steal,roll,death,target,rolled,
-        highlight,extraspace,level,bomb,summon,gold,freeroll,spy,boardHave,instantAttack,attack};
-
-   /* public enum Type {attack, add,summon, damage,execute, play,bubble, buff, death, 
-        transform, immune,change,copy,multiply,none,taunt, give,windfury,shoot ,destroy,eat,cleave,
-        gainGold,merge,silence,gainArmor,cheapLevelnd,ressurect,buy,cheapMinion,have,
-        lessdamage,flying,addmysticcard,mysticvalue,eatandgold,damaged,eatandStats,
-        sell,refresh,levelUp,turnEnded,Defend,bomb,freerefresh
-    }*/
+    
 
     public enum TargetCast : byte { single, multi, random, all, each, left }
     public enum TargetType : byte { minion, race, hero, character, shop, board }
@@ -44,8 +37,9 @@ public class Effect : ScriptableObject
     public Trigger.SortMode sortMode;
     public enum LogicOperator { NONE, AND, OR, THEN }
     public Zone activeZone = Zone.Board;
+    public bool needsTarget = true;
 #if UNITY_EDITOR
-private void OnValidate()
+    private void OnValidate()
 {
     if(name=="Effect")return;
     if (effectId != 0) return;
@@ -55,7 +49,7 @@ private void OnValidate()
         if (this == null || effectId != 0) return;
 
         var guids = UnityEditor.AssetDatabase.FindAssets("t:Effect",
-            new[] { "Assets/Real_Cards/Abilities" });
+            new[] { "Assets/Real_Cards" });
 
         ushort max = 0;
         foreach (var guid in guids)
@@ -73,3 +67,13 @@ private void OnValidate()
 #endif
 }
 
+/*public enum Type{none,all,cleave,windfury,buff,have,ranged,
+        damaged,arrange,execute,steal,roll,death,target,rolled,
+        highlight,extraspace,level,bomb,summon,gold,freeroll,spy,boardHave,instantAttack,attack};
+
+   /* public enum Type {attack, add,summon, damage,execute, play,bubble, buff, death, 
+        transform, immune,change,copy,multiply,none,taunt, give,windfury,shoot ,destroy,eat,cleave,
+        gainGold,merge,silence,gainArmor,cheapLevelnd,ressurect,buy,cheapMinion,have,
+        lessdamage,flying,addmysticcard,mysticvalue,eatandgold,damaged,eatandStats,
+        sell,refresh,levelUp,turnEnded,Defend,bomb,freerefresh
+    }*/

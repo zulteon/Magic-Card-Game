@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1027
   m_EditorClassIdentifier: 
-  sprite: id_00293_012_fossa_pickpocket_mid_slip.png
+  sprite: id_00293_012_fossa_pickpocket_mid_slip
   description: "Fossa Pickpocket** \u2192 Steal 2 gold from the enemy"
   effect: 
   e: []

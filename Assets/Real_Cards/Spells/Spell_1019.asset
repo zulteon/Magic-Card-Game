@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1019
   m_EditorClassIdentifier: 
-  sprite: id_00283_002_cassowary_construction_inspector_kicking.png
+  sprite: id_00283_002_cassowary_construction_inspector_kicking
   description: "Cassowary Inspector** \u2192 Destroy an enemy minion with 3 or less
     Health"
   effect: 

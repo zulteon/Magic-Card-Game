@@ -2,7 +2,10 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using static Trigger;
-
+/// <summary>
+///     ha a kliens önmagának hivja : PlayerMessageUI.instance.ShowMessage(message);
+///   ha a szerver önmagának PlayerMessage.Send(this, "Nincs elég mana!");
+/// </summary>
 public class PlayerMessageUI : MonoBehaviour
 {
     public static PlayerMessageUI Instance { get; private set; }
@@ -73,5 +76,12 @@ public class PlayerMessageUI : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+}
+public static class PlayerMessage
+{
+    public static void Send(PlayerController pc, string message)
+    {
+        pc.TargetShowMessage(pc.Owner, message);
     }
 }

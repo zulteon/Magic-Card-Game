@@ -17,4 +17,5 @@ MonoBehaviour:
     Egy minion elt\u0171nik a k\xF6vetkez\u0151 k\xF6r\xF6dig, majd visszat\xE9r
     \u2014 az \xF3ramutat\xF3 \xE1tugrik rajta."
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 1045a90954b0c564f93a3894de22f894, type: 2}

@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_125
   m_EditorClassIdentifier: 
-  attack: 1
+  attack: 2
   health: 1
-  sprite: id_00122_037_jittery_rat_crypto_trader.png
+  sprite: id_00122_037_jittery_rat_crypto_trader
   description: when dies gain 2 mana next turn
   effect: 
   e: []
   race: 0
-  charge: 0

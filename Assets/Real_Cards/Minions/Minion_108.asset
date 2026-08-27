@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Minion_108
   m_EditorClassIdentifier: 
   attack: 1
-  health: 1
-  sprite: id_00238_007_chameleon_sound_technician_instinctively.png
+  health: 5
+  sprite: id_00238_007_chameleon_sound_technician_instinctively
   description: Copy opposite minion's Attack
   effect: 
   e: []
   race: 0
-  charge: 0

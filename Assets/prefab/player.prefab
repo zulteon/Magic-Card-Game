@@ -53,9 +53,8 @@ MonoBehaviour:
   liveCardPrefab: {fileID: 0}
   showHand: {fileID: 5776992809356375682}
   manager: {fileID: 0}
-  isEnemy: 0
   heroId: 0
-  attacker: {fileID: 0}
+  CantAttackForTurn: 0
   gameController: {fileID: 193336011099995818, guid: 3a79029ee1fcd87439edb2f76d29b482, type: 3}
 --- !u!114 &7505070100609370286
 MonoBehaviour:
@@ -88,6 +87,8 @@ MonoBehaviour:
   cardTemplateFront: {fileID: 8637758936075675524, guid: 3e0a02ca7e79fb3488214a95b5b353ba, type: 3}
   cardTemplateBack: {fileID: 323135840510409224, guid: a68447ceac0e28649b9e4bb0891ad123, type: 3}
   handParent: {fileID: 6488147836614888536}
+  minusYHeight: -5
+  YHeight: 5
 --- !u!114 &2157317284404765103
 MonoBehaviour:
   m_ObjectHideFlags: 0

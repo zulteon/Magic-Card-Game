@@ -492,8 +492,582 @@ public static class CsvImporterToScObj
 
         return result;
     }
+    private const string STATS_CSV_PATH =
+    "Assets/Real_Cards/costattack.csv";
+
+    [MenuItem("Tools/Cards/Import Cost Attack Health")]
+    public static void ImportCostAttackHealth()
+    {
+        if (!File.Exists(STATS_CSV_PATH))
+        {
+            Debug.LogError(
+                "Nem találom a stat CSV-t itt: " + STATS_CSV_PATH
+            );
+
+            return;
+        }
+
+        string[] lines = File.ReadAllLines(
+            STATS_CSV_PATH,
+            Encoding.UTF8
+        );
+
+        int imported = 0;
+
+        foreach (string line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            char delimiter = DetectDelimiter(line);
+
+            List<string> columns =
+                ParseCsvLine(line, delimiter);
+
+            if (columns.Count == 0)
+                continue;
 
 
+            // -------------------------
+            // ID
+            // -------------------------
+
+            string idText =
+                GetColumn(columns, 0)
+                .Trim()
+                .Trim('\uFEFF');
+
+            // Fejléc / üres / hibás sor.
+            if (!ushort.TryParse(idText, out ushort id))
+                continue;
+
+
+            // -------------------------
+            // Card betöltése
+            // -------------------------
+
+            string cardPath =
+                $"{CARD_FOLDER}/Card_{id}.asset";
+
+            Card card =
+                AssetDatabase.LoadAssetAtPath<Card>(
+                    cardPath
+                );
+
+            if (card == null)
+            {
+                Debug.LogWarning(
+                    $"Nincs Card_{id}.asset, kihagyva."
+                );
+
+                continue;
+            }
+
+
+            // CSV:
+            // 0 = ID
+            // 1 = Name
+            // 2 = Type / megjegyzés
+            // 3 = Cost
+            // 4 = Attack
+            // 5 = Health
+
+
+            // -------------------------
+            // COST
+            // -------------------------
+
+            string costText =
+                GetColumn(columns, 3).Trim();
+
+            if (!string.IsNullOrWhiteSpace(costText))
+            {
+                if (int.TryParse(costText, out int cost))
+                {
+                    card.Cost = cost;
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        $"Hibás Cost érték ID:{id} -> '{costText}'"
+                    );
+                }
+            }
+
+
+            // -------------------------
+            // MINION STATOK
+            // -------------------------
+
+            if (card.m != null)
+            {
+                string attackText =
+                    GetColumn(columns, 4).Trim();
+
+                string healthText =
+                    GetColumn(columns, 5).Trim();
+
+
+                if (!string.IsNullOrWhiteSpace(attackText))
+                {
+                    if (int.TryParse(
+                        attackText,
+                        out int attack
+                    ))
+                    {
+                        card.m.attack = attack;
+                    }
+                    else
+                    {
+                        Debug.LogWarning(
+                            $"Hibás Attack érték ID:{id} -> '{attackText}'"
+                        );
+                    }
+                }
+
+
+                if (!string.IsNullOrWhiteSpace(healthText))
+                {
+                    if (int.TryParse(
+                        healthText,
+                        out int health
+                    ))
+                    {
+                        card.m.health = health;
+                    }
+                    else
+                    {
+                        Debug.LogWarning(
+                            $"Hibás Health érték ID:{id} -> '{healthText}'"
+                        );
+                    }
+                }
+
+
+                EditorUtility.SetDirty(card.m);
+            }
+
+
+            // -------------------------
+            // CARD MENTÉS
+            // -------------------------
+
+            EditorUtility.SetDirty(card);
+
+            imported++;
+
+            Debug.Log(
+                $"Stat import: ID:{id} " +
+                $"Cost:{card.Cost}" +
+                (card.m != null
+                    ? $" Attack:{card.m.attack} Health:{card.m.health}"
+                    : " [SPELL]")
+            );
+        }
+
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log(
+            $"Cost/Attack/Health import kész. {imported} kártya feldolgozva."
+        );
+    }
+    [MenuItem("Tools/Cards/Remove Sprite Extensions")]
+    public static void RemoveSpriteExtensions()
+    {
+        int changed = 0;
+
+        // -------------------------
+        // MINIONOK
+        // -------------------------
+
+        string[] minionGuids =
+            AssetDatabase.FindAssets(
+                "t:MinionData",
+                new[] { MINION_FOLDER }
+            );
+
+        foreach (string guid in minionGuids)
+        {
+            string path =
+                AssetDatabase.GUIDToAssetPath(guid);
+
+            MinionData minion =
+                AssetDatabase.LoadAssetAtPath<MinionData>(path);
+
+            if (minion == null)
+                continue;
+
+            string cleaned =
+                RemoveImageExtension(minion.sprite);
+
+            if (cleaned != minion.sprite)
+            {
+                Debug.Log(
+                    $"Sprite javítva: '{minion.sprite}' -> '{cleaned}'"
+                );
+
+                minion.sprite = cleaned;
+
+                EditorUtility.SetDirty(minion);
+
+                changed++;
+            }
+        }
+
+
+        // -------------------------
+        // SPELLEK
+        // -------------------------
+
+        string[] spellGuids =
+            AssetDatabase.FindAssets(
+                "t:Spell",
+                new[] { SPELL_FOLDER }
+            );
+
+        foreach (string guid in spellGuids)
+        {
+            string path =
+                AssetDatabase.GUIDToAssetPath(guid);
+
+            Spell spell =
+                AssetDatabase.LoadAssetAtPath<Spell>(path);
+
+            if (spell == null)
+                continue;
+
+            string cleaned =
+                RemoveImageExtension(spell.sprite);
+
+            if (cleaned != spell.sprite)
+            {
+                Debug.Log(
+                    $"Sprite javítva: '{spell.sprite}' -> '{cleaned}'"
+                );
+
+                spell.sprite = cleaned;
+
+                EditorUtility.SetDirty(spell);
+
+                changed++;
+            }
+        }
+
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log(
+            $"Sprite extension takarítás kész. {changed} asset módosítva."
+        );
+    }
+
+
+    private static string RemoveImageExtension(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        string result = value.Trim();
+
+        string lower = result.ToLowerInvariant();
+
+        if (lower.EndsWith(".jpeg"))
+            return result.Substring(0, result.Length - 5);
+
+        if (
+            lower.EndsWith(".jpg") ||
+            lower.EndsWith(".png") ||
+            lower.EndsWith(".webp")
+        )
+        {
+            return result.Substring(0, result.Length - 4);
+        }
+
+        return result;
+    }
+    private const string NAMES_CSV_PATH =
+    "Assets/Real_Cards/names.csv";
+
+    [MenuItem("Tools/Cards/Rename Assets From Names CSV")]
+    public static void RenameAssetsFromNamesCsv()
+    {
+        if (!File.Exists(NAMES_CSV_PATH))
+        {
+            Debug.LogError(
+                "Nem találom a names CSV-t itt: " + NAMES_CSV_PATH
+            );
+
+            return;
+        }
+
+        string[] lines = File.ReadAllLines(
+            NAMES_CSV_PATH,
+            Encoding.UTF8
+        );
+
+        int renamed = 0;
+
+        foreach (string line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            char delimiter = DetectDelimiter(line);
+
+            List<string> columns =
+                ParseCsvLine(line, delimiter);
+
+            if (columns.Count < 2)
+                continue;
+
+
+            // -------------------------
+            // ID
+            // -------------------------
+
+            string idText =
+                GetColumn(columns, 0)
+                .Trim()
+                .Trim('\uFEFF');
+
+            // Fejléc / hibás sor.
+            if (!ushort.TryParse(idText, out ushort id))
+                continue;
+
+
+            // -------------------------
+            // NAME
+            // -------------------------
+
+            string newName =
+                GetColumn(columns, 1).Trim();
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                Debug.LogWarning(
+                    $"ID:{id} név nélkül, kihagyva."
+                );
+
+                continue;
+            }
+
+
+            // Unity fájlnévben problémás karakterek takarítása.
+            newName = MakeSafeAssetName(newName);
+
+
+            // -------------------------
+            // CARD
+            // -------------------------
+
+            string cardPath =
+                $"{CARD_FOLDER}/Card_{id}.asset";
+
+            Card card =
+                AssetDatabase.LoadAssetAtPath<Card>(
+                    cardPath
+                );
+
+            if (card != null)
+            {
+                string error =
+                    AssetDatabase.RenameAsset(
+                        cardPath,
+                        newName
+                    );
+
+                if (string.IsNullOrEmpty(error))
+                {
+                    Debug.Log(
+                        $"Card_{id} -> {newName}"
+                    );
+
+                    renamed++;
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"Card rename hiba ID:{id}: {error}"
+                    );
+                }
+            }
+
+
+            // -------------------------
+            // MINION / SPELL
+            // -------------------------
+
+            bool isSpell = id > 999;
+
+            string dataPath =
+                isSpell
+                    ? $"{SPELL_FOLDER}/Spell_{id}.asset"
+                    : $"{MINION_FOLDER}/Minion_{id}.asset";
+
+
+            UnityEngine.Object data =
+                AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(
+                    dataPath
+                );
+
+            if (data != null)
+            {
+                string error =
+                    AssetDatabase.RenameAsset(
+                        dataPath,
+                        newName
+                    );
+
+                if (string.IsNullOrEmpty(error))
+                {
+                    Debug.Log(
+                        $"{(isSpell ? "Spell" : "Minion")}_{id} -> {newName}"
+                    );
+
+                    renamed++;
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"Data rename hiba ID:{id}: {error}"
+                    );
+                }
+            }
+        }
+
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log(
+            $"Átnevezés kész. {renamed} asset átnevezve."
+        );
+    }
+
+
+    private static string MakeSafeAssetName(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        string result = value.Trim();
+
+        char[] invalidChars =
+            Path.GetInvalidFileNameChars();
+
+        foreach (char c in invalidChars)
+        {
+            result =
+                result.Replace(c.ToString(), "");
+        }
+
+        return result.Trim();
+    }
+    [MenuItem("Tools/Cards/Restore Minion Spell ID Names")]
+    public static void RestoreMinionSpellIdNames()
+    {
+        string[] cardGuids =
+            AssetDatabase.FindAssets(
+                "t:Card",
+                new[] { CARD_FOLDER }
+            );
+
+        int renamed = 0;
+
+        foreach (string guid in cardGuids)
+        {
+            string cardPath =
+                AssetDatabase.GUIDToAssetPath(guid);
+
+            Card card =
+                AssetDatabase.LoadAssetAtPath<Card>(
+                    cardPath
+                );
+
+            if (card == null)
+                continue;
+
+
+            // -------------------------
+            // MINION
+            // -------------------------
+
+            if (card.m != null)
+            {
+                string minionPath =
+                    AssetDatabase.GetAssetPath(card.m);
+
+                string newName =
+                    $"Minion_{card.cardId}";
+
+                string error =
+                    AssetDatabase.RenameAsset(
+                        minionPath,
+                        newName
+                    );
+
+                if (string.IsNullOrEmpty(error))
+                {
+                    Debug.Log(
+                        $"{card.m.name} -> {newName}"
+                    );
+
+                    renamed++;
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"Minion rename hiba ID:{card.cardId}: {error}"
+                    );
+                }
+            }
+
+
+            // -------------------------
+            // SPELL
+            // -------------------------
+
+            if (card.spell != null)
+            {
+                string spellPath =
+                    AssetDatabase.GetAssetPath(card.spell);
+
+                string newName =
+                    $"Spell_{card.cardId}";
+
+                string error =
+                    AssetDatabase.RenameAsset(
+                        spellPath,
+                        newName
+                    );
+
+                if (string.IsNullOrEmpty(error))
+                {
+                    Debug.Log(
+                        $"{card.spell.name} -> {newName}"
+                    );
+
+                    renamed++;
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"Spell rename hiba ID:{card.cardId}: {error}"
+                    );
+                }
+            }
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log(
+            $"Quick fix kész. {renamed} Minion/Spell asset visszanevezve."
+        );
+    }
     // =========================================================
     // FOLDER
     // =========================================================

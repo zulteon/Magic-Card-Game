@@ -48,7 +48,6 @@ public class MinionCard : CardData
 public class SpellCard : CardData
 {
     public string effect;
-    public List<ushort> effectIds = new List<ushort>();
 
     public SpellCard()
     {

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1030
   m_EditorClassIdentifier: 
-  sprite: Gemini_Generated_Image_ (23).png
+  sprite: Gemini_Generated_Image_ (23)
   description: Deal 6 damage to two random minion
   effect: 
   e: []

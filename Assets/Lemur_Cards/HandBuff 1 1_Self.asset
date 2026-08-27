@@ -18,7 +18,7 @@ MonoBehaviour:
   target: 0
   value: 0
   buff: {x: 1, y: 1}
-  summonable: {fileID: 0}
+  summonableId: 0
   give: {fileID: 0}
   triggers:
   - {fileID: 11400000, guid: 52465de2ed44a05439829009053c2e62, type: 2}

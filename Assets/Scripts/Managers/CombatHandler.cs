@@ -58,8 +58,8 @@ public class CombatHandler : MonoBehaviour
         // SoundManager.inst.Hit();
 
         // 3. Becsapódás — itt jelenik meg a sebzés mindkét oldalon
-        if (attacker != null) attacker.AttackDamageApply(attacker.currentHealth - attackerNewHp);
-        if (victim != null) victim.AttackDamageApply(victim.currentHealth - victimNewHP);
+        //if (attacker != null) attacker.AttackDamageApply(attacker.currentHealth - attackerNewHp);
+        //if (victim != null) victim.AttackDamageApply(victim.currentHealth - victimNewHP);
 
         // 4. Vissza
         t = 0.7f; allT = t;

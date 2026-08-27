@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_109
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00090_005_numbat_museum_custodian_striped.png
+  attack: 2
+  health: 4
+  sprite: id_00090_005_numbat_museum_custodian_striped
   description: Swap Attack/Health StartOfCombat
   effect: 
   e: []
   race: 0
-  charge: 0

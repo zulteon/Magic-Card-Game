@@ -38,7 +38,7 @@ public class GameEvents
         ClearMinion switch-be: case EventType.Uj: OnUjEsemeny -= sub.Handler; break;
      
      */
-    public enum EventType { TurnStart, TurnEnd, ManaChanged, MinionSummoned }
+    public enum EventType { TurnStart, TurnEnd, ManaChanged, MinionSummoned, MinionBuffed, MinionDied }
     public static GameEvents Instance { get; private set; } = new GameEvents();
     // ===== JÁTÉK ESEMÉNYEK =====
     public event Action OnTurnStart;
@@ -49,6 +49,7 @@ public class GameEvents
     public event Action<int> OnCardDrawn;    // int = cardId
 
     // ===== MINION ESEMÉNYEK =====
+    public event Action<MinionLogic> OnMinionBuffed;
     public event Action<MinionLogic> OnMinionSummoned;
     public event Action<MinionLogic> OnMinionPlayed;
     public event Action<MinionLogic> OnMinionDied;
@@ -146,6 +147,8 @@ public class GameEvents
         switch (type)
         {
             case EventType.MinionSummoned: OnMinionSummoned += handler; break;
+            case EventType.MinionBuffed: OnMinionBuffed += handler; break;
+            case EventType.MinionDied: OnMinionDied += handler; break;
         }
 
         if (!_registry.ContainsKey(seqId)) _registry[seqId] = new List<Subscription>();
@@ -164,6 +167,8 @@ public class GameEvents
                 case EventType.TurnStart: OnTurnStart -= (Action)sub.Handler; break;
                 case EventType.TurnEnd: OnTurnEnd -= (Action)sub.Handler; break;
                 case EventType.MinionSummoned:  OnMinionSummoned -= (Action<MinionLogic>)sub.Handler;break;
+                case EventType.MinionBuffed: OnMinionBuffed -= (Action<MinionLogic>)sub.Handler; break;
+                case EventType.MinionDied: OnMinionDied -= (Action<MinionLogic>)sub.Handler; break;
             }
         }
         _registry.Remove(seqId);
@@ -174,7 +179,7 @@ public class GameEvents
 
     public void RaiseManaChanged(int mana) => OnManaChanged?.Invoke(mana);
     public void RaiseCardDrawn(int cardId) => OnCardDrawn?.Invoke(cardId);
-
+    public void RaiseMinionBuffed(MinionLogic m) => OnMinionBuffed?.Invoke(m);
     public void RaiseMinionSummoned(MinionLogic m) => OnMinionSummoned?.Invoke(m);
     public void RaiseMinionPlayed(MinionLogic m) => OnMinionPlayed?.Invoke(m);
     public void RaiseMinionDied(MinionLogic m) => OnMinionDied?.Invoke(m);
@@ -214,13 +219,22 @@ public static class TriggerConverter
                 return false;
         }
     }
-
+    public static bool EventHasMinion(GameEvents.EventType e) =>
+    e == GameEvents.EventType.MinionSummoned ||
+    e == GameEvents.EventType.MinionBuffed ||
+    e == GameEvents.EventType.MinionDied;
     static bool ActivityToEvent(Effect.Type activity, out GameEvents.EventType eventType)
     {
         switch (activity)
         {
             case Effect.Type.summon:
                 eventType = GameEvents.EventType.MinionSummoned;
+                return true;
+            case Effect.Type.buff:
+                eventType = GameEvents.EventType.MinionBuffed;
+                return true;
+            case Effect.Type.death:
+                eventType = GameEvents.EventType.MinionDied;
                 return true;
             default:
                 eventType = default;

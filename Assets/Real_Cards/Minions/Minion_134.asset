@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_134
   m_EditorClassIdentifier: 
-  attack: 5
-  health: 5
-  sprite: id_00182_005_tenrec_fakir_street_performer.png
+  attack: 3
+  health: 6
+  sprite: id_00182_005_tenrec_fakir_street_performer
   description: Each second hit is blocked
   effect: 
   e:

@@ -17,4 +17,5 @@ MonoBehaviour:
     minion statja kiegyenl\xEDt\u0151dik az \xE1tlagukra \u2014 mindenki ugyanazt
     a l\xE9p\xE9st j\xE1rja."
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 0b381c1f459371245a1b0a5be2426a94, type: 2}

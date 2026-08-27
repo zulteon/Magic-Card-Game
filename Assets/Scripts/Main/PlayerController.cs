@@ -96,7 +96,7 @@ public class PlayerController : NetworkBehaviour
         boardManager = manager.gameObject.GetComponent<BoardManager>();
         liveCardPrefab = manager.liveCardPrefab;
 
-        isEnemy.Value = !home;                      // EGYSZER, nem háromszor
+        isEnemy.Value = !home;
         heroId = isEnemy.Value ? (ushort)1 : (ushort)0;
 
         CreateDeck(player.deck);              // <- az ID-allokátorhoz kell a home
@@ -104,14 +104,31 @@ public class PlayerController : NetworkBehaviour
        // playerB.Value.GiveCoin();   
         hero = gameObject.GetComponent<LiveHero>();
         if (hero == null) hero = gameObject.AddComponent<LiveHero>();
-        hero.Init(player.hero);
-
+        hero.Init(player.hero);// Kelez? nem!
+        var myHero=new MinionState ();
+        myHero.cardId = 0;
+        myHero.sequenceId=isEnemy.Value ? (ushort)1 : (ushort)0;
+        myHero.currentHealth = 20;
+        heroState.Value=myHero;
+        manager.CreateHeroMinionLogic(isEnemy.Value);
+        if (manager.offlineTestMode && !home) {
+            /*var yourHero = new MinionState();
+            yourHero.cardId = 0;
+            yourHero.sequenceId = isEnemy.Value ? (ushort)1 : (ushort)0;
+            yourHero.currentHealth = 20;
+            manager.OtherPlayer(this).heroState.Value = myHero;
+            manager.CreateHeroMinionLogic(!isEnemy.Value); */
+        }
         state = player;
     }
     int maxMana;
     public readonly SyncVar<int> currentResource=new(0);
     public readonly SyncVar<int> maxResource = new(0);
     public PlayerEconomy economy;
+    public int GetRemainingMana()
+    {
+        return currentResource.Value ;
+    }
     /*
     public void SpendMana(int amount)
     {
@@ -181,13 +198,18 @@ public class PlayerController : NetworkBehaviour
         
         //GameEvents.Instance.RaiseMinionSummoned(minionLogic);
     }
-    public void Summon(ushort summonAbleId,bool homeSummon=true)
+    public void Summon(ushort summonAbleId,bool homeSummon= true,  int overrideAttack = -1, int overrideHealth = -1)
     {
         bool toEnemyBoard = isEnemy.Value == homeSummon;
         minionSequenceId = manager.NextCardId(toEnemyBoard);
         MinionState state=MinionStateFactory.FromMinionData(summonAbleId,minionSequenceId);
         MinionLogic minionLogic = manager.CreateMinionLogic(minionSequenceId);
-        
+        if (overrideAttack >= 0) state.attack = (short)overrideAttack;
+        if (overrideHealth >= 0)
+        {
+            state.currentHealth = (ushort)overrideHealth;
+            minionLogic.maxhealth = (ushort)overrideHealth;
+        }
         if (!toEnemyBoard)
             manager.boardAlly.Add(state);
         else
@@ -227,11 +249,11 @@ public class PlayerController : NetworkBehaviour
     [Client]
     public void BeforePlay(CardState card)
     {
-        var def = CardManager.instance.GetCard(card.cardId);
+        CardData def = CardManager.instance.GetCard(card.cardId);
         if (def == null) return;
 
         bool isSpell = def.GetCardType() == CardType.Spell;
-
+        print("DEF :::: " +def.effectIds.Count);
         // Board-limit csak lényre vonatkozik
         if (!isSpell)
         {
@@ -241,11 +263,11 @@ public class PlayerController : NetworkBehaviour
 
         Effect[] e = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, def).ToArray();
         Effect needsTarget = FindTargetedEffect(e);
-
-        if (needsTarget == null || needsTarget.target == Trigger.Target.self) { SendPlay(card, ushort.MaxValue, isSpell); return; }
+        print(e.Length + " EFFECTS length");
+        if (needsTarget == null || needsTarget.target == Trigger.Target.self || needsTarget.target==Trigger.Target.none) { SendPlay(card, ushort.MaxValue, isSpell); return; }
         _validTargetsToSelect = TargetingCenter.GetTargets(needsTarget, card.sequenceId, this);
-
-        if (_validTargetsToSelect == null || _validTargetsToSelect.Count == 0)
+        
+        if (_validTargetsToSelect == null || _validTargetsToSelect.Count == 0 )
         {
             if (isSpell)
             {
@@ -284,7 +306,7 @@ public class PlayerController : NetworkBehaviour
     {
         var def = CardManager.instance.GetCard(card.cardId);
         Effect[] effects = EffectManagerClient.instance.GetEffectData(def.effectIds).ToArray();
-
+        print("playing spell");
         // Célzott spell célpont nélkül nem játszható ki
         Effect needsTarget = FindTargetedEffect(effects);
         if (needsTarget != null && (victims == null || victims.Count == 0))
@@ -315,7 +337,7 @@ public class PlayerController : NetworkBehaviour
     {
         foreach (var e in effects)
         {
-            if (e != null && e.targetCast == Effect.TargetCast.single && !e.random) // multitargethez expandálni kell a mechanikát
+            if (e != null && e.targetCast == Effect.TargetCast.single && !e.random && e.needsTarget) // multitargethez expandálni kell a mechanikát
                 return e;
             return null; // mindig az első effekt ami selectiont igényel
         }
@@ -326,7 +348,57 @@ public class PlayerController : NetworkBehaviour
     // ── állapot ──
     private List<ushort> _validTargetsToSelect;
 
+    [Server]
+    public void ReturnToHand(ushort sequenceId)
+    {
+        var state = GameManager.instance.GetMinionById(sequenceId);
+        if (state.cardId == 0) return;   // már nincs a boardon
+
+        // 1. A lény effektjei megszűnnek (silence-hez hasonlóan)
+        var logic = GameManager.instance.GetMinionLogic(sequenceId);
+        logic?.effectBag.DisposeAll(RemoveReason.ReturnToHand);
+
+        // 2. Levesszük a boardról — de NEM temetőbe, nem is halál
+        GameManager.instance.boardAlly.Remove(state);
+        GameManager.instance.boardEnemy.Remove(state);
+        GameManager.instance.RemoveMinionLogic(logic, RemoveReason.ReturnToHand);
+
+        // 3. Új CardState a kézbe, az EREDETI kártya alapján (nem a buffolt statokkal)
+        var newCard = new CardState
+        {
+            cardId = state.cardId,
+            sequenceId = GameManager.instance.NextCardId(isEnemy.Value),
+            // attackBonus/healthBonus nélkül — Hearthstone-szabály: a kézben "resetelődik"
+        };
+
+        hand.Add(newCard);   // vagy ahogy nálad a kéz SyncList-je hívódik
+    }
+    public List<CardState> GetDeck() => _deck;
+    public struct FutureMinion
+    {
+        public MinionState state;
+        public bool isAlly;
+        public int returnOnTurn;
+    }
+
+    public List<FutureMinion> futureMinions = new List<FutureMinion>();
     
+
+    [TargetRpc]
+    public void TargetDiscoverChoices(NetworkConnection conn, ushort[] cardIds)
+    {
+        DiscoverCenter.instance.Show(cardIds, chosenCardId => CmdResolveDiscover(chosenCardId));
+    }
+
+    [ServerRpc]
+    public void CmdResolveDiscover(ushort chosenCardId)
+    {
+        var card = _deck.FirstOrDefault(c => c.cardId == chosenCardId);
+       //if (card == default) return;
+
+        _deck.Remove(card);
+        hand.Add(card);
+    }
     #endregion
     public void RemoveCardFromHand(CardState card) { 
         
@@ -367,12 +439,15 @@ public class PlayerController : NetworkBehaviour
     }
     private const int HAND_LIMIT = 10;
     Arrow3DPointer arrow;
+    public int CantAttackForTurn = 0;
 
-   
     public void StartAttack(LiveMinion attacker)
     {
         ushort attackerId = attacker.sequenceId;
-
+        if (CantAttackForTurn > 0)
+        {
+            Debug.Log("pelikán tiltás nincs támadáss");
+        }
         TargetSelector.instance.Begin(
             GetValidAttackTargets(),
             attacker.transform.position,
@@ -386,6 +461,7 @@ public class PlayerController : NetworkBehaviour
 
         foreach (var m in manager.GetEnemyBoard(!isEnemy.Value))
         {
+            if ( HasUntargetable(m.activeEffects)) continue;
             all.Add(m.sequenceId);
             if (m.taunt) taunts.Add(m.sequenceId);
         }
@@ -394,8 +470,17 @@ public class PlayerController : NetworkBehaviour
         if (taunts.Count > 0) return taunts;
 
         // Különben minden lény + az ellenséges hős
-        all.Add(manager.GetHeroId(this));
+        all.Add(manager.GetHeroId(this,true));
         return all;
+    }
+    ushort untargetableId = 26;
+    public bool HasUntargetable (List<ushort> effectIds)
+    {
+        foreach (var effectId in effectIds)
+        {
+            if(effectId == untargetableId) return true;
+        }
+        return false;
     }
     [ServerRpc(RequireOwnership = true)]
     private void CmdAttack(ushort attackerId, ushort victimId)
@@ -470,6 +555,8 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+        if (_subscribed) return;
+        _subscribed = true;
 
         showHand = gameObject.GetComponent<ShowHand>();
         showHand.isEnemy = !IsOwner;
@@ -512,6 +599,7 @@ public class PlayerController : NetworkBehaviour
     public override void OnStopClient()
     {
         base.OnStopClient();
+        _subscribed = false;
 
         if (showHand != null) hand.OnChange -= showHand.OnHandChanged;
 
@@ -531,6 +619,11 @@ public class PlayerController : NetworkBehaviour
     {
         GameManager.instance.RegisterPlayer(this);
 
+    }
+    [TargetRpc]
+    public void TargetShowMessage(NetworkConnection conn, string message)
+    {
+        PlayerMessageUI.Instance.ShowMessage(message);
     }
     #endregion
     #region Debug

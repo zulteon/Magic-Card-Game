@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_101
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00084_011_pangolin_nightclub_bouncer_large.png
+  attack: 3
+  health: 5
+  sprite: id_00084_011_pangolin_nightclub_bouncer_large
   description: Force two minions attack him
   effect: 
   e: []
   race: 0
-  charge: 0

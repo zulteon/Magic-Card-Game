@@ -18,7 +18,9 @@ public class MinionLogic
         set => manager.ChangeMinionById(_sequenceId, minion => minion = value);
         // ide elég lenne _=>value
     }
-
+    public short attack => State.attack;
+    public ushort sequenceId => State.sequenceId;
+    public ushort currentHealth => State.currentHealth;
     public ushort Health
     {
         get => State.currentHealth;
@@ -35,50 +37,47 @@ public class MinionLogic
     {
         _sequenceId = sequenceId;
         effectBag = new EffectBag(_sequenceId);
+        cardId=GameManager.instance.GetMinionById(sequenceId).cardId;
         // MinionCard cardData = CardManager.instance.GetMinion(cardId);
     }
     public void Attack(int damage, ushort victimId, bool forced = false)
-    {                   //damage fölösleges
+    {
         var state = State;
         state.canAttack = false;
-        State = state; // biztonságból
-        MinionState victim = manager.GetMinionById(victimId);
-        victim.currentHealth = (ushort)UnityEngine.Mathf.Max(0, victim.currentHealth - state.attack);
-        if (effectBag.TryConsumeGuard(Effect.Type.damage))
+        State = state;
+        var victimLogic = manager.GetMinionLogic(victimId);
+        if (victimLogic == null) {
+            UnityEngine.Debug.Log("AJAJAJA"); return;
+         }
+
+        short myAttack = state.attack;
+        short theirAttack = manager.GetMinionById(victimId).attack;
+        manager.SendClientEvent(new ClientEvent
         {
-            UnityEngine.Debug.Log("Blocked DAMAGE");
-        }
-        else
-        {
-            state.currentHealth = (ushort)UnityEngine.Mathf.Max(0, state.currentHealth - victim.attack);
-            State = state;
-        }
-        if (victim.currentHealth < 1)
-            GameManager.instance.graveyard.SendToGraveyard(victimId);
-        if (state.currentHealth < 1)
-            Death();
+            effectType = (ushort)Effect.Type.attack,
+            doerId = _sequenceId,
+            targetIds = new ushort[] { victimId },
+            value = myAttack,
+            newValues = new int[] { -1, -1 } // -1 et  törölni egy nap
+        });
+        manager.StartEventQueue();
+        victimLogic.Damage(myAttack, _sequenceId);
+        
+        this.Damage(theirAttack, victimId,noRedirect:true);
+
+        // cleave
         if (effectBag.Has(Effect.Type.cleave))
         {
             bool victimIsAlly = manager.isAllyMinion(victimId);
             foreach (var nid in manager.GetNeighbours(victimId, victimIsAlly))
             {
                 var n = manager.GetMinionLogic(nid);
-                if (n != null) n.Damage(state.attack, _sequenceId);
+                if (n != null) n.Damage(myAttack, _sequenceId);
             }
         }
-        // ide jön a CLient Event küldés
-        ClientEvent attackEv = new ClientEvent
-        {
-            effectType = (ushort)Effect.Type.attack,
-            doerId = _sequenceId,
-            targetIds = new ushort[] { victimId }, // Sorrend: 0: Attacker, 1: Victim
-            value = state.attack, // Animációhoz: mekkora ütés látszódjon
-            newValues = new int[] { state.currentHealth, victim.currentHealth } // Snapshot a jövőbeli HP-król
-        };
-        EffectClient.instance.AddEvent(attackEv);
+        manager.FinishEventQueue();
 
-        manager.ChangeMinionById(victimId, minion => minion = victim);
-        GameManager.instance.graveyard.Execute();
+        manager.graveyard.Execute();
     }
     public void CopyStats(Vector2Int copyFlags, short sourceAttack, ushort sourceHealth)
     {
@@ -102,16 +101,40 @@ public class MinionLogic
         State = state;
     }
     // MinionLogic.cs - Damage függvény
-    public void Damage(int damage, ushort attackerId = 0)
+    public void Damage(int damage, ushort attackerId = 0,bool noRedirect=false)
     {
+        if (!noRedirect)
+        {
+            ushort protector = effectBag.GetProtector();
+            if (protector != 0)
+            {
+                MinionLogic bodyGuard= manager.GetMinionLogic(protector);
+                bool redirectEveryDMG = bodyGuard.State.currentHealth <damage;
+                
+                if (redirectEveryDMG)
+                {
+                    bodyGuard.Damage(damage, attackerId, noRedirect: true);
+                    return;
+                }
+                else
+                {
+                    damage -= bodyGuard.State.currentHealth;
+                    bodyGuard.Damage(bodyGuard.State.currentHealth, attackerId, noRedirect: true);
+                    
+                }
+                
+            }
+        }
         if (effectBag.TryConsumeGuard(Effect.Type.damage))
         {
             UnityEngine.Debug.Log("Blocked DAMAGE");
+            return;
         }
             UnityEngine.Debug.Log("damaging " + damage.ToString());
         var state = State;
         state.currentHealth = (ushort)UnityEngine.Mathf.Max(0, state.currentHealth - damage);
-
+        
+        UnityEngine.Debug.Log($"[Damage] {_sequenceId} kap {damage}-t\n{System.Environment.StackTrace}");
         // ✨ DIREKT ITT küldjük el, MIUTÁN a HP megváltozott
         ClientEvent ev = new ClientEvent
         {
@@ -128,6 +151,28 @@ public class MinionLogic
             Death();
         //
 
+    }
+    
+    public void TrueDamage(int damage, ushort attackerId = 0)
+    {
+        var state = State;
+        state.currentHealth = (ushort)UnityEngine.Mathf.Max(0, state.currentHealth - damage);
+
+        UnityEngine.Debug.Log($"[Damage] {_sequenceId} kap {damage}-t\n{System.Environment.StackTrace}");
+        // ✨ DIREKT ITT küldjük el, MIUTÁN a HP megváltozott
+        ClientEvent ev = new ClientEvent
+        {
+            effectType = (ushort)Effect.Type.damage,
+            targetIds = new ushort[] { _sequenceId },
+            value = damage,
+            newValues = new int[] { state.currentHealth }, // ← JÓ érték!
+            doerId = attackerId
+        };
+        GameManager.instance.SendClientEvent(ev);
+
+        State = state;
+        if (state.currentHealth < 1)
+            Death();
     }
     public void CopyStats(ushort target, Vector2Int buff)
     {
@@ -168,19 +213,27 @@ public class MinionLogic
         State = state;
     }
     
-    ushort Power(ushort value, int exponent)
+    public void DeBuff(ushort doer, Vector2Int deBuff)
     {
-        int result = 1;
-
-        for (int i = 0; i < exponent; i++)
+        var state = State;
+        if (deBuff.x > state.attack) state.attack = 0; else
+            state.attack -= (short)deBuff.x;
+        if (deBuff.y > state.currentHealth+1) state.currentHealth = 1; else
+            state.currentHealth -= (ushort)deBuff.y;
+        
+        GameManager.instance.SendClientEvent(new ClientEvent
         {
-            if (value != 0 && result > ushort.MaxValue / value)
-                return ushort.MaxValue;
-
-            result *= value;
-        }
-
-        return (ushort)result;
+            effectType = (ushort)Effect.Type.buff,
+            targetIds = new ushort[] { _sequenceId },
+            value = deBuff.x,
+            newValues = new int[]
+            {
+            state.attack,
+            state.currentHealth
+        },
+            doerId = _sequenceId
+        });
+        
     }
     public void Buff(int attackBonus, int healthBonus)
     {
@@ -197,8 +250,8 @@ public class MinionLogic
             0,
             ushort.MaxValue
         );
-
-        /*GameManager.instance.SendClientEvent(new ClientEvent
+        if (healthBonus > 0) maxhealth += healthBonus;
+        GameManager.instance.SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.buff,
             targetIds = new ushort[] { _sequenceId },
@@ -209,9 +262,10 @@ public class MinionLogic
             state.currentHealth
         },
             doerId = _sequenceId
-        });*/
+        });
 
         State = state;
+        GameEvents.Instance.RaiseMinionBuffed(this);
     }
     public void Sleep(bool sleep = true)
     {
@@ -343,10 +397,14 @@ public class MinionLogic
             newValues = new int[] { player.economy.CurrentResource }
         });
     }
+    public void GainEconomyNextTurn(int value)
+    {
+        manager.GetOwnerOf(State.sequenceId).economy.GainEconomyNextTurn(value);
+    }
     public enum RemoveReason { Death, Silence, ReturnToHand }
 
     // MinionLogic
-    private void Death()
+    public  void Death()
     {
        // if (IsHero) GameManager.instance.CheckGameOver();
         GameManager.instance.graveyard.SendToGraveyard(_sequenceId);

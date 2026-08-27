@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_100
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: d863b69a-76cd-4f9c-a071-01d03c4021e1.jpg
+  attack: 2
+  health: 4
+  sprite: d863b69a-76cd-4f9c-a071-01d03c4021e1
   description: Force two minions attack each other
   effect: 
   e: []
   race: 0
-  charge: 0

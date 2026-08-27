@@ -21,7 +21,7 @@ MonoBehaviour:
   summonableId: 0
   give: {fileID: 0}
   triggers:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 742f204fc25018e4388ca64f9b9f55c9, type: 2}
   random: 0
   raceValue: -1
   multiValue: -1

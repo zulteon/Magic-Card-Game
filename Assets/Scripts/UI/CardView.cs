@@ -93,6 +93,7 @@ public class CardView : MonoBehaviour
     }
     public void LoadSprite(CardData card)
     {
+        print("card" + card.sprite);
          spriteRenderer.sprite=Resources.Load<Sprite>("Sprites/" + card.sprite);
     }
     #region FlashEffect

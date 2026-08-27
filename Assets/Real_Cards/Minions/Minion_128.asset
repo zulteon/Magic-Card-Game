@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_128
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: id_00166_009_markhor_goat_rooftop_chimney.png
+  attack: 4
+  health: 2
+  sprite: id_00166_009_markhor_goat_rooftop_chimney
   description: Cant be attacked
   effect: 
   e: []
   race: 0
-  charge: 0

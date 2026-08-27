@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Minion_104
   m_EditorClassIdentifier: 
   attack: 1
-  health: 1
-  sprite: id_00155_018_proud_dung_beetle_waste.png
-  description: "K\xE9sleltetett bomba (2 \xFCt\xE9s ut\xE1n)"
+  health: 4
+  sprite: id_00155_018_proud_dung_beetle_waste
+  description: Summon a bomb for enemy (that dies in next turn)
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: a64dc49ad7d70d44fae78ca4d2fb9e2c, type: 2}
   race: 0
-  charge: 0

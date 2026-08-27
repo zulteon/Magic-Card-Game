@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1011
   m_EditorClassIdentifier: 
-  sprite: Gemini_Generated_Image_ (33).png
+  sprite: Gemini_Generated_Image_ (33)
   description: "Alv\xF3 Darukezel\u0151\" Egy v\xE9letlenszer\u0171 minion (b\xE1rki\xE9!)
     \xE1tker\xFCl a board m\xE1sik v\xE9g\xE9re \u2014 a daru felkap valakit, \xE9s
     senki nem tudja, hova teszi le."
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 16563f72845764a438ee675aa4bf247d, type: 2}

@@ -32,6 +32,16 @@ public class EffectManagerClient : MonoBehaviour
     {
         foreach (Effect effect in allEffects)
         {
+            if (effect.type == Effect.Type.none)
+                Debug.LogWarning($"[{effect.name}] típusa None — nem fog lefutni!");
+
+            if (effect.triggers == null || effect.triggers.Length == 0)
+                Debug.LogWarning($"[{effect.name}] nincs triggere! :D ");
+            else
+                for (int i = 0; i < effect.triggers.Length; i++)
+                    if (effect.triggers[i] == null)
+                        Debug.LogError($"[{effect.name}] üres trigger a(z) {i}. helyen!");
+
             if (effectRegistry.ContainsKey(effect.effectId))
             {
                 Debug.LogError($"Duplicate effect ID found: {effect.effectId}");
@@ -64,7 +74,7 @@ public class EffectManagerClient : MonoBehaviour
         allEffects = new List<Effect>();
 
         var guids = UnityEditor.AssetDatabase.FindAssets("t:Effect",
-            new[] { "Assets/Real_Cards/Abilities" });
+            new[] { "Assets/Real_Cards/" });
 
         foreach (var guid in guids)
         {

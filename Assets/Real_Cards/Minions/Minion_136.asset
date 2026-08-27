@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_136
   m_EditorClassIdentifier: 
-  attack: 1
-  health: 1
-  sprite: Gemini_Generated_Image_k2pw1pk2pw1pk2pw.png
+  attack: 2
+  health: 2
+  sprite: Gemini_Generated_Image_k2pw1pk2pw1pk2pw
   description: "K\xF6lcs\xF6n Er\u0151 (1. k\xF6r +4/+4, 2. k\xF6r -3/-3)"
   effect: 
   e: []
   race: 0
-  charge: 0

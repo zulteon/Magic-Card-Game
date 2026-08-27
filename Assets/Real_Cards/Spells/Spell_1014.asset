@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1014
   m_EditorClassIdentifier: 
-  sprite: "Minden minion (mindk\xE9t oldal) visszaker\xFCl a gazd\xE1ja kez\xE9be
+  sprite: Gemini_Generated_Image_ (30)
+  description: "Minden minion (mindk\xE9t oldal) visszaker\xFCl a gazd\xE1ja kez\xE9be
     \u2014 mindenki ki a h\xE1zb\xF3l! (Vad board-reset \u2014 ritka, dr\xE1ga lap.)"
-  description: "Szkunk g\xE1zsziv\xE1rg\xE1s-riad\xF3 \u2192 \"Evaku\xE1ci\xF3\"
-    Gemini_Generated_Image_ (30).png"
   effect: 
   e: []

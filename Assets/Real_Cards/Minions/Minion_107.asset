@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Minion_107
   m_EditorClassIdentifier: 
   attack: 1
-  health: 1
-  sprite: id_00093_008_komodo_dragon_judge_rugged.png
+  health: 4
+  sprite: id_00093_008_komodo_dragon_judge_rugged
   description: Set highest HP enemy to 1
   effect: 
   e: []
   race: 0
-  charge: 0
