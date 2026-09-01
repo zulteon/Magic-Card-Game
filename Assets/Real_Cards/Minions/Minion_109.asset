@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 4
   sprite: id_00090_005_numbat_museum_custodian_striped
-  description: Swap Attack/Health StartOfCombat
+  description: 'OnPlay: Swap a minion Attack and Health'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 83c2ea93ba0c4aa40a745b73bf9c30c2, type: 2}
   race: 0

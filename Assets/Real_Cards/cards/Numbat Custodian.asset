@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 109
   Cost: 3
-  description: Swap Attack/Health StartOfCombat
+  description: 'OnPlay: Swap a minion Attack and Health'
   m: {fileID: 11400000, guid: ab6472e39c9fb9c49ba3254e1089fbc0, type: 2}
   spell: {fileID: 0}

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1015
   Cost: 2
-  description: "Mole-Rat Sauna Master \u2192 a) All OTHER minions -1 Attack this
-    turn"
+  description: All other minions lose 1 Attack this turn.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 738d679e27305c343b7da186160f0284, type: 2}

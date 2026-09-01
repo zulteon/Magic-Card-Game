@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1013
   Cost: 1
-  description: "Csiga a s\xEDneken \u2192 Az ellenf\xE9l k\xF6vetkez\u0151 k\xF6re
-    1-gyel kevesebb man\xE1b\xF3l indul"
+  description: 'OnPlay: Your opponent starts their next turn with 1 less Mana.'
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 6d863e971cd92bf408d9d894db602a3d, type: 2}

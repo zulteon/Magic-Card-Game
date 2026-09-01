@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 2
   health: 2
-  sprite: id_00105_020_platypus_accountant_bill_puzzled
-  description: "OnDeath: a szomsz\xE9dos token minionok +stat-ot kapnak"
+  sprite: id_00076_003_an_old_gal_pagos
+  description: 'OnDeath: Adjacent friendly minions gain +2/+1.'
   effect: 
   e:
   - {fileID: 11400000, guid: cbef841d80ea8874784fe5cf9cc5ef4e, type: 2}

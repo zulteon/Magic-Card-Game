@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 121
   Cost: 4
-  description: "Id\xE9zz 3 l\xE9nyt"
+  description: 'OnDeath: Summon three 1/1 tokens.'
   m: {fileID: 11400000, guid: 22aefb636d1dde246bcf5dea744c9847, type: 2}
   spell: {fileID: 0}

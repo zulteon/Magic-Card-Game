@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 125
   Cost: 3
-  description: when dies gain 2 mana next turn
+  description: 'OnDeath: Gain 2 Mana next turn.'
   m: {fileID: 11400000, guid: 7e66a0905c826824fb563b142e85e9d9, type: 2}
   spell: {fileID: 0}

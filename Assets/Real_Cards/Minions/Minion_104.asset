@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 1
   health: 4
   sprite: id_00155_018_proud_dung_beetle_waste
-  description: Summon a bomb for enemy (that dies in next turn)
+  description: When attack summon a bomb to an enemy that deals 2 damage to all.
   effect: 
   e:
   - {fileID: 11400000, guid: a64dc49ad7d70d44fae78ca4d2fb9e2c, type: 2}

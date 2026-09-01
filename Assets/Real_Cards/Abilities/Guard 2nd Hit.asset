@@ -16,7 +16,7 @@ MonoBehaviour:
   multiValue: 2
   value: -1
   stats: {x: -1, y: -1}
-  t: 0
+  t: 4
   sub: 2
   cond: 3
   activity: 1

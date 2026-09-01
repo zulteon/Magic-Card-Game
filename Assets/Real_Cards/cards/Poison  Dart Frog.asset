@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 110
   Cost: 3
-  description: "3 sebz\xE9s random ellenf\xE9lnek StartOfCombat"
+  description: 'OnDeath: Deal 3 damage to a random enemy.'
   m: {fileID: 11400000, guid: f87ffa1b4cfc3db43b22883edb3abee0, type: 2}
   spell: {fileID: 0}

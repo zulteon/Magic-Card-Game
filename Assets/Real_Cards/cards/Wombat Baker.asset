@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 124
   Cost: 3
-  description: "Bar\xE1tnak +3 hp"
+  description: 'OnDeath: Give a friendly minion +3 Health.'
   m: {fileID: 11400000, guid: c3f605ab45fe0e242b6d1c275c6838b3, type: 2}
   spell: {fileID: 0}

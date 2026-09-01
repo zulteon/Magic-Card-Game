@@ -9,11 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f2420768e43a344a85b61d9ae964330, type: 3}
+  m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: SummonAble 1
   m_EditorClassIdentifier: 
-  cardId: 147
-  Cost: 0
+  attack: 1
+  health: 1
+  sprite: saved_cat
   description: 
-  m: {fileID: 11400000, guid: e3093ae33ddde054ab21797785350e70, type: 2}
-  spell: {fileID: 0}
+  effect: 
+  e: []
+  race: 0

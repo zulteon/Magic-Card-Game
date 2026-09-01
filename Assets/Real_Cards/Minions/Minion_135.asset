@@ -15,7 +15,9 @@ MonoBehaviour:
   attack: 2
   health: 4
   sprite: id_00237_006_an_axolotl_caf_worker
-  description: 'When dies: summon half of original stats'
+  description: 'OnDeath: Summon a minion with half of this minion''s original Attack
+    and Health.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 56f3bed7375276d4492a6125c5e7e820, type: 2}
   race: 0

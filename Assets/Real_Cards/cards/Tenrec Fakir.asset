@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 134
   Cost: 5
-  description: Each second hit is blocked
+  description: Every second hit against this minion is blocked.
   m: {fileID: 11400000, guid: c465f9a29b1e0a04cb1aba25fba86718, type: 2}
   spell: {fileID: 0}

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 117
   Cost: 4
-  description: "Id\xE9zz egy 2/2-t"
+  description: 'OnDeath: Summon a 2/2.'
   m: {fileID: 11400000, guid: 85e68b62272ae544491fe918c58837a2, type: 2}
   spell: {fileID: 0}

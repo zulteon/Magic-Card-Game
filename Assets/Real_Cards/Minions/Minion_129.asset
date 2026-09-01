@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 3
   sprite: id_00231_016_prompt_happy_crow_wearing
-  description: "+1 Gold ebben a k\xF6rben"
+  description: 'OnPlay: Gain 1 Mana Crystal this turn only.'
   effect: 
   e:
   - {fileID: 11400000, guid: d723d476233a8354db3efd4650673491, type: 2}

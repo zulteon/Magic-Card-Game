@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Spell_1026
   m_EditorClassIdentifier: 
   sprite: id_00265_004_an_electric_eel_metro
-  description: "4 Electric Eel Metro (jump-start)** \u2192 Reactivate a friendly
-    minion that already attacked:"
+  description: A friendly minion that already attacked may attack again this turn.
   effect: 
   e: []

@@ -23,32 +23,31 @@ public class EffectContext  // ← Vissza class-ra
         {// maybe the targeting center get targets can drop minion logic but thats a micro performance
             //after a while it turned out very usefull, when we add events with empty targets 
             targetIds=TargetingCenter.GetTargets(e, doerId,source);
+            UnityEngine.Debug.Log("Are we hetting here"+ targetIds.Count);
         }
         this.effect = e;
         this.doerId = doerId;
         this.value = e.value + extraValue;
         this.buff = effect.buff;
-        if (targetIds != null && targetIds.Count > 0)
+        MinionLogic[] temp = new MinionLogic[targetIds.Count];
+        int count = 0;
+
+        for (int i = 0; i < targetIds.Count; i++)
         {
-            this.targetIds = targetIds.ToArray();
-
-            int count = 0;
-            // Egy iteráció temp tömbbel
-            MinionLogic[] temp = new MinionLogic[targetIds.Count];
-            for (int i = 0; i < targetIds.Count; i++)
+            var m = GameManager.instance.GetMinionLogic(targetIds[i]);
+            if (m != null)
             {
-                var m = GameManager.instance.GetMinionLogic(targetIds[i]);
-                if (m != null)
-                {
-                    temp[count] = m;
-                    count++;
-                }
-                else UnityEngine.Debug.Log($"<color=red> whaat </color> {targetIds[i]}");
+                temp[count] = m;
+                count++;
             }
+            else UnityEngine.Debug.Log($"<color=red>whaat</color> {targetIds[i]}");
         }
-        
 
-        
+        // csak a valóban talált logicokat adjuk át, nem a teljes (esetleg null-os) temp tömböt
+        this.targets = new MinionLogic[count];
+        System.Array.Copy(temp, this.targets, count);
+        this.targetIds = targetIds.ToArray();
+
 
         UnityEngine.Debug.Log(" csekkoljuk  a value triggert");
         OverWriteValueTrigger();

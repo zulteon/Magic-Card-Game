@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 3
   health: 3
   sprite: id_00208_011_gal_pagos_tortoise_elevator
-  description: "Szomsz\xE9dok +2/+1"
+  description: 'OnDeath: Give adjacent friendly minions +2/+1.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 92d0f5090ea597b4c924734295e1e5e0, type: 2}
   race: 0

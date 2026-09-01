@@ -62,8 +62,7 @@ public class TriggerChecker : MonoBehaviour
             // Ha a kártya ellenség-kört vár (false), és nem a gazda köre van (false), AKKOR is True.
             return expectsOwnerTurn == isActuallyOwnerTurn;
         }
-        MinionState target=GameManager.instance.GetMinionById(targetLogic._sequenceId);
-        MinionState doer=GameManager.instance.GetMinionById(doerLogic._sequenceId);
+        MinionState target=targetLogic==null?default:GameManager.instance.GetMinionById(targetLogic._sequenceId);
         int subjectValue=getSubject(trigger,targetLogic, target, eventValue);
         int value = trigger.value;
         if (trigger.valueTrigger!=null)
@@ -95,6 +94,12 @@ public class TriggerChecker : MonoBehaviour
                 break;
             case Trigger.subject.eventvalue:
                 value = eventValue;
+                break;
+            case Trigger.subject.boardCount:
+                value = manager.isAllyMinion(targetLogic._sequenceId)
+                    ? manager.boardAlly.Count
+                    : manager.boardEnemy.Count;
+                break;
                 break;
 
         }return value;

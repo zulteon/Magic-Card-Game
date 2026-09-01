@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1030
   Cost: 3
-  description: Deal 6 damage to two random minion
+  description: 'OnPlay: Deal 6 damage to two random minions.'
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 5a7d01cc44d1d2a4da60058869942afd, type: 2}

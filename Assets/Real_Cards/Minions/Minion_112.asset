@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 4
   health: 5
   sprite: id_00180_003_an_aye_aye_goa
-  description: "Counter Spell / StartOfCombat (a sorban els\u0151t semleges\xEDti)"
+  description: 'OnPlay: Deal 3 damage to a random enemy'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 914a5f317b139d343b374812b1a48085, type: 2}
   race: 0

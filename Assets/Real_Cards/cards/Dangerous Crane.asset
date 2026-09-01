@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1011
   Cost: 1
-  description: "Alv\xF3 Darukezel\u0151\" Egy v\xE9letlenszer\u0171 minion (b\xE1rki\xE9!)
-    \xE1tker\xFCl a board m\xE1sik v\xE9g\xE9re \u2014 a daru felkap valakit, \xE9s
-    senki nem tudja, hova teszi le."
+  description: Move probably an enemy minion to the side of the board.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 2759884684809c54d9f8e46960ae4489, type: 2}

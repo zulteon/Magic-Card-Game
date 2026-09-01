@@ -12,6 +12,7 @@ public struct MinionState : IEquatable<MinionState>
     public short attack;          // ATK (lehet negatív is)
     public bool canAttack;
     public bool taunt;
+    public int maxHealth;
     // FIGYELEM: sose módosítsd a meglévõ listát (Add/Remove/Clear)!
     // A struct másolásakor a lista referenciája osztott, így a dirty-check
     // nem venné észre a változást. Mindig új listát adj:
@@ -23,7 +24,7 @@ public struct MinionState : IEquatable<MinionState>
         if (cardId != other.cardId ||
         sequenceId != other.sequenceId ||
         currentHealth != other.currentHealth ||
-        attack != other.attack || canAttack != other.canAttack || taunt!=other.taunt)
+        attack != other.attack || canAttack != other.canAttack || taunt!=other.taunt ||maxHealth!=other.maxHealth)
                 return false;
 
             int a = activeEffects?.Count ?? 0;
@@ -48,6 +49,7 @@ public struct MinionState : IEquatable<MinionState>
             hash = hash * 31 + attack.GetHashCode();
             hash = hash * 31 + canAttack.GetHashCode();
             hash = hash * 31 + taunt.GetHashCode();
+            hash = hash * 31 + maxHealth.GetHashCode();
             
             if (activeEffects != null)
             {

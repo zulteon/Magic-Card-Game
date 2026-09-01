@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 131
   Cost: 0
-  description: "Visszacsap\xE1s (Reflect Damage)"
+  description: Reflect Damage (once)
   m: {fileID: 11400000, guid: dc46d2dd6cfc05648a425ad4a90f1527, type: 2}
   spell: {fileID: 0}

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 116
   Cost: 4
-  description: "OnDeath: visszat\xE9r 1 k\xF6rre gyeng\xFClt form\xE1ban"
+  description: 'OnDeath: Reborn with 1 Health.'
   m: {fileID: 11400000, guid: 8d8b3ac57687a5440a0cb3fcfb169928, type: 2}
   spell: {fileID: 0}

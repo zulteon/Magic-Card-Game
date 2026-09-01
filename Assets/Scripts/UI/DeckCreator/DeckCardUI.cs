@@ -13,9 +13,11 @@ public class DeckCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public Image portrait;
     public TMP_Text costText;
     public TMP_Text nameText;
-    public TMP_Text statsText;
+    public TMP_Text attackText;
+    public TMP_Text healthText;
     public GameObject countBadge;
     public TMP_Text countText;
+    public TMP_Text descriptionText;
 
     [Header("Hover")]
     public float hoverScale = 1.08f;
@@ -46,26 +48,42 @@ public class DeckCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         return result;
     }
     // CardData
+    [SerializeField] float wideIMGScale=3.11f;
+
     public void Bind(CardData data, int countInDeck, System.Action<CardData> onClick)
     {
         _data = data;
         _onClick = onClick;
-        if(data.sprite!=null)
-        nameText.text = FormatSpriteToName(data.sprite);
+
+        nameText.text = data.cardName;
         costText.text = data.cost.ToString();
 
         if (data is MinionCard m)
         {
-            statsText.text = $"{m.attack}/{m.health}";
-            statsText.gameObject.SetActive(true);
+            attackText.text = $"{m.attack}";
+            healthText.text = $"{m.health}";
+            attackText.gameObject.SetActive(true);
+            healthText.gameObject.SetActive(true);
         }
         else
         {
-            statsText.gameObject.SetActive(false);
+            attackText.gameObject.SetActive(false);
+            healthText.gameObject.SetActive(false);
         }
+
+        descriptionText.text = data.description;
 
         portrait.sprite = Resources.Load<Sprite>("Sprites/" + data.sprite);
         portrait.enabled = portrait.sprite != null;
+
+        if (portrait.sprite != null)
+        {
+            // Ha a kép szélesebb, mint amilyen magas
+            if (portrait.sprite.rect.width > portrait.sprite.rect.height)
+            {
+                portrait.transform.localScale =new Vector3(wideIMGScale, wideIMGScale, 1);
+            }
+        }
 
         SetCount(countInDeck);
         gameObject.SetActive(true);

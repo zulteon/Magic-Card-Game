@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 3
   sprite: id_00171_014_fossa_personal_trainer_checking
-  description: End of turn give a friendly minion +3 3
+  description: 'EndOfTurn: Give a friendly minion +3/+3.'
   effect: 
   e:
   - {fileID: 11400000, guid: 76886a7b97897cf4b85a592d9b73a476, type: 2}

@@ -10,7 +10,7 @@ public class Effect : ScriptableObject
         none, damage, heal, give, death, attack, buff, steal, swapAttackHealth, setStats, copyStats, gainEconomy, counter, spell, cardDestroyed,
         charge, summon,sleep,taunt,doubleStats,cleave,albatros, debuff,unattackable,reflect, bodyguard,discard,draw, returnToHand,trueDamage,summonHalfOf,
         gainEconomyNextTurn, damageBoardEdges, sacrificeAndDamageAll,randomDamage, cantAttackForTurn, damageAndNeighbours, buffAndCantAttack,discover,sendToFuture,umbrella,
-        minionSwap, syncDance, 
+        minionSwap, syncDance, setManaCrystal,playCard,loanPower, buffAndNeighbours,damageReduce,copyCard,destroy,reActivate
     }
     
 
@@ -26,15 +26,14 @@ public class Effect : ScriptableObject
     public Effect give;
     public Trigger[] triggers;
     public bool random = false;
-    public int raceValue = -1;
     public int multiValue = -1;
-    public bool multiSplit = false;
     public bool other = false;
     public ushort effectId;
     [Header("Logic Operators")]
     public List<LogicOperator> logicOp = new List<LogicOperator>() { };
     public Trigger linkedTrigger; // következő trigger a láncban
     public Trigger.SortMode sortMode;
+    public Trigger targetCondition;
     public enum LogicOperator { NONE, AND, OR, THEN }
     public Zone activeZone = Zone.Board;
     public bool needsTarget = true;

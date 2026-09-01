@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Spell_1017
   m_EditorClassIdentifier: 
   sprite: id_00332_001_young_sugar_glider_on
-  description: "Sugar Glider on Swing \u2192 a) A friendly minion gains +2/+2 and
-    \"when this dies, return to hand\""
+  description: Give a friendly minion +2/+2. When it dies, return it to your hand.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: eb15feab26b509543b2f358aad249e8a, type: 2}
+  - {fileID: 11400000, guid: 279c216b23df25342b9a2d264fb0c468, type: 2}
+  - {fileID: 11400000, guid: d831eed16d2588d4685dcee349a19ab7, type: 2}

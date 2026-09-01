@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 1
   health: 1
-  sprite: 
+  sprite: pigeon
   description: 
   effect: 
   e: []

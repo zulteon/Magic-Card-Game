@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 136
   Cost: 4
-  description: "K\xF6lcs\xF6n Er\u0151 (1. k\xF6r +4/+4, 2. k\xF6r -3/-3)"
+  description: 'OnPlay: Give a minion +4/4 but -3/3 next turn'
   m: {fileID: 11400000, guid: 47713acc6787533489150f4614dbba8c, type: 2}
   spell: {fileID: 0}

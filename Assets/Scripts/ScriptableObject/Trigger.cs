@@ -9,7 +9,7 @@ public class Trigger : ScriptableObject
         // instant is like battlecry
     
     public enum time { instant,during, endofturn, startofturn, dormant,before, after,oneturn,multiturn,startofcombat,endofcombat,ifso,value,buff }
-    public enum subject{ Minion,Card,None,Hero,Health,Attack, Attack_Health,Self,minionCount,eventvalue,turn, HandCount,RemainingMana}
+    public enum subject{ Minion,Card,None,Hero,Health,Attack, Attack_Health,Self,minionCount,eventvalue,turn, HandCount,RemainingMana,boardCount,isDamaged}
     public enum conditions { less,adjacent,more,none,equals,thisOne,ally,enemy}
     public enum Target {self, all,enemy,ally, adjacent,allother,left,right, selfAndNeighbour, none}
     public enum TargetType { minion,race,character,taunt,hero,none}

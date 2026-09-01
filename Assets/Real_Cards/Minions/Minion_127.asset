@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 2
   sprite: id_00163_006_saiga_antelope_sommelier_magnificent
-  description: 3 attack All
+  description: OnPlay:+3 attack to all minion
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 1a9aeec032c26274bb9349f20f98de7d, type: 2}
   race: 0

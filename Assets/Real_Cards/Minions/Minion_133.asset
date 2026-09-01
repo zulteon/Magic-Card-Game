@@ -15,8 +15,7 @@ MonoBehaviour:
   attack: 1
   health: 1
   sprite: id_00072_002_chameleon_detective_independently_swiveling
-  description: Immune while attacked (cannot be taunted)
+  description: 'When Attacked: Become Immune for this attack.'
   effect: 
   e: []
   race: 0
-  charge: 0

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1006
   m_EditorClassIdentifier: 
   sprite: id_00095_010_an_emu_bus_driver
-  description: "Emu villamosvezet\u0151 \u2192 \"A 4-6-os \xE9rkezik\" Sebz\xE9s
-    egy oszlopban: a szemben \xE1ll\xF3 minion \xE9s szomsz\xE9dai 2-2 sebz\xE9st
-    kapnak \u2014"
+  description: Deal 2 damage to a minion and its neighbors.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 21d4439dbc324ec4d9c709ab22836c65, type: 2}

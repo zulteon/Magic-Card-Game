@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac8a27f6d19e7f948b70a5ccc50cba57, type: 3}
+  m_Name: _114 buff if lonenly
+  m_EditorClassIdentifier: 
+  type: 6
+  targetType: 0
+  targetCast: 0
+  target: 0
+  value: 0
+  buff: {x: 2, y: 2}
+  summonableId: 0
+  give: {fileID: 0}
+  triggers:
+  - {fileID: 11400000, guid: 777362456731ea9439cf239eff3c813c, type: 2}
+  - {fileID: 11400000, guid: 59abd4626ec778445932b84dcdc8255e, type: 2}
+  random: 0
+  raceValue: -1
+  multiValue: -1
+  multiSplit: 0
+  other: 0
+  effectId: 81
+  logicOp: 
+  linkedTrigger: {fileID: 11400000, guid: 59abd4626ec778445932b84dcdc8255e, type: 2}
+  sortMode: 0
+  activeZone: 1
+  needsTarget: 1

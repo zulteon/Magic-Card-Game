@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 2
   sprite: id_00198_001_tuatara_government_office_clerk
-  description: "Var\xE1nusz gazdas\xE1g-dupl\xE1z\xF3"
+  description: At the end of your turn, double your remaining Mana next turn.
   effect: 
   e:
   - {fileID: 11400000, guid: 63781925119ce4f438b41f9e9fdc880d, type: 2}

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 142
   Cost: 0
-  description: OnPlay Summon a minion from hand that has less attack than him
+  description: 'OnPlay: Summon a friendly minion from your hand that has less Attack
+    than this minion.'
   m: {fileID: 11400000, guid: baf6e92a0dc4d6b4785c1808d624a491, type: 2}
   spell: {fileID: 0}

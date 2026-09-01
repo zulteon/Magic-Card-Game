@@ -24,7 +24,7 @@ public class DeckRowUI : MonoBehaviour
         _onClick = onClick;
 
         costText.text = data.cost.ToString();
-        nameText.text = CardView.FormatSpriteToName(data.sprite);
+        nameText.text = data.cardName;
         countText.text = count > 1 ? "x" + count : "";
 
         gameObject.SetActive(true);

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1014
   Cost: 7
-  description: "Szkunk g\xE1zsziv\xE1rg\xE1s-riad\xF3 \u2192 \"Evaku\xE1ci\xF3\"
-    Gemini_Generated_Image_ (30).png"
+  description: Return all minions on both sides to their owner's hand.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: d5384618b86f14a43b9a51b3090f481e, type: 2}

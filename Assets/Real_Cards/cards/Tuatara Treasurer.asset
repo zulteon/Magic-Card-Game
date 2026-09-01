@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 137
   Cost: 5
-  description: "Var\xE1nusz gazdas\xE1g-dupl\xE1z\xF3"
+  description: At the end of your turn, double your remaining Mana next turn.
   m: {fileID: 11400000, guid: 766aae727cfb50b4b93face9cbbacd70, type: 2}
   spell: {fileID: 0}

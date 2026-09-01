@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1028
   Cost: 0
-  description: "Pangolin Street Sweeper** \u2192 Blocks ALL damage this turn but
-    can't attack"
+  description: This minion takes no damage this turn but cannot attack.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 364da53d271817244b7609ae9de895d0, type: 2}

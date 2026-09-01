@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 2
   sprite: Gemini_Generated_Image_k2pw1pk2pw1pk2pw
-  description: "K\xF6lcs\xF6n Er\u0151 (1. k\xF6r +4/+4, 2. k\xF6r -3/-3)"
+  description: 'OnPlay: Give a minion +4/4 but -3/3 next turn'
   effect: 
   e: []
   race: 0

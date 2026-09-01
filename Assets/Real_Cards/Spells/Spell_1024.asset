@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1024
   m_EditorClassIdentifier: 
   sprite: id_00288_007_secretary_bird_pest_control
-  description: "Secretary Bird Inspector \u2192 a) Deal 4 damage, ignoring blocks/shields"
+  description: 'OnPlay: Deal 4 damage, ignoring Blocks and Shields.'
   effect: 
   e:
   - {fileID: 11400000, guid: 4aaaf22b44a48384e9812453c13bf1ab, type: 2}

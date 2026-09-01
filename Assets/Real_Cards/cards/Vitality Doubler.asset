@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 123
   Cost: 4
-  description: "Random bar\xE1t dupl\xE1zza HP-j\xE1t"
+  description: 'OnDeath: Double the Health of a random friendly minion.'
   m: {fileID: 11400000, guid: 16b47dc5294d9094cae19e42123ec17f, type: 2}
   spell: {fileID: 0}

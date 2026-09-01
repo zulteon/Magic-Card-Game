@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1027
   Cost: 4
-  description: "Fossa Pickpocket** \u2192 Steal 2 gold from the enemy"
+  description: Steal 2 Mana from the enemy next turn.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: aadc839efc5ffc34a8eb6fdc3950a132, type: 2}

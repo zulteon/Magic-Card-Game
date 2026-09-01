@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 3
   health: 2
   sprite: id_00164_007_shoebill_stork_librarian_silent
-  description: Silence An Enemy
+  description: 'OnPlay: Silence an enemy minion.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 508de4e3cfae5a647a779903c0e8b6ab, type: 2}
   race: 0

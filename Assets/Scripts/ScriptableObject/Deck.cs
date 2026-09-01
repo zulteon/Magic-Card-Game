@@ -13,72 +13,58 @@ public class Deck : ScriptableObject
     // Deck konvertálása JSON-kompatibilis formátumra
     public CardCollection ToJson()
     {
+        return CardsToCollection(deck);
+    }
+    public static CardCollection CardsToCollection(IEnumerable<Card> cards)
+    {
         CardCollection cardCollection = new CardCollection();
 
-        Debug.Log($"Deck neve: {name}, kártyák száma: {deck?.Count ?? 0}");
-
-        if (deck == null)
-        {
-            Debug.LogWarning("A deck lista null!");
-            return cardCollection;
-        }
-
-        foreach (Card card in deck)
+        foreach (Card card in cards)
         {
             if (card == null)
-            {
-                Debug.LogWarning("Null kártya találva a deck-ben!");
                 continue;
-            }
-
-            Debug.Log($"Feldolgozás: {card.name} (ID: {card.cardId})");
 
             CardData cardData = null;
 
-            // Minion kártya konvertálása
             if (card.m != null)
             {
-                Debug.Log($"Minion kártya: {card.m.attack}/{card.m.health} +{card.m.sprite}");
                 cardData = new MinionCard
                 {
                     cardId = card.cardId,
+                    cardName = card.name,
                     cost = card.Cost,
                     description = card.description,
+
                     attack = card.m.attack,
                     health = card.m.health,
+
                     sprite = card.m.sprite,
                     effect = card.m.effect,
+
                     effectIds = ConvertEffectsToIds(card.m.e),
+
                     raceId = (int)card.m.race
                 };
             }
-            // Spell kártya konvertálása
             else if (card.spell != null)
             {
-                Debug.Log($"Spell kártya: {card.spell.description}");
                 cardData = new SpellCard
                 {
                     cardId = card.cardId,
+                    cardName = card.name,
                     cost = card.Cost,
                     description = card.description,
+
                     sprite = card.spell.sprite,
-                    effect = card.spell.effect,
+
                     effectIds = ConvertEffectsToIds(card.spell.e)
                 };
             }
-            else
-            {
-                Debug.LogWarning($"Kártya sem minion, sem spell: {card.name}");
-            }
 
             if (cardData != null)
-            {
                 cardCollection.cards.Add(cardData);
-                Debug.Log($"Kártya hozzáadva: {cardData.cardId}");
-            }
         }
 
-        Debug.Log($"Végsõ kártyák száma: {cardCollection.cards.Count}");
         return cardCollection;
     }
 
@@ -91,7 +77,7 @@ public class Deck : ScriptableObject
      new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None });
     }
     // Effect-ek ID-kká konvertálása
-    private List<ushort> ConvertEffectsToIds(List<Effect> effects)
+    private static List<ushort> ConvertEffectsToIds(List<Effect> effects)
     {
         List<ushort> ids = new List<ushort>();
         if (effects != null)

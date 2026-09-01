@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 114
   Cost: 2
-  description: "Ha egyed\xFCl van kap a boardon+2/2"
+  description: If he is the only one on board gain 2/2
   m: {fileID: 11400000, guid: 61a510049bca2db4ca83a11a806489d9, type: 2}
   spell: {fileID: 0}

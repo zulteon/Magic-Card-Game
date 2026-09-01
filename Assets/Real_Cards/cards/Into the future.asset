@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1007
   Cost: 3
-  description: "\xD3r\xE1smester tekn\u0151s \u2192 \"J\xF6v\u0151be k\xFCld\xE9s\"
-    Egy minion elt\u0171nik a k\xF6vetkez\u0151 k\xF6r\xF6dig, majd visszat\xE9r
-    \u2014 az \xF3ramutat\xF3 \xE1tugrik rajta."
+  description: Send a minion into the a Future.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 54971b2b31b3e8348a487e7af7aebbfa, type: 2}

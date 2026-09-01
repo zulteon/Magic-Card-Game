@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Deck
   m_EditorClassIdentifier: 
   deck:
+  - {fileID: 11400000, guid: cbc886abbf4b56c43b112b6c9271b4ae, type: 2}
+  - {fileID: 11400000, guid: 6253ae7cbda7ed847867611d5180b4fb, type: 2}
+  - {fileID: 11400000, guid: 22aec4141abb7fb4e9ec32e9937868d4, type: 2}
+  - {fileID: 11400000, guid: 06cfeb3fd29e72e44b1ef00b7c36b1f7, type: 2}
   - {fileID: 11400000, guid: 71f5f6ed37b9dd843bdef181485500e2, type: 2}
   - {fileID: 11400000, guid: 255462a29aabb834cbb2fb8a2dae4fc9, type: 2}
   - {fileID: 11400000, guid: 1d4e40be4ffb9744daccf83335ce3d60, type: 2}
@@ -21,7 +25,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2efdc9d7de7775f43b4f55199140aa0a, type: 2}
   - {fileID: 11400000, guid: 2efdc9d7de7775f43b4f55199140aa0a, type: 2}
   - {fileID: 11400000, guid: 24012e9fb6f1b6e4fb6484c3978571ac, type: 2}
-  - {fileID: 11400000, guid: 22aec4141abb7fb4e9ec32e9937868d4, type: 2}
   - {fileID: 11400000, guid: f660dfcefc7cfcd419a149d0e386d862, type: 2}
   - {fileID: 11400000, guid: a2b03ef14d0e9834ab523cf3e31e505d, type: 2}
   - {fileID: 11400000, guid: abe33f02d1cca6a4eb5d71b7a69db123, type: 2}
@@ -40,7 +43,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cd2a8a72ee5772347b7f48915095651c, type: 2}
   - {fileID: 11400000, guid: 6c61ab5810af6f94587e81d4c40df403, type: 2}
   - {fileID: 11400000, guid: 5629f09135abbc04d8d4c2e5e9695830, type: 2}
-  - {fileID: 11400000, guid: 06cfeb3fd29e72e44b1ef00b7c36b1f7, type: 2}
   - {fileID: 11400000, guid: f73f9692c72e2cd478e59f886a7ec760, type: 2}
   - {fileID: 11400000, guid: 86227877be250e84cb3395be0bfbdc13, type: 2}
   - {fileID: 11400000, guid: 86227877be250e84cb3395be0bfbdc13, type: 2}
@@ -48,4 +50,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9281859ed11ba6b4c85f95d8f320f734, type: 2}
   - {fileID: 11400000, guid: 0ea8d8f53766ca34d9a20228273c5048, type: 2}
   - {fileID: 11400000, guid: a38814b3dfec4ce40b2e92e74dab32c8, type: 2}
+  - {fileID: 11400000, guid: fd06096d4bd241b4a949c8f4562c7c08, type: 2}
   - {fileID: 11400000, guid: fd06096d4bd241b4a949c8f4562c7c08, type: 2}

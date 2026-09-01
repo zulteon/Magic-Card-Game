@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1003
   m_EditorClassIdentifier: 
   sprite: goat
-  description: "Ments meg egy bar\xE1ts\xE1gos miniont: vedd vissza a kezedbe a harc
-    k\xF6zep\xE9r\u0151l"
+  description: Return a friendly minion to your hand.
   effect: 
   e:
   - {fileID: 11400000, guid: ededd6bff51cb7949912a8ad3a6d2812, type: 2}

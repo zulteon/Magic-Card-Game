@@ -21,7 +21,7 @@ public static class DeckStorage
 
         string json = JsonConvert.SerializeObject(collection, Formatting.Indented);
         File.WriteAllText(Path.Combine(Folder, deckName + ".json"), json);
-
+        Debug.Log(Application.persistentDataPath);
         Debug.Log($"Pakli mentve: {deckName} ({cards.Count} lap)");
     }
 
@@ -46,7 +46,59 @@ public static class DeckStorage
 
         return result;
     }
+    private static ushort[] preparedDeckIds;
 
+    public static string PreparedDeckName { get; private set; }
+
+    public static bool HasPreparedDeck =>
+        preparedDeckIds != null &&
+        preparedDeckIds.Length > 0;
+
+
+    public static bool PrepareForNetwork(string deckName)
+    {
+        List<CardData> cards = Load(deckName);
+
+        if (cards == null || cards.Count == 0)
+        {
+            Debug.LogWarning(
+                $"Nem sikerült elõkészíteni a decket: {deckName}"
+            );
+
+            preparedDeckIds = null;
+            PreparedDeckName = null;
+
+            return false;
+        }
+
+        preparedDeckIds =
+            new ushort[cards.Count];
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            preparedDeckIds[i] =
+                cards[i].cardId;
+        }
+
+        PreparedDeckName = deckName;
+
+        Debug.Log(
+            $"Deck elõkészítve hálózatra: " +
+            $"{deckName} ({preparedDeckIds.Length} lap)"
+        );
+
+        return true;
+    }
+
+
+    public static ushort[] GetPreparedDeckIds()
+    {
+        if (!HasPreparedDeck)
+            return null;
+
+        // Adunk egy másolatot.
+        return (ushort[])preparedDeckIds.Clone();
+    }
     public static List<string> ListDecks()
     {
         if (!Directory.Exists(Folder)) return new List<string>();

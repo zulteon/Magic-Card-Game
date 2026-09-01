@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 1
   health: 2
   sprite: id_00082_009_shoebill_stork_funeral_director
-  description: "Shoebill \u2014 Temet\u0151i Scaling"
+  description: 'OnBoard or Hand: If somebody dies gain +1/1'
   effect: 
   e:
   - {fileID: 11400000, guid: 973ffb8604a79054d95968a0c47f7850, type: 2}

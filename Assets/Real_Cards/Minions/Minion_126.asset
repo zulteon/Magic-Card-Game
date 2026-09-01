@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 3
   health: 2
   sprite: id_00142_005_tibetan_yak_locksmith_massive
-  description: Enemy taunts ignored
+  description: 'EndOfTurn: Give a minion +1/1 in hand'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: f6f9a83beff5b5e4e84bdbcbd8e0f0e4, type: 2}
   race: 0

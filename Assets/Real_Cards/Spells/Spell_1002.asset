@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Spell_1002
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (22)
-  description: "3. M\xE9zborz g\xE1ztechnikus \u2192 \"Kontroll\xE1lt Robban\xE1s\"
-    Okozz 4 sebz\xE9st egy minionnak \xC9S 1-et a saj\xE1t h\u0151s\xF6dnek \u2014
-    a k\xE1osz \xE1ra van, de a m\xE9zborz tudja, mit csin\xE1l. (A \"nyugodt arc
-    a t\u0171zben\" flavor = a self-damage trade-off.)"
+  description: Deal 4 damage to a minion and 1 damage to your hero.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 61271a507a3c6fc42b04afddc7f380bc, type: 2}
+  - {fileID: 11400000, guid: 776fa55dd6f17874b8d20fa679bd7748, type: 2}

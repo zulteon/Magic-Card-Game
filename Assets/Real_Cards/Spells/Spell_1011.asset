@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1011
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (33)
-  description: "Alv\xF3 Darukezel\u0151\" Egy v\xE9letlenszer\u0171 minion (b\xE1rki\xE9!)
-    \xE1tker\xFCl a board m\xE1sik v\xE9g\xE9re \u2014 a daru felkap valakit, \xE9s
-    senki nem tudja, hova teszi le."
+  description: Move probably an enemy minion to the side of the board.
   effect: 
   e:
   - {fileID: 11400000, guid: 16563f72845764a438ee675aa4bf247d, type: 2}

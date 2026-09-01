@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1041
   Cost: 2
-  description: Discover
+  description: 
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: ebfd2b4fafcfe8c40b631e9ecabec368, type: 2}

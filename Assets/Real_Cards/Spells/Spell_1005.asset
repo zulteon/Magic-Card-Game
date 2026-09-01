@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1005
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (14)
-  description: "Pelik\xE1n forgalomir\xE1ny\xEDt\xF3 \u2192 \"Cs\xFAcsforgalom-stop\"
-    (Dug\xF3) A k\xF6vetkez\u0151 k\xF6rben egyetlen ellens\xE9ges minion sem t\xE1madhat
-    \u2014 a forgalom \xE1ll."
+  description: Enemy minions cannot attack next turn.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: f97d8f1913edd86499aebc0e1f11cc1d, type: 2}

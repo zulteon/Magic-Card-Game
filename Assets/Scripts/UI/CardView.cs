@@ -14,12 +14,15 @@ public class CardView : MonoBehaviour
     public TextMeshProUGUI nameText;
     bool isEnemy;
     public CardState cardState;
+    [SerializeField]
     SpriteRenderer spriteRenderer;
     public void Awake()
     {
-        spriteRenderer = transform.Find("Sprite").GetComponent<SpriteRenderer>();
         _atkBaseSize = attackText.fontSize;
         _hpBaseSize = healthText.fontSize;
+        visualStartPos = visual.localPosition;
+        visualStartScale = visual.localScale;
+        visualStartRotation = visual.localRotation;
     }
     public void SetCard(CardData cardData,CardState cardState, bool isEnemy = false)
     {
@@ -49,48 +52,154 @@ public class CardView : MonoBehaviour
 
         // Statikus adatok a CardData-ból
         descriptionText.text = cardData.description;
-        nameText.text = FormatSpriteToName(cardData.sprite);
+        nameText.text = cardData.cardName;
         LoadSprite(cardData);
 
     }
     Vector3 mousePosition;
     float moveSpeed=0.03f;
+    [SerializeField] private Transform dragHoverPoint;
+    [SerializeField] private float dragHoverDistance = 1.5f;
+    bool isDragging;
     private void OnMouseDrag()
     {
-        if (TargetSelector.instance.IsActive) return;
+        if (TargetSelector.instance.IsActive)
+            return;
+
+        isDragging = true;
+        hovering = false;
+
+        // Drag közben normál méret
+        visual.localScale = visualStartScale;
+        visual.localPosition = visualStartPos;
+        visual.localRotation = visualStartRotation;
+
+        // Maga a teljes kártya legyen egyenes.
+        transform.rotation = Quaternion.identity;
+
+
         mousePosition = Input.mousePosition;
-            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition) + new Vector3(0, 0, 3);
-            transform.position = Vector3.Lerp(transform.position, mousePosition, moveSpeed);
-            
-        
+
+        mousePosition =
+            Camera.main.ScreenToWorldPoint(mousePosition)
+            + new Vector3(0, 0, 3);
+
+        transform.position =
+            Vector3.Lerp(
+                transform.position,
+                mousePosition,
+                moveSpeed
+            );
+    }
+    private void SetDragVisual(bool big)
+    {
+        if (big)
+        {
+            visual.localScale =
+                visualStartScale * hoverScale;
+
+            visual.localPosition =
+                visualStartPos +
+                new Vector3(0f, hoverJump, 0f);
+        }
+        else
+        {
+            visual.localScale =
+                visualStartScale;
+
+            visual.localPosition =
+                visualStartPos;
+        }
+
+        // Drag közben MINDIG egyenes legyen.
+        visual.localRotation =
+            Quaternion.Inverse(transform.localRotation);
+    }
+    private void SetHoverVisual(bool active)
+    {
+        if (active)
+        {
+            visual.localScale =
+                visualStartScale * hoverScale;
+
+            visual.localPosition =
+                visualStartPos +
+                new Vector3(0f, hoverJump, 0f);
+
+            visual.localRotation =
+                Quaternion.Inverse(transform.localRotation);
+        }
+        else
+        {
+            visual.localScale =
+                visualStartScale;
+
+            visual.localPosition =
+                visualStartPos;
+
+            visual.localRotation =
+                visualStartRotation;
+        }
+    }
+    private bool hovering;
+    private void OnMouseEnter()
+    {
+        if (isEnemy) return;
+
+        hovering = true;
     }
     float playingMinHeight = -2.1f;
     private void OnMouseUp()
     {
         if (isEnemy) return;
 
-        var showHand = GameManager.instance.GetPlayer().showHand;
+        isDragging = false;
 
-        if (transform.position.y <= playingMinHeight || !GameManager.instance.IsMyTurn())
+        var showHand =
+            GameManager.instance.GetPlayer().showHand;
+
+        if (transform.position.y <= playingMinHeight ||
+            !GameManager.instance.IsMyTurn())
         {
             showHand.ArrangeCards();
             return;
         }
 
-        // Kijátszás
-        GameManager.instance.GetLocalPlayerController().BeforePlay(cardState);
-        //showHand.ArrangeCards();   // a lap visszaugrik, amíg a szerver nem válaszol
+        GameManager.instance
+            .GetLocalPlayerController()
+            .BeforePlay(cardState);
     }
+    [SerializeField] private float hoverScale = 2f;
+    [SerializeField] private float hoverJump = 1.8f;
+    [SerializeField] private Transform visual;
+    private Quaternion hoverStartRotation;
+    private Vector3 visualStartPos;
+    private Vector3 visualStartScale;
+    private Quaternion visualStartRotation;
+
     private void OnMouseOver()
     {
-        if(!isEnemy)
-        transform.localScale = new Vector3(1.2f, 1.2f, 1);
+        if (isEnemy) return;
+
+        if (isDragging)
+        {
+            SetHoverVisual(false);
+            return;
+        }
+
+        hovering = true;
+        SetHoverVisual(true);
     }
     private void OnMouseExit()
-    {
-        if(!isEnemy)
-        transform.localScale= new Vector3(1, 1, 1);
-    }
+{
+    if (isEnemy)
+        return;
+
+    hovering = false;
+
+    if (!isDragging)
+        SetHoverVisual(false);
+}
     public void LoadSprite(CardData card)
     {
         print("card" + card.sprite);
@@ -103,7 +212,7 @@ public class CardView : MonoBehaviour
     // Awake végére:
     
 
-public Coroutine PlayBuffFlash(int newAttack, int newHealth)
+    public Coroutine PlayBuffFlash(int newAttack, int newHealth)
     {
         attackText.text = newAttack.ToString();
         healthText.text = newHealth.ToString();

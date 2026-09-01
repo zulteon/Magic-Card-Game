@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1012
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_b2r5hfb2r5hfb2r5
-  description: "Egy bar\xE1ts\xE1gos minion +3 T\xE1mad\xE1st kap ebben a k\xF6rben,
-    \xC9S a szomsz\xE9dai +1-et \u2014 az \xE1ram \xE1tfolyik a vezet\xE9ken, a mellette
-    \xE1ll\xF3k is kapnak a t\xF6lt\xE9sb\u0151l. (L\xE1nc-buff, a poz\xEDci\xF3
-    sz\xE1m\xEDt: k\xF6z\xE9pre tedd, akit igaz\xE1n fel akarsz t\xF6lteni.)"
+  description: Give a friendly minion +3 Attack. Its neighbors gain +1 Attack.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 5eccb1665c685f04dbfaff9cf10d4fcf, type: 2}

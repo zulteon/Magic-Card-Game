@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 3
   health: 4
   sprite: id_00058_005_stylized_monitor_lizard_sauna
-  description: Cleave
+  description: Cleave.
   effect: 
   e:
   - {fileID: 11400000, guid: c32d998710cf720429b9a56bb6e95029, type: 2}

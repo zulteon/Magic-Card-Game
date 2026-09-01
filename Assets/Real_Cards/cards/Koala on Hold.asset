@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 113
   Cost: 2
-  description: Sleep For An Extra Turn
+  description: Sleep for an extra turn
   m: {fileID: 11400000, guid: ace411652af9e4f4e86298e7dd64e067, type: 2}
   spell: {fileID: 0}

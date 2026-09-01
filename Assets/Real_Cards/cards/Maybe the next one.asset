@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1021
   Cost: 1
-  description: "Szomor\xFA borz a meg\xE1ll\xF3ban \u2192 Dobd el a kezed 1 lapj\xE1t:
-    h\xFAzz 2-t a k\xF6vetkez\u0151 k\xF6rben"
+  description: Discard a card. draw 2 card
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 1ca0dacb0f4712b4989311a7ce21337d, type: 2}

@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 1
   health: 7
   sprite: id_00116_031_fire_salamander_firefighter_glossy
-  description: "Blokk / csapatt\xE1rs el\xE9 ugr\xE1s"
+  description: Whenever a friendly minion would take damage, this minion takes it
+    instead.
   effect: 
   e:
   - {fileID: 11400000, guid: c1192c17b54cd4043b89a22d74611d7e, type: 2}

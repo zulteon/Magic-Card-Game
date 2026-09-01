@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac8a27f6d19e7f948b70a5ccc50cba57, type: 3}
+  m_Name: _112 Counter Spell
+  m_EditorClassIdentifier: 
+  type: 12
+  targetType: 0
+  targetCast: 0
+  target: 0
+  value: 0
+  buff: {x: 0, y: 0}
+  summonableId: 0
+  give: {fileID: 0}
+  triggers:
+  - {fileID: 11400000, guid: 8cde9001139f2b04c9e78573b9daa589, type: 2}
+  random: 0
+  multiValue: -1
+  other: 0
+  effectId: 80
+  logicOp: 
+  linkedTrigger: {fileID: 0}
+  sortMode: 0
+  activeZone: 1
+  needsTarget: 1

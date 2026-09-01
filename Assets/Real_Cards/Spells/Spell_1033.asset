@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
+  m_Name: Spell_1033
+  m_EditorClassIdentifier: 
+  sprite: vid_00251_010_an_archerfish_street_cleaner
+  description: Deal 3 damage to any target
+  e:
+  - {fileID: 11400000, guid: ebcc5b7f6ef127b49bec7f2b795af220, type: 2}

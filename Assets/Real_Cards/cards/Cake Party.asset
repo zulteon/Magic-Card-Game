@@ -14,10 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1001
   Cost: 4
-  description: "Tortacsata a p\xE9ks\xE9gben \u2192 \"Tortacsata\" Minden minion
-    (mindk\xE9t oldal) v\xE9letlenszer\u0171en 1-3 sebz\xE9st kap \u2014 Okozz 4
-    sebz\xE9st egy minionnak \xC9S 1-et a saj\xE1t h\u0151s\xF6dnek \u2014 a k\xE1osz
-    \xE1ra van, de a m\xE9zborz tudja, mit csin\xE1l. (A \"nyugodt arc a t\u0171zben\"
-    flavor = a self-damage trade-off.)"
+  description: Deal 1-3 damage randomly to every minion.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: f3cdee98f59813c41a049a1cfeadb1fc, type: 2}

@@ -37,6 +37,14 @@ public static class EffectCommands
         {Effect.Type.umbrella,Umbrella },
         {Effect.Type.syncDance,SyncDance },
         {Effect.Type.minionSwap,MinionSwap},
+        {Effect.Type.loanPower,LoanStrength},
+        {Effect.Type.buffAndNeighbours,LoanStrength},
+        {Effect.Type.damageReduce,DamageReduction},
+        {Effect.Type.copyCard,CopyFromEnemyHand},
+        {Effect.Type.destroy,Destroy},
+        {Effect.Type.discard,Discard},
+        {Effect.Type.reActivate,ReActivate},
+       
        
        
         // add more as needed
@@ -48,6 +56,7 @@ public static class EffectCommands
     }
     public static void AlbatrosDeathDance(EffectContext ctx)
     {
+        if (ctx.targetIds == null ||ctx.targetIds.Length==0) return;
         ushort a = ctx.doerId;
         ushort b = ctx.targetIds[0];
 
@@ -130,7 +139,25 @@ public static class EffectCommands
             GameManager.instance.ChangeMinionById(i.sequenceId, m => { m.canAttack = false; return m; });
         }
     }
-    
+    public static void Discard(EffectContext ctx)
+    {
+        var hand = ctx.playerController.hand;
+        if (hand.Count == 0) return;
+
+        int randomIndex = UnityEngine.Random.Range(0, hand.Count);
+        ctx.playerController.RemoveCardFromHand(hand[randomIndex]);
+    }
+    public static void ReActivate(EffectContext ctx)
+    {
+        foreach (var target in ctx.targets)
+        {
+            GameManager.instance.ChangeMinionById(target._sequenceId, m =>
+            {
+                m.canAttack = true;
+                return m;
+            });
+        }
+    }
     public static void Umbrella(EffectContext ctx)
     {
         foreach (ushort id in ctx.targetIds)
@@ -141,6 +168,74 @@ public static class EffectCommands
             logic.effectBag.Add(ctx.effect, ctx.doerId, EffectRole.Guard,
                 charges: -1, toBlock: Effect.Type.damage,
                 expiresInTurns: 2);
+        }
+    }
+    public static void LoanStrength(EffectContext ctx)
+    {
+        foreach (var target in ctx.targets)
+        {
+            target.Buff(ctx.buff.x, ctx.buff.x);
+
+            ushort capturedId = target._sequenceId;
+
+            GameEvents.Instance.AddDelayedEffect(
+                callback: () =>
+                {
+                    var logic = GameManager.instance.GetMinionLogic(capturedId);
+                    if (logic == null || logic.effectBag.IsLocked) return;
+                    logic.DeBuff(ctx.doerId, new Vector2Int(ctx.buff.y, ctx.buff.y));
+                },
+                count: ctx.value,
+                clock: GameEvents.EventType.TurnStart,
+                ownerId: capturedId
+            );
+        }
+    }
+    public static void DamageReduction(EffectContext ctx)
+    {
+        MinionLogic heroLogic = GameManager.instance.GetMinionLogic(ctx.doerId);
+
+        if (heroLogic == null) return;
+
+        var live = heroLogic.effectBag.Add(ctx.effect, ctx.doerId, EffectRole.Guard,
+            charges: ctx.value,
+            expiresInTurns: 2);
+    }
+    public static void CopyFromEnemyHand(EffectContext ctx)
+    {
+        var enemy = GameManager.instance.GetEnemy(ctx.playerController);
+        if (enemy == null || enemy.hand.Count == 0) return;
+
+        var choices = enemy.hand
+            .OrderBy(_ => UnityEngine.Random.value)
+            .Take(3)
+            .Select(c => c.cardId)
+            .ToArray();
+
+        ctx.playerController.TargetDiscoverChoicesForCopy(
+    ctx.playerController.Owner, choices);
+    }
+    public static void Destroy(EffectContext ctx)
+    {
+        foreach (var target in ctx.targets)
+            target.Death();
+    }
+    public static void BuffAndNeighbours(EffectContext ctx)
+    {
+        if (ctx.targets.Length == 0) return;
+
+        var main = ctx.targets[0];
+        bool isAlly = GameManager.instance.isAllyMinion(main._sequenceId);
+
+        // fő célpont: buff * value
+        main.Buff(ctx.buff.x * ctx.value, ctx.buff.y * ctx.value);
+
+        // szomszédok: buff simán
+        var neighbours = GameManager.instance.GetNeighbours(main._sequenceId, isAlly);
+        foreach (var nid in neighbours)
+        {
+            var logic = GameManager.instance.GetMinionLogic(nid);
+            logic?.Buff(ctx.buff.x, ctx.buff.y);
         }
     }
     public static void MinionSwap(EffectContext ctx)

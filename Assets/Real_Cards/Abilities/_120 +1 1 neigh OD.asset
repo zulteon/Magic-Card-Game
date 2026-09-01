@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac8a27f6d19e7f948b70a5ccc50cba57, type: 3}
   m_Name: _120 +1 1 neigh OD
   m_EditorClassIdentifier: 
-  type: 6
+  type: 46
   targetType: 0
   targetCast: 3
   target: 3
-  value: 0
+  value: 502
   buff: {x: 1, y: 1}
-  summonable: {fileID: 0}
+  summonableId: 0
   give: {fileID: 0}
   triggers:
-  - {fileID: 11400000, guid: 767308cab3b37aa499d908005987404f, type: 2}
+  - {fileID: 11400000, guid: 742f204fc25018e4388ca64f9b9f55c9, type: 2}
   random: 0
-  raceValue: -1
   multiValue: -1
-  multiSplit: 0
   other: 0
   effectId: 4
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0
+  targetCondition: {fileID: 0}
   activeZone: 1
+  needsTarget: 1

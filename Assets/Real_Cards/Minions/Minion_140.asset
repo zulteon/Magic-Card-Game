@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 3
   sprite: id_00181_004_chameleon_street_mime_classic
-  description: "Bez\xE1r egy enemyt egy k\xF6rig"
+  description: 'OnPlay: Lock an enemy minion for 1 turn.'
   effect: 
   e: []
   race: 0

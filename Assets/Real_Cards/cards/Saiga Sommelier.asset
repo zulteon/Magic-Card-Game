@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 127
   Cost: 5
-  description: 3 attack All
+  description: OnPlay:+3 attack to all minion
   m: {fileID: 11400000, guid: 3b51156e4e0a9cd44adb19da33084651, type: 2}
   spell: {fileID: 0}

@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 1
   health: 4
   sprite: id_00093_008_komodo_dragon_judge_rugged
-  description: Set highest HP enemy to 1
+  description: 'OnPlay: Set the highest Health enemy minion''s Health to 1.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 9de09c27527c9974796904dcd6ec7ce8, type: 2}
   race: 0

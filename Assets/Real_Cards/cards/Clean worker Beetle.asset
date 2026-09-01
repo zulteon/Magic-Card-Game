@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 104
   Cost: 3
-  description: Summon a bomb for enemy (that dies in next turn)
+  description: When attack summon a bomb for an enemy
   m: {fileID: 11400000, guid: 34d77606716fd3e4f9d64a27160a9106, type: 2}
   spell: {fileID: 0}

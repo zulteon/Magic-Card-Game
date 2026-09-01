@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 135
   Cost: 4
-  description: 'When dies: summon half of original stats'
+  description: 'OnDeath: Summon a minion with half of this minion''s original Attack
+    and Health.'
   m: {fileID: 11400000, guid: 88bf0233563fefd4a82d8333d36b18b8, type: 2}
   spell: {fileID: 0}

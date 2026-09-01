@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 2
   health: 2
-  sprite: 
-  description: "Random bar\xE1t dupl\xE1zza HP-j\xE1t"
+  sprite: vitality_Doubler
+  description: 'OnDeath: Double the Health of a random friendly minion.'
   effect: 
   e:
   - {fileID: 11400000, guid: 98a6ced608d4981489802ffcab74a1df, type: 2}

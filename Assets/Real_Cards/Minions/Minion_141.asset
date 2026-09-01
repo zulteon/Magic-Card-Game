@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 3
   health: 5
   sprite: id_00071_001_babirusa_wild_pig_butcher
-  description: TAUNT
+  description: Taunt.
   effect: 
   e:
   - {fileID: 11400000, guid: c60e9af8477690c4ca9f3559b03fa6d0, type: 2}

@@ -8,7 +8,15 @@ public class MinionLogic
     public ushort _sequenceId, cardId;
     bool sleep;
     bool frozen;
-    public int maxhealth;
+    public int maxhealth
+    {
+        get => GameManager.instance.GetMinionById(_sequenceId).maxHealth;
+        set => GameManager.instance.ChangeMinionById(_sequenceId, m =>
+        {
+            m.maxHealth = value;
+            return m;
+        });
+    }
     public EffectBag effectBag;
     public bool IsHero => _sequenceId < 2;
     internal static GameManager manager => GameManager.instance;
@@ -103,11 +111,15 @@ public class MinionLogic
     // MinionLogic.cs - Damage függvény
     public void Damage(int damage, ushort attackerId = 0,bool noRedirect=false)
     {
+
+        int reduction = effectBag.ConsumeDamageReduction();
+        damage = Mathf.Max(0, damage - reduction);
         if (!noRedirect)
         {
             ushort protector = effectBag.GetProtector();
             if (protector != 0)
             {
+                damage += reduction;
                 MinionLogic bodyGuard= manager.GetMinionLogic(protector);
                 bool redirectEveryDMG = bodyGuard.State.currentHealth <damage;
                 
@@ -119,6 +131,7 @@ public class MinionLogic
                 else
                 {
                     damage -= bodyGuard.State.currentHealth;
+                    damage -= reduction;
                     bodyGuard.Damage(bodyGuard.State.currentHealth, attackerId, noRedirect: true);
                     
                 }
@@ -220,7 +233,7 @@ public class MinionLogic
             state.attack -= (short)deBuff.x;
         if (deBuff.y > state.currentHealth+1) state.currentHealth = 1; else
             state.currentHealth -= (ushort)deBuff.y;
-        
+        maxhealth = state.currentHealth;
         GameManager.instance.SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.buff,

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1029
   Cost: 3
-  description: Deal 4 damage to a enemy
+  description: Deal 4 damage to an enemy minion.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 1a023a738e8f52441b1ca5524efc8e09, type: 2}

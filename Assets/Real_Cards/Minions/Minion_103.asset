@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 3
   health: 4
   sprite: id_00026_001_stylized_an_andean_cock.png;id_00088_003_an_andean_cock_rock
-  description: "3 maki l\xE9git\xE1mad\xE1s"
+  description: 'OnPlay: Launch 3 Maki air strikes.'
   effect: 
   e: []
   race: 0

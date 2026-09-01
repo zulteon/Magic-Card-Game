@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 5
   health: 1
-  sprite: 
-  description: Charge
+  sprite: id_00097_012_weathered_frog_taxi_driver
+  description: Charge.
   effect: 
   e:
   - {fileID: 11400000, guid: b6ad75e7b3fd0534ca6106b9ba3d45f3, type: 2}

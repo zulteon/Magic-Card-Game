@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f2420768e43a344a85b61d9ae964330, type: 3}
   m_Name: Pressure Blast
   m_EditorClassIdentifier: 
-  cardId: 1032
+  cardId: 1033
   Cost: 2
-  description: "Mantis Shrimp Electrician \u2192 a) Look at 3 cards from your deck,
-    draw 1. b) Reveal the enemy's hand this turn."
+  description: Deal 3 damage to any target
   m: {fileID: 0}
-  spell: {fileID: 11400000, guid: 3e82deb79081c2a409d9a063881b21bc, type: 2}
+  spell: {fileID: 11400000, guid: 6250d64afc7eea446b13abaeb6a6953d, type: 2}

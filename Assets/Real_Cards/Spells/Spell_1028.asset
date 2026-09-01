@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Spell_1028
   m_EditorClassIdentifier: 
   sprite: id_00279_018_pangolin_street_sweeper_rolled
-  description: "Pangolin Street Sweeper** \u2192 Blocks ALL damage this turn but
-    can't attack"
+  description: This minion takes no damage this turn but cannot attack.
   effect: 
   e: []

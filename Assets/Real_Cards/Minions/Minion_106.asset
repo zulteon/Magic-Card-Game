@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 1
   health: 4
   sprite: id_00086_001_fossa_lawyer_sleek_reddish
-  description: Steal 3 Attack before attack
+  description: 'When Attacking: Steal 3 Attack from the target before dealing damage.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: b38756f601e85a548aaa63480db24ff1, type: 2}
   race: 0

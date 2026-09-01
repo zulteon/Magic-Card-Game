@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 1
   health: 1
   sprite: id_00094_009_gal_pagos_penguin_bus
-  description: OnPlay Summon a minion from hand that has less attack than him
+  description: 'OnPlay: Summon a friendly minion from your hand that has less Attack
+    than this minion.'
   effect: 
   e: []
   race: 0

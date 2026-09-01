@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 138
   Cost: 4
-  description: Silence An Enemy
+  description: 'OnPlay: Silence an enemy minion.'
   m: {fileID: 11400000, guid: a4c0e87c519872948b1f66b815282fe7, type: 2}
   spell: {fileID: 0}

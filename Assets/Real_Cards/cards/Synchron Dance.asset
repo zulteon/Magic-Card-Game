@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1010
   Cost: 4
-  description: "Galamb t\xE1nccsapat \u2192 \"Szinkron-t\xE1nc\" Minden bar\xE1ts\xE1gos
-    minion statja kiegyenl\xEDt\u0151dik az \xE1tlagukra \u2014 mindenki ugyanazt
-    a l\xE9p\xE9st j\xE1rja."
+  description: Set all friendly minions' stats to their average Attack and Health.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: e1fcea36b51f03a4699148f7f985f185, type: 2}

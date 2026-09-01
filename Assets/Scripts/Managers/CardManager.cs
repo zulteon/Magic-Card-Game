@@ -12,14 +12,25 @@ public class CardManager : MonoBehaviour
 
     public Dictionary<ushort, CardData> cardLookup = new Dictionary<ushort, CardData>();
     public static CardManager instance;
-    
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        LoadCardsFromFile(Path.Combine(Application.streamingAssetsPath, "AllCards.json"));
+    }
+
     void Start()
     {
-        if (instance == null) instance = this;
-        else if (instance != this) Destroy(this);
 
         // Példa: automatikusan StreamingAssets/cards.json-ból tölti
-        LoadCardsFromFile(Path.Combine(Application.streamingAssetsPath, "Deck_deck.json"));
     }
 
     /// <summary>

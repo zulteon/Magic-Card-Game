@@ -211,7 +211,7 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
         {
             var e = _list[i];
             if (e.Role != EffectRole.Guard || e.IsSpent) continue;
-            if ( e.toBlock != kind) continue;  // none = joker
+            if ( e.toBlock != kind) continue;  
 
             if (!e.TryConsume()) continue;
 
@@ -220,6 +220,19 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
         }
         return false;
     }
+    public int ConsumeDamageReduction()
+{
+    int total = 0;
+    for (int i = _list.Count - 1; i >= 0; i--)
+    {
+        var e = _list[i];
+        if (e.Role != EffectRole.Guard) continue;
+        if (e.Def.type != Effect.Type.damageReduce) continue;
+        total += e.charges;
+        RemoveAt(i);
+    }
+    return total;
+}
     public List<Effect> ConsumeByTrigger(Trigger.time when, Effect.Type activity)
     {
         if (_locked) return new List<Effect>();

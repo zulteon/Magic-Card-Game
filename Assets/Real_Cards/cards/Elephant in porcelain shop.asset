@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1004
   Cost: 5
-  description: "Elef\xE1nt a porcel\xE1nboltban \u2192 \"Porcel\xE1nbolt\" Puszt\xEDts
-    el egy bar\xE1ts\xE1gos miniont: minden ellens\xE9ges minion sebz\xE9st kap a
-    statjai alapj\xE1n"
+  description: Sacrafise a minion Deal damage the attack of that minion to all enemy
+    minions
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: f6bc942aa5268da45bdb83cb092bba6d, type: 2}

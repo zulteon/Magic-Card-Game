@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1009
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (27)
-  description: "Borz ment\u0151s \u2192 \"Szir\xE9n\xE1z\xF3 Ment\u0151\" Gy\xF3gy\xEDts
-    6-ot egy bar\xE1ts\xE1gos karakternek"
+  description: Restore 6 Health to a friendly character.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 4dd4a9e14d586e84a91b773279572d39, type: 2}

@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 3
   sprite: id_00116_031_fire_salamander_firefighter_glossy
-  description: "Id\xE9zz egy 2/2-t"
+  description: 'OnDeath: Summon a 2/2.'
   effect: 
   e: []
   race: 0

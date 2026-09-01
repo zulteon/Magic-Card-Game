@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 112
   Cost: 3
-  description: "Counter Spell / StartOfCombat (a sorban els\u0151t semleges\xEDti)"
+  description: Counter enemy Spell (once)
   m: {fileID: 11400000, guid: f5f849bd2022ccc41832b1a514d893f3, type: 2}
   spell: {fileID: 0}

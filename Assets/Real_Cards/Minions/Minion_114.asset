@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 2
   sprite: id_00117_032_frill_necked_lizard_influencer
-  description: "Ha egyed\xFCl van kap a boardon+2/2"
+  description: If he is the only one on your board gain 2/2
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: efcd22f84da87ad46968a8d813025df9, type: 2}
   race: 0

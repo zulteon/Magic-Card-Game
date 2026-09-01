@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1014
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (30)
-  description: "Minden minion (mindk\xE9t oldal) visszaker\xFCl a gazd\xE1ja kez\xE9be
-    \u2014 mindenki ki a h\xE1zb\xF3l! (Vad board-reset \u2014 ritka, dr\xE1ga lap.)"
+  description: Return all minions on both sides to their owner's hand.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 5a3e5c13e72021b469dc396c741305bc, type: 2}

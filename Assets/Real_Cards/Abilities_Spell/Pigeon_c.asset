@@ -15,5 +15,5 @@ MonoBehaviour:
   cardId: 500
   Cost: 0
   description: 
-  m: {fileID: 0}
+  m: {fileID: 11400000, guid: ef3797574faac36439b2d11e19c509c6, type: 2}
   spell: {fileID: 0}

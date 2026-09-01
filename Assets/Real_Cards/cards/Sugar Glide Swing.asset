@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1017
   Cost: 2
-  description: "Sugar Glider on Swing \u2192 a) A friendly minion gains +2/+2 and
-    \"when this dies, return to hand\""
+  description: Give a friendly minion +2/+2. When it dies, return it to your hand.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: ca88de14474992e4095a4ea460439e4c, type: 2}

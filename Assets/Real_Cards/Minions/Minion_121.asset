@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 1
   sprite: id_00141_004_chinchilla_luxury_fur_salon
-  description: "Id\xE9zz 3 l\xE9nyt"
+  description: 'OnDeath: Summon three 1/1 tokens.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 5154a8552603e7a4b941a1219f87fcd6, type: 2}
   race: 0

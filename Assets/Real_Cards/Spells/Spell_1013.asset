@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1013
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_9czo079czo079czo
-  description: "Csiga a s\xEDneken \u2192 Az ellenf\xE9l k\xF6vetkez\u0151 k\xF6re
-    1-gyel kevesebb man\xE1b\xF3l indul"
+  description: 'OnPlay: Your opponent starts their next turn with 1 less Mana.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: f4138558b63b6974ea2d8b615c6dadcb, type: 2}

@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 1
   health: 5
   sprite: id_00238_007_chameleon_sound_technician_instinctively
-  description: Copy opposite minion's Attack
+  description: 'When Attacking: Copy the Attack of the opposing minion.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 33f2f3cbbb6c1c0428b20489cd411445, type: 2}
   race: 0

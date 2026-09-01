@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 7
   health: 5
   sprite: id_00136_051_sugar_glider_window_cleaner
-  description: Charge
+  description: Charge.
   effect: 
   e:
   - {fileID: 11400000, guid: b6ad75e7b3fd0534ca6106b9ba3d45f3, type: 2}

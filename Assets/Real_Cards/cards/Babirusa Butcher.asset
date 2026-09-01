@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 141
   Cost: 4
-  description: TAUNT
+  description: Taunt.
   m: {fileID: 11400000, guid: 86a4ace101cce6442aa490edb0a79f10, type: 2}
   spell: {fileID: 0}

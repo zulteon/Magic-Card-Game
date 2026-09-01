@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 128
   Cost: 3
-  description: Cant be attacked
+  description: This minion cannot be attacked.
   m: {fileID: 11400000, guid: 1ea3c984e85d75049b15239baedac9b3, type: 2}
   spell: {fileID: 0}

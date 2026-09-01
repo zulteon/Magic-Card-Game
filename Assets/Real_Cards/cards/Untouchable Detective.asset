@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 133
   Cost: 0
-  description: Immune while attacked (cannot be taunted)
+  description: 'When Attacked: Become Immune for this attack.'
   m: {fileID: 11400000, guid: 2fd78f0cf0e491647953b44c224eeb97, type: 2}
   spell: {fileID: 0}

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 2
   health: 2
-  sprite: 
-  description: 
+  sprite: savedcat
+  description: She is safe now
   effect: 
   e: []
   race: 0

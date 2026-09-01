@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 4
   health: 2
   sprite: id_00166_009_markhor_goat_rooftop_chimney
-  description: Cant be attacked
+  description: This minion cannot be attacked.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: b7bd686ca42657247998863f2e8ac51d, type: 2}
   race: 0

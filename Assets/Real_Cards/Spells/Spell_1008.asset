@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1008
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (31)
-  description: "Kapibara j\xE9ges\u0151ben \u2192 \"Rend\xEDthetetlen Nyugalom\""
+  description: A friendly minion is immune to damage until your next turn.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 9107075e283d48547bf408216b9d871f, type: 2}

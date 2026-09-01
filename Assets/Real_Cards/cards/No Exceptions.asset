@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1024
   Cost: 3
-  description: "Secretary Bird Inspector \u2192 a) Deal 4 damage, ignoring blocks/shields"
+  description: 'OnPlay: Deal 4 damage, ignoring Blocks and Shields.'
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 85eeaccff3201004d9a185434cb54c94, type: 2}

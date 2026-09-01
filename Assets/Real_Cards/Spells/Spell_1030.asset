@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1030
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (23)
-  description: Deal 6 damage to two random minion
+  description: 'OnPlay: Deal 6 damage to two random minions.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 590fbf50735e992419b0a4f702bce113, type: 2}

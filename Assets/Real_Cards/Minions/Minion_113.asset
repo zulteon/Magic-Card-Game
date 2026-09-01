@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 2
   sprite: id_00103_018_koala_call_center_worker
-  description: Sleep For An Extra Turn
+  description: Sleep for an extra turn
   effect: 
   e:
   - {fileID: 11400000, guid: 55e357e8ede48aa4db16155865ae3532, type: 2}

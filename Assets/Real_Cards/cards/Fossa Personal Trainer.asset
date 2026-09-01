@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 139
   Cost: 5
-  description: End of turn give a friendly minion +3 3
+  description: 'EndOfTurn: Give a friendly minion +3/+3.'
   m: {fileID: 11400000, guid: cf544e83aa6ebf542913e4246b37b6af, type: 2}
   spell: {fileID: 0}

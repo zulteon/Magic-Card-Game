@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1008
   Cost: 2
-  description: "Kapibara j\xE9ges\u0151ben \u2192 \"Rend\xEDthetetlen Nyugalom\""
+  description: A friendly minion is immune to damage until your next turn.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: df3f2584ed537ef438b89bf343323823, type: 2}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Spell_1016
   m_EditorClassIdentifier: 
   sprite: id_00330_019_sea_cucumber_escape_artist
-  description: "Sea Cucumber Escape Artist \u2192 a) Escape any negative effect"
+  description: Remove all negative effects from a friendly minion.
   effect: 
   e: []

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1025
   m_EditorClassIdentifier: 
   sprite: id_00256_015_numbat_building_surveyor_kneeling
-  description: "Numbat Surveyor \u2192 a) Deal 3 damage to a damaged minion"
+  description: Deal 3 damage to a damaged minion.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: ec7f9fdbcdb0b0f46a48e8d9a960da36, type: 2}

@@ -7,13 +7,14 @@ public enum CardType
 {
     Minion,
     Spell
-}
+}   
 
 // Alapkártya absztrakt osztály
 [System.Serializable]
 public abstract class CardData
 {
     public ushort cardId;
+    public string cardName;
     public int cost;
     public string description;
     public string cardType; // JSON deserializáláshoz kell

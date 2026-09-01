@@ -1,0 +1,88 @@
+1000;Deal 2 damage to the minions on each end of the enemy board.
+1001;Deal 1-3 damage randomly to every minion.
+1002;Deal 4 damage to a minion and 1 damage to your hero.
+1003;Return a friendly minion to your hand.
+1004;Sacrafise a minion Deal damage the attack of that minion to all enemy minions 
+1005;Enemy minions cannot attack next turn.
+1006;Deal 2 damage to a minion and its neighbors.
+1007;Send a minion into the a Future. 
+1008;A friendly minion is immune to damage until your next turn.
+1009;Restore 6 Health to a friendly character.
+1010;Set all friendly minions' stats to their average Attack and Health.
+1011;Move probably an enemy minion to the side of the board.
+1012;Give a friendly minion +3 Attack. Its neighbors gain +1 Attack.
+1013;OnPlay: Your opponent starts their next turn with 1 less Mana.
+1014;Return all minions on both sides to their owner's hand.
+1015;All other minions lose 1 Attack this turn.
+1016;Remove all negative effects from a friendly minion.
+1017;Give a friendly minion +2/+2. When it dies, return it to your hand.
+1018;Deal 3 damage to a minion and 1 to its neighbors.
+1019;Destroy an enemy minion with 3 or less Health.
+1020;Your hero takes 3 less damage from all sources this turn.
+1021;Discard a card. draw 2 card
+1022;Discard a card. draw 2 card
+1023;Give a friendly minion +4/+4. It cannot attack this turn.
+1024;OnPlay: Deal 4 damage, ignoring Blocks and Shields.
+1025;Deal 3 damage to a damaged minion.
+1026;A friendly minion that already attacked may attack again this turn.
+1027;Steal 2 Mana from the enemy next turn.
+1028;This minion takes no damage this turn but cannot attack.
+1029;Deal 4 damage to an enemy minion.
+1030;OnPlay: Deal 6 damage to two random minions.
+1031;Give a friendly minion +4/+4. It cannot attack this turn.
+1032;Look at 3 cards from your deck. Draw 1.
+1033;Deal 3 damage to any target.
+1034;OnPlay: Deal 6 damage to an enemy.
+1035;Take control of an enemy minion with 4 or less Attack until end of turn.
+1036;Summon four 1/1 Pigeons.
+1037;Look at the enemy's hand and copy 1 card from it
+1038;Restore a minion to full Health and remove all negative effects from it.
+1039;Deal 5 damage to a minion.
+1040;OnPlay: Gain +1/+1 for each card you've played this game.
+1041;Discover a card from your deck. (Your nose knows.)
+1;Select a partner both get +4/4  if one of the dies the other loose -5/5 
+2;OnBoard or Hand: If somebody dies gain +1/1
+102;OnPlay: The 2 strongest friendly minions get -1/-1. The 3 weakest friendly minions get +1/+1.
+103;OnPlay: Launch 3 Maki air strikes.
+104;HIÁNYZÓ
+105;OnPlay: Gain +1/+1 for each card in your hand.
+106;When Attacking: Steal 3 Attack from the target before dealing damage.
+107;OnPlay: Set the highest Health enemy minion's Health to 1.
+108;When Attacking: Copy the Attack of the opposing minion.
+109;OnPlay: Swap a minion Attack and Health
+110;OnDeath: Deal 3 damage to a random enemy.
+111;When a minion buffed gains 1/1
+112;OnPlay: Deal 3 damage to a random enemy
+113;Sleep for an extra turn
+114;If he is the only one on board gain 2/2 
+115;OnDeath: Adjacent friendly minions gain +2/+2.
+116;OnDeath: Reborn with 1 Health.
+117;OnDeath: Summon a 2/2.
+118;OnDeath: Deal 3 damage to a random enemy.
+119;OnDeath: Restore 4 Health to a friendly character.
+120;OnDeath: Give adjacent friendly minions +2/+1.
+121;OnDeath: Summon three 1/1 tokens.
+122;OnDeath: Give all friendly minions +1/+1.
+123;OnDeath: Double the Health of a random friendly minion.
+124;OnDeath: Give a friendly minion +3 Health.
+125;OnDeath: Gain 2 Mana next turn.
+126;EndOfTurn: Give a minion +1/1 in hand 
+127;OnPlay:+3 attack to all minion 
+128;This minion cannot be attacked.
+129;OnPlay: Gain 1 Mana Crystal this turn only.
+130;Cleave.
+131;Reflect Damage (once)
+132;Whenever a friendly minion would take damage, this minion takes it instead.
+133;When Attacked: Become Immune for this attack.
+134;Every second hit against this minion is blocked.
+135;OnDeath: Summon a minion with half of this minion's original Attack and Health.
+136;OnPlay: Give a minion +4/4 but -3/3 next turn
+137;At the end of your turn, double your remaining Mana next turn.
+138;OnPlay: Silence an enemy minion.
+139;EndOfTurn: Give a friendly minion +3/+3.
+140;OnPlay: Lock an enemy minion for 1 turn.
+141;Taunt.
+142;OnPlay: Summon a friendly minion from your hand that has less Attack than this minion.
+144;Charge.
+145;Charge.
+146;Charge.

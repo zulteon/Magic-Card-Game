@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attack: 0
   health: 2
-  sprite: 
-  description: 
+  sprite: BombIMG
+  description: Warning it might  explode.
   effect: 
   e:
   - {fileID: 11400000, guid: 7a31d293e57f04840a5d87d68982c094, type: 2}

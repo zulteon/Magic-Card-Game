@@ -20,14 +20,15 @@ MonoBehaviour:
   buff: {x: 0, y: 0}
   summonableId: 0
   give: {fileID: 0}
-  triggers: []
+  triggers:
+  - {fileID: 11400000, guid: 777362456731ea9439cf239eff3c813c, type: 2}
   random: 0
-  raceValue: -1
   multiValue: -1
-  multiSplit: 0
   other: 0
   effectId: 36
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0
+  targetCondition: {fileID: 0}
   activeZone: 1
+  needsTarget: 1

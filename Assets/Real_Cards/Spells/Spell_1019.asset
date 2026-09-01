@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Spell_1019
   m_EditorClassIdentifier: 
   sprite: id_00283_002_cassowary_construction_inspector_kicking
-  description: "Cassowary Inspector** \u2192 Destroy an enemy minion with 3 or less
-    Health"
+  description: Destroy an enemy minion with 3 or less Health.
   effect: 
   e: []

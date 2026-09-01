@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Spell_1004
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (24)
-  description: "Elef\xE1nt a porcel\xE1nboltban \u2192 \"Porcel\xE1nbolt\" Puszt\xEDts
-    el egy bar\xE1ts\xE1gos miniont: minden ellens\xE9ges minion sebz\xE9st kap a
-    statjai alapj\xE1n"
+  description: Sacrafise a minion Deal damage the attack of that minion to all enemy
+    minions
   effect: 
   e:
   - {fileID: 11400000, guid: 4b6339b261a55b74085140913ee727b3, type: 2}

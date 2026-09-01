@@ -37,6 +37,7 @@ public class DeckBuilderUI : MonoBehaviour
     public Button loadButton;
     public Button newButton;
     public Button editModeButton;
+    public Button doneButton;
     public TMP_Text editModeText;
 
     [Header("Szabályok")]
@@ -59,6 +60,7 @@ public class DeckBuilderUI : MonoBehaviour
         Mathf.FloorToInt((gridArea.rect.width + margin.x) / (cardSize.x + margin.x)));
 
     private int PerPage => Columns * rows;
+    private List<CardData> _allCards = new();
     private int PageCount => Mathf.Max(1, Mathf.CeilToInt(_filtered.Count / (float)PerPage));
 
     private IEnumerator Start()
@@ -71,6 +73,8 @@ public class DeckBuilderUI : MonoBehaviour
         saveButton.onClick.AddListener(SaveDeck);
         newButton.onClick.AddListener(NewDeck);
         editModeButton.onClick.AddListener(ToggleEditMode);
+        try { doneButton.onClick.AddListener(SceneManagement.instance.OpenMainMenu); }
+        catch { Debug.LogWarning("nem tudtam hozzá adni a done buttonhoz"); }
 
         deckNameField.text = _deckName;
 
@@ -80,6 +84,8 @@ public class DeckBuilderUI : MonoBehaviour
         // A gridArea szélessége az első képkockában még 0 lehet (layout előtt).
         yield return null;
 
+
+        Refresh();
         Refresh();
     }
     #region Load
@@ -148,12 +154,20 @@ public class DeckBuilderUI : MonoBehaviour
     private void EnsureSlots(int needed)
     {
         while (_slots.Count < needed)
-            _slots.Add(Instantiate(cardPrefab, gridArea));
+        {
+            DeckCardUI card =
+                Instantiate(    
+                    cardPrefab,
+                    gridArea,
+                    false
+                );
+
+            _slots.Add(card);
+        }
 
         for (int i = needed; i < _slots.Count; i++)
             _slots[i].Hide();
     }
-
     /// <summary>Balról jobbra, felülről lefelé, a gridArea közepéből kiindulva.</summary>
     private void LayoutSlots()
     {
@@ -223,7 +237,7 @@ public class DeckBuilderUI : MonoBehaviour
             .GroupBy(c => c.cardId)
             .Select(g => (card: g.First(), count: g.Count()))
             .OrderBy(x => x.card.cost)
-            .ThenBy(x => x.card.sprite)
+            .ThenBy(x => x.card.cardName)
             .ToList();
 
         while (_deckRows.Count < grouped.Count)
@@ -237,7 +251,7 @@ public class DeckBuilderUI : MonoBehaviour
             _deckRows[i].Bind(card, count, OnDeckRowClicked);
         }
 
-        deckCountText.text = $"{_deck.Count} / {maxDeckSize}";
+        deckCountText.text = $"{_deck.Count} / {minDeckSize}";
         deckCountText.color = IsDeckValid() ? Color.white : new Color(0.8f, 0.4f, 0.3f);
     }
 

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 140
   Cost: 4
-  description: "Bez\xE1r egy enemyt egy k\xF6rig"
+  description: 'OnPlay: Lock an enemy minion for 1 turn.'
   m: {fileID: 11400000, guid: 741f7437bef655b4a82101f4913cdef8, type: 2}
   spell: {fileID: 0}

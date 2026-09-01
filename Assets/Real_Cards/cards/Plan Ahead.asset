@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1022
   Cost: 1
-  description: "Herny\xF3 tervez \u2192 H\xFAzz 2 lapot, dobj el 1-et"
+  description: Discard a card. draw 2 card
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: c391b8ba10dfbc74aa84b782d19c40bb, type: 2}

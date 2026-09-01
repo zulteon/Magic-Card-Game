@@ -8,6 +8,5 @@ public class Spell:ScriptableObject
     
     public string sprite;
     public string description;
-    public string effect;
     public List<Effect> e;
 }

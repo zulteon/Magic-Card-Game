@@ -50,7 +50,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2157317284404765103}
   _networkObjectCache: {fileID: 2157317284404765103}
-  liveCardPrefab: {fileID: 0}
+  liveCardPrefab: {fileID: 8637758936075675524, guid: 3e0a02ca7e79fb3488214a95b5b353ba, type: 3}
   showHand: {fileID: 5776992809356375682}
   manager: {fileID: 0}
   heroId: 0

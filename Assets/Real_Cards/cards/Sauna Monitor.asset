@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 130
   Cost: 4
-  description: Cleave
+  description: Cleave.
   m: {fileID: 11400000, guid: 671b822875cdff34aa21b7fec7085530, type: 2}
   spell: {fileID: 0}

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 2
   Cost: 5
-  description: "Shoebill \u2014 Temet\u0151i Scaling"
+  description: 'OnBoard or Hand: If somebody dies gain +1/1'
   m: {fileID: 11400000, guid: 477ef06c1dbbf194b9f40abae26fdefc, type: 2}
   spell: {fileID: 0}

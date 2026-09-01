@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 2
   sprite: id_00115_030_translucent_glass_frog_nurse
-  description: "Gy\xF3gy\xEDts 4-et egy bar\xE1tnak"
+  description: 'OnDeath: Restore 4 Health to a friendly character.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: c8817d3b461d90440a1b7051c60bb665, type: 2}
   race: 0

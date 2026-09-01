@@ -18,7 +18,7 @@ MonoBehaviour:
   target: 2
   value: 0
   buff: {x: 0, y: 0}
-  summonableId: 150
+  summonableId: 501
   give: {fileID: 0}
   triggers:
   - {fileID: 11400000, guid: 33cd3aee7d7793e45a27bff87ed1ef81, type: 2}
@@ -32,3 +32,4 @@ MonoBehaviour:
   linkedTrigger: {fileID: 0}
   sortMode: 0
   activeZone: 1
+  needsTarget: 1

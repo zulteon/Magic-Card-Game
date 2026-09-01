@@ -1,0 +1,1218 @@
+{
+  "cards": [
+    {
+      "attack": 2,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 1,
+      "cardName": "Lifelong Partner",
+      "cost": 4,
+      "description": "Select a partner both get +4/4  if one of the dies the other loose -5/5",
+      "cardType": "minion",
+      "sprite": "Gemini_Generated_Image_1",
+      "effectIds": [
+        29
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 2,
+      "cardName": "Deathmaster Shoebill",
+      "cost": 5,
+      "description": "OnBoard or Hand: If somebody dies gain +1/1",
+      "cardType": "minion",
+      "sprite": "id_00082_009_shoebill_stork_funeral_director",
+      "effectIds": [
+        7
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 102,
+      "cardName": "Flamingo Yoga Teacher",
+      "cost": 4,
+      "description": "OnPlay: Buff the strongest three debuff the the weakest two ally by 1/1.",
+      "cardType": "minion",
+      "sprite": "id_00143_006_flamingo_yoga_instructor_balancing",
+      "effectIds": [
+        63,
+        64
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 104,
+      "cardName": "Clean worker Beetle",
+      "cost": 3,
+      "description": "When attack summon a bomb for an enemy",
+      "cardType": "minion",
+      "sprite": "id_00155_018_proud_dung_beetle_waste",
+      "effectIds": [
+        27
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 105,
+      "cardName": "Playtypus Acountant",
+      "cost": 4,
+      "description": "OnPlay: Gain +1/+1 for each card in your hand.",
+      "cardType": "minion",
+      "sprite": "id_00105_020_platypus_accountant_bill_puzzled",
+      "effectIds": [
+        26
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 106,
+      "cardName": "Fossa  Lawyer",
+      "cost": 4,
+      "description": "When Attacking: Steal 3 Attack from the target before dealing damage.",
+      "cardType": "minion",
+      "sprite": "id_00086_001_fossa_lawyer_sleek_reddish",
+      "effectIds": [
+        65
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 107,
+      "cardName": "Komodo Judge",
+      "cost": 5,
+      "description": "OnPlay: Set the highest Health enemy minion's Health to 1.",
+      "cardType": "minion",
+      "sprite": "id_00093_008_komodo_dragon_judge_rugged",
+      "effectIds": [
+        66
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 5,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 108,
+      "cardName": "Chameleon Agent",
+      "cost": 4,
+      "description": "When Attacking: Copy the Attack of the opposing minion.",
+      "cardType": "minion",
+      "sprite": "id_00238_007_chameleon_sound_technician_instinctively",
+      "effectIds": [
+        67
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 109,
+      "cardName": "Numbat Custodian",
+      "cost": 3,
+      "description": "OnPlay: Swap a minion Attack and Health",
+      "cardType": "minion",
+      "sprite": "id_00090_005_numbat_museum_custodian_striped",
+      "effectIds": [
+        68
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 110,
+      "cardName": "Poison  Dart Frog",
+      "cost": 3,
+      "description": "OnDeath: Deal 3 damage to a random enemy.",
+      "cardType": "minion",
+      "sprite": "id_00114_029_poison_dart_frog_dj",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 111,
+      "cardName": "Hype Follower",
+      "cost": 5,
+      "description": "When a minion buffed gains 1/1",
+      "cardType": "minion",
+      "sprite": "Gemini_Generated_Image_1upkwl1upkwl1upk",
+      "effectIds": [
+        21
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 4,
+      "health": 5,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 112,
+      "cardName": "Aye-Aye Interceptor",
+      "cost": 3,
+      "description": "Counter enemy Spell (once)",
+      "cardType": "minion",
+      "sprite": "id_00180_003_an_aye_aye_goa",
+      "effectIds": [
+        80
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 113,
+      "cardName": "Koala on Hold",
+      "cost": 2,
+      "description": "Sleep for an extra turn",
+      "cardType": "minion",
+      "sprite": "id_00103_018_koala_call_center_worker",
+      "effectIds": [
+        8
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 114,
+      "cardName": "Solo Influencer",
+      "cost": 2,
+      "description": "If he is the only one on board gain 2/2",
+      "cardType": "minion",
+      "sprite": "id_00117_032_frill_necked_lizard_influencer",
+      "effectIds": [
+        81
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 115,
+      "cardName": "Griefing Galapagos",
+      "cost": 3,
+      "description": "OnDeath: Adjacent friendly minions gain +2/+1",
+      "cardType": "minion",
+      "sprite": "id_00076_003_an_old_gal_pagos",
+      "effectIds": [
+        10
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 117,
+      "cardName": "Salamander Firefighter",
+      "cost": 4,
+      "description": "OnDeath: Summon a 2/2.",
+      "cardType": "minion",
+      "sprite": "id_00116_031_fire_salamander_firefighter_glossy",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 118,
+      "cardName": "Poisonbeat DJ",
+      "cost": 3,
+      "description": "OnDeath: Deal 3 damage to a random enemy.",
+      "cardType": "minion",
+      "sprite": "id_00114_029_poison_dart_frog_dj",
+      "effectIds": [
+        9
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 119,
+      "cardName": "Glass Frog Nurse",
+      "cost": 3,
+      "description": "OnDeath: Restore 4 Health to a friendly character.",
+      "cardType": "minion",
+      "sprite": "id_00115_030_translucent_glass_frog_nurse",
+      "effectIds": [
+        13
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 120,
+      "cardName": "Tortoise Lift Operator",
+      "cost": 4,
+      "description": "OnDeath: Give adjacent friendly minions +2/+1.",
+      "cardType": "minion",
+      "sprite": "id_00208_011_gal_pagos_tortoise_elevator",
+      "effectIds": [
+        4
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 121,
+      "cardName": "Chinchilla Stylist",
+      "cost": 4,
+      "description": "OnDeath: Summon three 1/1 tokens.",
+      "cardType": "minion",
+      "sprite": "id_00141_004_chinchilla_luxury_fur_salon",
+      "effectIds": [
+        14
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 122,
+      "cardName": "Ancient Philosopher",
+      "cost": 4,
+      "description": "OnDeath: Give all friendly minions +1/+1.",
+      "cardType": "minion",
+      "sprite": "id_00213_002_an_ancient_tuatara_philosopher",
+      "effectIds": [
+        17
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 123,
+      "cardName": "Vitality Doubler",
+      "cost": 4,
+      "description": "OnDeath: Double the Health of a random friendly minion.",
+      "cardType": "minion",
+      "sprite": "vitality_Doubler",
+      "effectIds": [
+        16
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 124,
+      "cardName": "Wombat Baker",
+      "cost": 3,
+      "description": "OnDeath: Give a friendly minion +3 Health.",
+      "cardType": "minion",
+      "sprite": "id_00032_004_stylized_wombat_baker_white",
+      "effectIds": [
+        15
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 125,
+      "cardName": "Ratcoin Trader",
+      "cost": 3,
+      "description": "OnDeath: Gain 2 Mana next turn.",
+      "cardType": "minion",
+      "sprite": "id_00122_037_jittery_rat_crypto_trader",
+      "effectIds": [
+        69
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 126,
+      "cardName": "Yak Locksmith",
+      "cost": 4,
+      "description": "EndOfTurn: Give a minion +1/1 in hand",
+      "cardType": "minion",
+      "sprite": "id_00142_005_tibetan_yak_locksmith_massive",
+      "effectIds": [
+        6
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 127,
+      "cardName": "Saiga Sommelier",
+      "cost": 5,
+      "description": "OnPlay:+3 attack to all minion",
+      "cardType": "minion",
+      "sprite": "id_00163_006_saiga_antelope_sommelier_magnificent",
+      "effectIds": [
+        3
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 4,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 128,
+      "cardName": "Rooftop Markhor",
+      "cost": 3,
+      "description": "This minion cannot be attacked.",
+      "cardType": "minion",
+      "sprite": "id_00166_009_markhor_goat_rooftop_chimney",
+      "effectIds": [
+        70
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 129,
+      "cardName": "Quick-Buck Crow",
+      "cost": 2,
+      "description": "OnPlay: Gain 1 Mana Crystal this turn only.",
+      "cardType": "minion",
+      "sprite": "id_00231_016_prompt_happy_crow_wearing",
+      "effectIds": [
+        18
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 130,
+      "cardName": "Sauna Monitor",
+      "cost": 4,
+      "description": "Cleave.",
+      "cardType": "minion",
+      "sprite": "id_00058_005_stylized_monitor_lizard_sauna",
+      "effectIds": [
+        19
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 1,
+      "health": 7,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 132,
+      "cardName": "Fireline Rescuer",
+      "cost": 5,
+      "description": "Whenever a friendly minion would take damage, this minion takes it instead.",
+      "cardType": "minion",
+      "sprite": "id_00116_031_fire_salamander_firefighter_glossy",
+      "effectIds": [
+        43
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 6,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 134,
+      "cardName": "Tenrec Fakir",
+      "cost": 5,
+      "description": "Every second hit against this minion is blocked.",
+      "cardType": "minion",
+      "sprite": "id_00182_005_tenrec_fakir_street_performer",
+      "effectIds": [
+        20
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 4,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 135,
+      "cardName": "Axolotl Barista",
+      "cost": 4,
+      "description": "OnDeath: Summon a minion with half of this minion's original Attack and Health.",
+      "cardType": "minion",
+      "sprite": "id_00237_006_an_axolotl_caf_worker",
+      "effectIds": [
+        45
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 136,
+      "cardName": "Borrowed Muscle",
+      "cost": 4,
+      "description": "OnPlay: Give a minion +4/4 but -3/3 next turn",
+      "cardType": "minion",
+      "sprite": "Gemini_Generated_Image_k2pw1pk2pw1pk2pw",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 137,
+      "cardName": "Tuatara Treasurer",
+      "cost": 5,
+      "description": "At the end of your turn, double your remaining Mana next turn.",
+      "cardType": "minion",
+      "sprite": "id_00198_001_tuatara_government_office_clerk",
+      "effectIds": [
+        46
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 138,
+      "cardName": "Silent Librarian",
+      "cost": 4,
+      "description": "OnPlay: Silence an enemy minion.",
+      "cardType": "minion",
+      "sprite": "id_00164_007_shoebill_stork_librarian_silent",
+      "effectIds": [
+        71
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 139,
+      "cardName": "Fossa Personal Trainer",
+      "cost": 5,
+      "description": "EndOfTurn: Give a friendly minion +3/+3.",
+      "cardType": "minion",
+      "sprite": "id_00171_014_fossa_personal_trainer_checking",
+      "effectIds": [
+        2
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 3,
+      "health": 5,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 141,
+      "cardName": "Babirusa Butcher",
+      "cost": 4,
+      "description": "Taunt.",
+      "cardType": "minion",
+      "sprite": "id_00071_001_babirusa_wild_pig_butcher",
+      "effectIds": [
+        11
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 144,
+      "cardName": "Express Kangaroo",
+      "cost": 2,
+      "description": "Charge.",
+      "cardType": "minion",
+      "sprite": "id_00102_017_kangaroo_courier_delivery_bag",
+      "effectIds": [
+        1
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 5,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 145,
+      "cardName": "Frog Cabby",
+      "cost": 5,
+      "description": "Charge.",
+      "cardType": "minion",
+      "sprite": "id_00097_012_weathered_frog_taxi_driver",
+      "effectIds": [
+        1
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 7,
+      "health": 5,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 146,
+      "cardName": "High-Rise Glider",
+      "cost": 8,
+      "description": "Charge.",
+      "cardType": "minion",
+      "sprite": "id_00136_051_sugar_glider_window_cleaner",
+      "effectIds": [
+        1
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 0,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 501,
+      "cardName": "501 BOMB Minion",
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "BombIMG",
+      "effectIds": [
+        28
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 2,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 502,
+      "cardName": "Saved Cat",
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "savedcat",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1000,
+      "cardName": "Crowded Bathtub",
+      "cost": 4,
+      "description": "Deal 2 damage to the minions on each end of the enemy board.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (16)",
+      "effectIds": [
+        47
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1001,
+      "cardName": "Cake Party",
+      "cost": 4,
+      "description": "Deal 1-3 damage randomly to every minion.",
+      "cardType": "spell",
+      "sprite": "aoe_1",
+      "effectIds": [
+        48
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1002,
+      "cardName": "Might be Cooking",
+      "cost": 1,
+      "description": "Deal 4 damage to a minion and 1 damage to your hero.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (22)",
+      "effectIds": [
+        50,
+        49
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1003,
+      "cardName": "Safe Jump",
+      "cost": 1,
+      "description": "Return a friendly minion to your hand.",
+      "cardType": "spell",
+      "sprite": "goat",
+      "effectIds": [
+        51
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1004,
+      "cardName": "Elephant in porcelain shop",
+      "cost": 5,
+      "description": "Sacrafise a minion Deal damage the attack of that minion to all enemy minions",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (24)",
+      "effectIds": [
+        54
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1005,
+      "cardName": "Pelican said Stop",
+      "cost": 4,
+      "description": "Enemy minions cannot attack next turn.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (14)",
+      "effectIds": [
+        55
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1006,
+      "cardName": "Emu on 4-6 Tram",
+      "cost": 2,
+      "description": "Deal 2 damage to a minion and its neighbors.",
+      "cardType": "spell",
+      "sprite": "id_00095_010_an_emu_bus_driver",
+      "effectIds": [
+        73
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1007,
+      "cardName": "Into the future",
+      "cost": 3,
+      "description": "Send a minion into the a Future.",
+      "cardType": "spell",
+      "sprite": "teknosjovo",
+      "effectIds": [
+        60
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1008,
+      "cardName": "We are safe",
+      "cost": 2,
+      "description": "A friendly minion is immune to damage until your next turn.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (31)",
+      "effectIds": [
+        75
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1009,
+      "cardName": "On the Way",
+      "cost": 2,
+      "description": "Restore 6 Health to a friendly character.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (27)",
+      "effectIds": [
+        52
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1010,
+      "cardName": "Synchron Dance",
+      "cost": 4,
+      "description": "Set all friendly minions' stats to their average Attack and Health.",
+      "cardType": "spell",
+      "sprite": "balansz",
+      "effectIds": [
+        62
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1011,
+      "cardName": "Dangerous Crane",
+      "cost": 1,
+      "description": "Move probably an enemy minion to the side of the board.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (33)",
+      "effectIds": [
+        61
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1012,
+      "cardName": "Eel power 220V",
+      "cost": 2,
+      "description": "Give a friendly minion +3 Attack. Its neighbors gain +1 Attack.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_b2r5hfb2r5hfb2r5",
+      "effectIds": [
+        84
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1013,
+      "cardName": "Snail on rails",
+      "cost": 1,
+      "description": "OnPlay: Your opponent starts their next turn with 1 less Mana.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_9czo079czo079czo",
+      "effectIds": [
+        56
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1014,
+      "cardName": "Gas Leak",
+      "cost": 7,
+      "description": "Return all minions on both sides to their owner's hand.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (30)",
+      "effectIds": [
+        39
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1015,
+      "cardName": "Chilling Sauna Master",
+      "cost": 2,
+      "description": "All other minions lose 1 Attack this turn.",
+      "cardType": "spell",
+      "sprite": "id_00327_016_naked_mole_rat_sauna",
+      "effectIds": [
+        38
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1017,
+      "cardName": "Sugar Glide Swing",
+      "cost": 2,
+      "description": "Give a friendly minion +2/+2. When it dies, return it to your hand.",
+      "cardType": "spell",
+      "sprite": "id_00332_001_young_sugar_glider_on",
+      "effectIds": [
+        41,
+        42,
+        53
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1018,
+      "cardName": "Pistol Plumber",
+      "cost": 3,
+      "description": "Deal 3 damage to a minion and 1 to its neighbors.",
+      "cardType": "spell",
+      "sprite": "id_00282_001_pistol_shrimp_plumber_snapping",
+      "effectIds": [
+        57
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1019,
+      "cardName": "Demolition Order",
+      "cost": 2,
+      "description": "Destroy an enemy minion with 3 or less Health.",
+      "cardType": "spell",
+      "sprite": "id_00283_002_cassowary_construction_inspector_kicking",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1020,
+      "cardName": "Kitchen Under Control",
+      "cost": 3,
+      "description": "Your hero takes 3 less damage from all sources this turn.",
+      "cardType": "spell",
+      "sprite": "id_00232_001_fearless_honey_badger_bakery",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1021,
+      "cardName": "Maybe the next one",
+      "cost": 1,
+      "description": "Discard a card. draw 2 card",
+      "cardType": "spell",
+      "sprite": "id_00230_015_prompt_sad_exhausted_badger",
+      "effectIds": [
+        36,
+        37
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1022,
+      "cardName": "Plan Ahead",
+      "cost": 1,
+      "description": "Discard a card. draw 2 card",
+      "cardType": "spell",
+      "sprite": "id_00225_010_prompt_determined_caterpillar_wearing",
+      "effectIds": [
+        77,
+        78
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1023,
+      "cardName": "Heavy Lifting",
+      "cost": 2,
+      "description": "Give a friendly minion +4/+4. It cannot attack this turn.",
+      "cardType": "spell",
+      "sprite": "id_00239_008_tiny_leafcutter_ant_mover",
+      "effectIds": [
+        58
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1024,
+      "cardName": "No Exceptions",
+      "cost": 3,
+      "description": "OnPlay: Deal 4 damage, ignoring Blocks and Shields.",
+      "cardType": "spell",
+      "sprite": "id_00288_007_secretary_bird_pest_control",
+      "effectIds": [
+        40
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1025,
+      "cardName": "Finish the Job",
+      "cost": 1,
+      "description": "Deal 3 damage to a damaged minion.",
+      "cardType": "spell",
+      "sprite": "id_00256_015_numbat_building_surveyor_kneeling",
+      "effectIds": [
+        85
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1027,
+      "cardName": "Pickpocket",
+      "cost": 4,
+      "description": "Steal 2 Mana from the enemy next turn.",
+      "cardType": "spell",
+      "sprite": "id_00293_012_fossa_pickpocket_mid_slip",
+      "effectIds": [
+        74,
+        90
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1029,
+      "cardName": "Direct Hit",
+      "cost": 3,
+      "description": "Deal 4 damage to an enemy minion.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (25)",
+      "effectIds": [
+        31
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1030,
+      "cardName": "Double Impact",
+      "cost": 3,
+      "description": "OnPlay: Deal 6 damage to two random minions.",
+      "cardType": "spell",
+      "sprite": "Gemini_Generated_Image_ (23)",
+      "effectIds": [
+        72
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1032,
+      "cardName": "Circuit Inspection",
+      "cost": 2,
+      "description": "Look at enemy hand copy one card.",
+      "cardType": "spell",
+      "sprite": "id_00246_005_mantis_shrimp_metro_electrician",
+      "effectIds": [
+        79
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1033,
+      "cardName": "Pressure Blast",
+      "cost": 2,
+      "description": "Deal 3 damage to any target",
+      "cardType": "spell",
+      "sprite": "id_00251_010_an_archerfish_street_cleaner",
+      "effectIds": [
+        32
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1034,
+      "cardName": "Heavy Hit",
+      "cost": 5,
+      "description": "Deal 6 damage to enemy",
+      "cardType": "spell",
+      "sprite": "id_00267_006_babirusa_market_vendor_charging",
+      "effectIds": [
+        34
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1036,
+      "cardName": "Feeding Frenzy",
+      "cost": 3,
+      "description": "Summon 4 1/1 Pigeons",
+      "cardType": "spell",
+      "sprite": "id_00281_020_sloth_pigeon_feeder_buried",
+      "effectIds": [
+        35
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1037,
+      "cardName": "Aye Safe Cracker",
+      "cost": 2,
+      "description": "Look at the enemy's hand and copy 1 card from it (cracks the vault).",
+      "cardType": "spell",
+      "sprite": "id_00289_008_an_aye_aye_safecracker",
+      "effectIds": [
+        86
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1038,
+      "cardName": "Full Recovery",
+      "cost": 2,
+      "description": "Restore a minion to full Health ",
+      "cardType": "spell",
+      "sprite": "id_00291_010_an_axolotl_burn_ward",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1039,
+      "cardName": "Scrap It_1039",
+      "cost": 2,
+      "description": "5 damage to minion",
+      "cardType": "spell",
+      "sprite": "id_00284_003_mantis_shrimp_scrapyard_worker",
+      "effectIds": [
+        33
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1041,
+      "cardName": "Fine Vintage",
+      "cost": 2,
+      "description": "",
+      "cardType": "spell",
+      "sprite": "id_00313_002_star_nosed_mole_sommelier",
+      "effectIds": [
+        59
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1042,
+      "cardName": "Desynchron Dance",
+      "cost": 3,
+      "description": "Set all enemy minions to their avarage cost.",
+      "cardType": "spell",
+      "sprite": "desynchron",
+      "effectIds": [
+        87
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1043,
+      "cardName": "Pool Crash",
+      "cost": 5,
+      "description": "",
+      "cardType": "spell",
+      "sprite": "aoe2",
+      "effectIds": [
+        88
+      ],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 1044,
+      "cardName": "Grand Finale",
+      "cost": 8,
+      "description": "",
+      "cardType": "spell",
+      "sprite": "aoe3",
+      "effectIds": [
+        89
+      ],
+      "dynamicValues": {}
+    }
+  ]
+}

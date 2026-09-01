@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 1
   sprite: id_00122_037_jittery_rat_crypto_trader
-  description: when dies gain 2 mana next turn
+  description: 'OnDeath: Gain 2 Mana next turn.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 476b944089459884e8326741696d226f, type: 2}
   race: 0

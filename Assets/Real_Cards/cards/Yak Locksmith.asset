@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 126
   Cost: 4
-  description: Enemy taunts ignored
+  description: 'EndOfTurn: Give a minion +1/1 in hand'
   m: {fileID: 11400000, guid: 0d81f192e40cc1a4f8e5df0e40dac9b9, type: 2}
   spell: {fileID: 0}

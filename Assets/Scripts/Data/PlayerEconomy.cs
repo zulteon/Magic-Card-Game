@@ -22,6 +22,7 @@ public class PlayerEconomy
 
     public void StartTurn()
     {
+        UnityEngine.Debug.Log("Are we here ");
         if (_owner.maxResource.Value < MaxCrystals)
             _owner.maxResource.Value++;
         
@@ -34,12 +35,25 @@ public class PlayerEconomy
             extraResourceNextTurn = _owner.currentResource.Value;
             _owner.currentResource.Value = 0;
         }
+
+        GameManager.instance.SendClientEvent(new ClientEvent()
+        {
+            effectType = (ushort)Effect.Type.setManaCrystal,
+            targetIds = new ushort[] { _owner.isEnemy.Value ? (ushort)1 : (ushort)0 },
+            value = _owner.currentResource.Value,
+        });
     }
 
     public void RaiseResource(int amount)
     {
-        UnityEngine.Debug.Log("ECONOMY RAISED!!");
+        
         _owner.currentResource.Value += amount;   // nincs felsõ korlát
+        EffectClient.instance.AddEvent(new ClientEvent()
+        {
+            effectType = (ushort)Effect.Type.setManaCrystal,
+            targetIds = new ushort[] { _owner.isEnemy.Value ? (ushort)1 : (ushort)0 },
+            value = _owner.currentResource.Value,
+        });
     }
     public void GainEconomyNextTurn(int value)
     {

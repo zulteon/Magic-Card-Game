@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 119
   Cost: 3
-  description: "Gy\xF3gy\xEDts 4-et egy bar\xE1tnak"
+  description: 'OnDeath: Restore 4 Health to a friendly character.'
   m: {fileID: 11400000, guid: 3c51f45d9f781444694fae5c26f08571, type: 2}
   spell: {fileID: 0}

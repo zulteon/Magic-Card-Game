@@ -557,23 +557,26 @@ public class GameManager : NetworkBehaviour
     [Server]
     public void EndTurn()
     {
+        EffectClient.instance.TurnEndObserversRpc();
         GameEvents.Instance.RaiseTurnEnd();
         int cantAttackForTurns=GetplayerByTurn().CantAttackForTurn;
         if (cantAttackForTurns > 0)
             GetplayerByTurn().CantAttackForTurn--;
         graveyard.Execute();          // ha a körvégi effektek öltek
-
+        
         StartTurn();
     }
 
     [Server]
     private void StartTurn()
     {
+        EffectClient.instance.TurnStartObserversRpc();
         turn.Value++;
 
         var pc = CurrentPlayerController;
         if (pc == null) return;
 
+        print(pc.economy.ToString());
         pc.economy.StartTurn();
 
         CheckLockedMinions();
@@ -583,6 +586,7 @@ public class GameManager : NetworkBehaviour
         ResetAttacks(pc);
 
         pc.DrawCard();
+
         GameEvents.Instance.RaiseTurnStart();
         graveyard.Execute();
 
@@ -917,29 +921,7 @@ public class GameManager : NetworkBehaviour
         foreach (var e in effects)
         {// if so trigger egyelőre szoló de ha több lesz könnyen megoldható
             // 1. Megkeressük az IfSo triggert manuálisan a tömbben
-            Trigger ifSoTrigger = null;
-
-            // Feltételezve, hogy az effect.triggers is egy Array
-            for (int j = 0; j < e.triggers.Length; j++)
-            {
-                if (e.triggers[j].t == Trigger.time.ifso)
-                {
-                    ifSoTrigger = e.triggers[j];
-                    break; // Megvan, nem kell tovább keresni
-                }
-            }
-
-            // 2. Ha van IfSo feltétel, ellenőrizzük
-            if (ifSoTrigger != null)
-            {
-                MinionLogic doer = GameManager.instance.GetMinionLogic(doerId);
-
-                // Ha a központi IfSoTrigger hamisat ad, átugorjuk ezt az effektet
-                if (!TriggerChecker.instance.IfSoTrigger(ifSoTrigger, doer, null))
-                {
-                    continue;
-                }
-            }
+            
             DoEffect(e, doerId, owner,fromDoEffects:true);
         }
         FinishEventQueue();
@@ -949,8 +931,30 @@ public class GameManager : NetworkBehaviour
     {
        // if(targets == null)
        // List<ushort> targets = TargetingCenter.GetTargets(e, doerId, owner);
-        var ctx = new EffectContext(e, doerId, targets,source:owner);
+        EffectContext ctx = new EffectContext(e, doerId, targets,source:owner);
+        Trigger[] ifsoTriggers = System.Array.FindAll(e.triggers, t => t.t == Trigger.time.ifso);
+        if (ifsoTriggers.Length > 0)
+        {
+            MinionLogic target = targets?.Count > 0
+                ? GetMinionLogic(targets[0])
+                : null;
 
+            if (!TriggerChecker.instance.IfSoTrigger(ifsoTriggers[0], GetMinionLogic(doerId), target))
+                return;
+        }
+        if (e.targetCondition != null &&
+        e.targetCondition.sub != Trigger.subject.None &&
+        ctx.targetIds != null)
+        {
+            ctx.targetIds = ctx.targetIds
+                .Where(id => GameManager.instance.MeetsTargetCondition(
+                    e.targetCondition,
+                    GameManager.instance.GetMinionById(id)))
+                .ToArray();
+
+            // ha minden célpont kiesett, az effekt nem fut le
+            if (ctx.targetIds.Length == 0) return;
+        }
         EffectRunner.Run(ctx); // Szerver matek
         try
         {
@@ -1057,8 +1061,6 @@ public class GameManager : NetworkBehaviour
         gameState.players[1].hero = p2_h;
         gameState.players[0].hero = p1_h;
 
-       // playerA.Value.InitHero(30);
-       // playerB.Value.InitHero(30);
         
         if (offlineTestMode)
         {
@@ -1075,19 +1077,11 @@ public class GameManager : NetworkBehaviour
             player2GO.transform.parent = transform;
         }
 
-        /*GameObject player = new GameObject("player1");
-        player.transform.parent = transform;
-        playerA.Value = player.AddComponent<PlayerController>();
-        playerA.Value.Init(gameState.players[0], true, this);
-        player = new GameObject("player2");
-        player.transform.parent = transform;
-        playerB.Value = player.AddComponent<PlayerController>();
-        playerB.Value.Init(gameState.players[1], false, this);*/
 
     }
     
     [Server]
-    public void RegisterPlayer(PlayerController player)
+    public void RegisterPlayer(PlayerController player,ushort[] deckIds)
     {
         // A kliens PlayerController-e itt regisztrálja magát
         //players.Add(player);
@@ -1101,18 +1095,19 @@ public class GameManager : NetworkBehaviour
             playerA.Value = player;
             player.isEnemy.Value = false;
             player.transform.parent = transform;
-            player.Init(gameState.players[0], true, this);
+            player.Init(gameState.players[0], true, this,offlineTestMode?null:deckIds);
             player.RoleAssignedTargetRpc(player.Owner, player.isEnemy.Value);
         }
         else
         {
             playerB.Value = player;
             player.isEnemy.Value = true;
-            player.Init(gameState.players[1], false, this);
+            player.Init(gameState.players[1], false, this,offlineTestMode?null:deckIds);
             player.RoleAssignedTargetRpc(player.Owner, player.isEnemy.Value);
         }
-        //TryStartGame();
+        TryStartGame();
     }
+    
     #endregion
 
 //<<<<<<<<----------------------------------->>>>>>>>
@@ -1162,6 +1157,33 @@ public class GameManager : NetworkBehaviour
 
         logic.effectBag.DisposeAll(reason);
         minionLogics.Remove(logic);
+    }
+    public bool MeetsTargetCondition(Trigger condition, MinionState state)
+    {
+        switch (condition.sub)
+        {
+            case Trigger.subject.isDamaged:
+                return state.currentHealth < (state.maxHealth);
+
+            case Trigger.subject.Attack:
+                switch (condition.cond)
+                {
+                    case Trigger.conditions.less: return state.attack < condition.value;
+                    case Trigger.conditions.equals: return state.attack == condition.value;
+                    case Trigger.conditions.more: return state.attack > condition.value;
+                }
+                break;
+
+            case Trigger.subject.Health:
+                switch (condition.cond)
+                {
+                    case Trigger.conditions.less: return state.currentHealth < condition.value;
+                    case Trigger.conditions.equals: return state.currentHealth == condition.value;
+                    case Trigger.conditions.more: return state.currentHealth > condition.value;
+                }
+                break;
+        }
+        return true;
     }
     [SerializeField]
     public HeroView homeHeroView,enemyHeroView;
@@ -1243,9 +1265,17 @@ public class GameManager : NetworkBehaviour
     => index == 0 ? playerA.Value : playerB.Value;
     #endregion
     internal bool IsMyTurn()
-    {
-        return true;
-        return localPlayerIndex == 0 ?turn.Value % 2 == 0:turn.Value %2==1;
+    {if (turn.Value < 0) return true;
+        PlayerController player =
+        GetLocalPlayerController();
+
+        if (player == null)
+            return false;
+
+        bool enemyTurn =
+            turn.Value % 2 == 1;
+
+        return player.isEnemy.Value == enemyTurn;
     }
     public bool isAllyTurn()
     {

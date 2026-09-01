@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 2
   health: 3
   sprite: id_00102_017_kangaroo_courier_delivery_bag
-  description: Charge
+  description: Charge.
   effect: 
   e:
   - {fileID: 11400000, guid: b6ad75e7b3fd0534ca6106b9ba3d45f3, type: 2}

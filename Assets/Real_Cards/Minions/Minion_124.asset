@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 3
   sprite: id_00032_004_stylized_wombat_baker_white
-  description: "Bar\xE1tnak +3 hp"
+  description: 'OnDeath: Give a friendly minion +3 Health.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: e836660effbe4c642a401683fb0b973c, type: 2}
   race: 0

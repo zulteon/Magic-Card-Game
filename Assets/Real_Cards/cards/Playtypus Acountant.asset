@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 105
   Cost: 4
-  description: "K\xF6nyvel\u0151 (+1/+1 k\xE9zben l\xE9v\u0151 lap\xE9rt)"
+  description: 'OnPlay: Gain +1/+1 for each card in your hand.'
   m: {fileID: 11400000, guid: a40e1e4c1abf00c4d8611dcef3a84f9c, type: 2}
   spell: {fileID: 0}

@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 1
   health: 4
   sprite: Gemini_Generated_Image_1upkwl1upkwl1upk
-  description: "Ha buffolnak valakit, \u0151t is buffolj\xE1k (listener)"
+  description: When a minion buffed gains 1/1
   effect: 
   e:
   - {fileID: 11400000, guid: 09f8a11b81b4689499a25b579f3de3bc, type: 2}

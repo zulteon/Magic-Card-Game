@@ -87,14 +87,7 @@ public  static class TargetingCenter
                 targetIds = targetIds.Where(s => IsHero(s)).ToList();
                 break;
 
-            case Trigger.TargetType.race:
-                targetIds = targetIds.Where(s =>
-                {
-                    var st = GameManager.instance.GetMinionById(s);
-                    var mc = CardManager.instance.GetMinion(st.cardId);
-                    return mc != null && mc.raceId == e.raceValue;
-                }).ToList();
-                break;
+            
 
             default:
                 Debug.LogWarning("Unknown target type: " + e.targetType);
@@ -127,9 +120,10 @@ public  static class TargetingCenter
                 }
                 else
                 {
+
+                    Debug.Log("TODO: Player manual target selection");
                     return targetIds;
-                    //Debug.Log("TODO: Player manual target selection");
-                   // return null;
+                    // return null;
                 }
                 break;
 
@@ -138,19 +132,9 @@ public  static class TargetingCenter
 
                 if (e.random)
                 {
-                    if (e.multiSplit)
-                    {
-                        for (int i = 0; i < multivalue; i++)
-                        {
-                            var rnd = Random.Range(0, targetIds.Count);
-                            result.Add(targetIds[rnd]);
-                        }
-                    }
-                    else
-                    {
+                    
                         var shuffled = targetIds.OrderBy(_ => Random.value).ToList();
                         result = shuffled.Take(multivalue).Select(c => c).ToList();
-                    }
                 }
                 else
                 {

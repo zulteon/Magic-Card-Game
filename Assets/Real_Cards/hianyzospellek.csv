@@ -1,0 +1,8 @@
+;Name;Cost;Description;Sprite
+1033;Pressure Blast;2;Deal 3 damage to any target;vid_00251_010_an_archerfish_street_cleaner.png
+1034;Heavy Hit;5;Deal 6 damage to enemy;id_00267_006_babirusa_market_vendor_charging.png
+1035;Repossession;5;*005 Wolverine Repo Man** ? Take control of an enemy minion with 4 or less Attack this turn (drags it over).;id_00266_005_wolverine_repo_man_single.png
+1036;Feeding Frenzy;3;Sloth Pigeon-Feeder** ? Summon 4 1/1 Pigeons;id_00281_020_sloth_pigeon_feeder_buried.png
+1037;Crack the Vault;2;Aye-aye Safecracker** ? Look at the enemy's hand and copy 1 card from it (cracks the vault).;id_00289_008_an_aye_aye_safecracker.png
+1038;Full Recovery;2; Axolotl Burn-ward Doctor** ? Restore a minion to full Health AND remove all its debuffs (full recovery).;id_00291_010_an_axolotl_burn_ward.png
+1039;Scrap It;2;5 damage to minion;id_00284_003_mantis_shrimp_scrapyard_worker.png

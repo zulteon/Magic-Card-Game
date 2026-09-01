@@ -15,7 +15,7 @@ MonoBehaviour:
   attack: 3
   health: 6
   sprite: id_00182_005_tenrec_fakir_street_performer
-  description: Each second hit is blocked
+  description: Every second hit against this minion is blocked.
   effect: 
   e:
   - {fileID: 11400000, guid: f28b68114a4aa2842891fa3501a4373f, type: 2}

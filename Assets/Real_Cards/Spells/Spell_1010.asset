@@ -12,10 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e400ae7710543a544b1b9824309b21af, type: 3}
   m_Name: Spell_1010
   m_EditorClassIdentifier: 
-  sprite: balansz
-  description: "Galamb t\xE1nccsapat \u2192 \"Szinkron-t\xE1nc\" Minden bar\xE1ts\xE1gos
-    minion statja kiegyenl\xEDt\u0151dik az \xE1tlagukra \u2014 mindenki ugyanazt
-    a l\xE9p\xE9st j\xE1rja."
-  effect: 
+  sprite: synchron
+  description: Set all friendly minions' stats to their average Attack and Health.
   e:
   - {fileID: 11400000, guid: 0b381c1f459371245a1b0a5be2426a94, type: 2}

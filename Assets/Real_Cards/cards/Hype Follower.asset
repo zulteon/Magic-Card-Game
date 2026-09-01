@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 111
   Cost: 5
-  description: "Ha buffolnak valakit, \u0151t is buffolj\xE1k (listener)"
+  description: When a minion buffed gains 1/1
   m: {fileID: 11400000, guid: db8e58119a714f5448004789b5e4a4f8, type: 2}
   spell: {fileID: 0}

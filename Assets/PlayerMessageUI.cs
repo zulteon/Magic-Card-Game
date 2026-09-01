@@ -80,8 +80,28 @@ public class PlayerMessageUI : MonoBehaviour
 }
 public static class PlayerMessage
 {
-    public static void Send(PlayerController pc, string message)
+    public static void Send( string message, PlayerController pc)
     {
         pc.TargetShowMessage(pc.Owner, message);
     }
 }
+/*"Not enough Mana."
+"No valid target."
+"Invalid target."
+"It's not your turn."
+"Your board is full."
+"Your hand is full."
+"This minion can't attack."
+"This minion has already attacked."
+"This minion is sleeping."
+"This minion can't be targeted."
+"You can't play this card right now."
+"You don't have enough Gold."
+"No cards left in your deck."
+"No valid minions available."
+"No valid enemy minions available."
+"No valid friendly minions available."
+"This effect has no valid target."
+"You must choose a target."
+"That target is no longer available."
+"Action cancelled."*/

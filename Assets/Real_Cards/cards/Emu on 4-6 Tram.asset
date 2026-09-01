@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1006
   Cost: 2
-  description: "Emu villamosvezet\u0151 \u2192 \"A 4-6-os \xE9rkezik\" Sebz\xE9s
-    egy oszlopban: a szemben \xE1ll\xF3 minion \xE9s szomsz\xE9dai 2-2 sebz\xE9st
-    kapnak \u2014"
+  description: Deal 2 damage to a minion and its neighbors.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 67bb6ea32b42c2149b566b65cefa3470, type: 2}

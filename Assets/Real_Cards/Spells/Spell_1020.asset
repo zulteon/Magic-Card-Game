@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Spell_1020
   m_EditorClassIdentifier: 
   sprite: id_00232_001_fearless_honey_badger_bakery
-  description: "Fearless Honey Badger Baker \u2192 Take 3 less damage from all sources
-    this turn"
+  description: Your hero takes 3 less damage from all sources this turn.
   effect: 
   e: []

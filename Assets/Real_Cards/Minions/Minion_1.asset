@@ -15,7 +15,8 @@ MonoBehaviour:
   attack: 2
   health: 1
   sprite: Gemini_Generated_Image_1
-  description: "Albatrosz \u2014 \xC9lethosszig Tart\xF3 P\xE1r"
+  description: Select a partner both get +4/4  if one of the dies the other loose
+    -5/5
   effect: 
   e:
   - {fileID: 11400000, guid: 465c2a7beceef9845a95345edea99630, type: 2}

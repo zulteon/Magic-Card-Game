@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1026
   Cost: 3
-  description: "4 Electric Eel Metro (jump-start)** \u2192 Reactivate a friendly
-    minion that already attacked:"
+  description: A friendly minion that already attacked may attack again this turn.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 1c7d63b31cd540e498e019e34acf55ca, type: 2}

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 144
   Cost: 2
-  description: Charge
+  description: Charge.
   m: {fileID: 11400000, guid: 8ac59def5ff5dc448b61f78d44b2c9fb, type: 2}
   spell: {fileID: 0}

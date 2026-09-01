@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1029
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (25)
-  description: Deal 4 damage to a enemy
+  description: Deal 4 damage to an enemy minion.
   effect: 
   e:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 1a27d72dbc975dd488a906477af81d3b, type: 2}

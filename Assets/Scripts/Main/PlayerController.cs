@@ -55,6 +55,8 @@ public class PlayerController : NetworkBehaviour
        NetworkCards_Board = new GameObject("BoardNetworkCardData").transform;
        NetworkCards_Board.transform.parent = transform;
         Debug.Log(typeof(string).Assembly.ImageRuntimeVersion);
+        if(IsServer)
+        economy = new PlayerEconomy(this);
     }
     void Update()
     {
@@ -64,9 +66,11 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.D)) RequestDrawServerRpc();
         if (Input.GetKeyDown(KeyCode.F)) RequestPlayFirstServerRpc();
         if (Input.GetKeyDown(KeyCode.Return)) RequestEndTurnServerRpc();
+        if (Input.GetKeyDown(KeyCode.M)) AskForMana(10);
         
     }
-
+    [ServerRpc(RequireOwnership = true)]
+    private void AskForMana(int amount) => currentResource.Value = amount;
     [ServerRpc(RequireOwnership = true)]
     private void RequestDrawServerRpc() => DrawCard();
 
@@ -74,11 +78,11 @@ public class PlayerController : NetworkBehaviour
     private void RequestPlayFirstServerRpc()
     {
         if (hand.Count == 0) return;
-        PlayMinion(hand[0]);
+        BeforePlay(hand[0]);
     }
 
     [ServerRpc(RequireOwnership = true)]
-    private void RequestEndTurnServerRpc() => GameManager.instance.EndTurn();
+    internal void RequestEndTurnServerRpc() => GameManager.instance.EndTurn();
     public GameObject liveCardPrefab;
     public LiveHero hero { get; set; }
     int Health;
@@ -90,7 +94,7 @@ public class PlayerController : NetworkBehaviour
     private bool _subscribed = false;
     public ushort heroId;
     [Server]
-    public void Init(PlayerState player, bool home, GameManager manager2)
+    public void Init(PlayerState player, bool home, GameManager manager2, ushort[] deckList=null)
     {
         manager = GameManager.instance;
         boardManager = manager.gameObject.GetComponent<BoardManager>();
@@ -98,17 +102,19 @@ public class PlayerController : NetworkBehaviour
 
         isEnemy.Value = !home;
         heroId = isEnemy.Value ? (ushort)1 : (ushort)0;
-
-        CreateDeck(player.deck);              // <- az ID-allokátorhoz kell a home
+        if (manager.offlineTestMode)
+            CreateDeck(player.deck);
+        else
+            CreateDeck(deckList);
+            // <- az ID-allokátorhoz kell a home
                                               // GameManager, a játék indításakor
        // playerB.Value.GiveCoin();   
         hero = gameObject.GetComponent<LiveHero>();
         if (hero == null) hero = gameObject.AddComponent<LiveHero>();
-        hero.Init(player.hero);// Kelez? nem!
         var myHero=new MinionState ();
         myHero.cardId = 0;
         myHero.sequenceId=isEnemy.Value ? (ushort)1 : (ushort)0;
-        myHero.currentHealth = 20;
+        myHero.currentHealth = 25;
         heroState.Value=myHero;
         manager.CreateHeroMinionLogic(isEnemy.Value);
         if (manager.offlineTestMode && !home) {
@@ -153,8 +159,10 @@ public class PlayerController : NetworkBehaviour
     int maxboardCount = 8;
     static ushort minionSequenceId=1;//0,1 heros main
     [Server]
-    public void PlayMinion(CardState card,List<ushort> batlecryVictims=null)
+    public void PlayMinion(CardState card, List<ushort> batlecryVictims = null)
     {
+        if (!manager.IsMyTurn()) {PlayerMessage.Send("It's not my turn.", this); return; }
+        if (!economy.TrySpendResource(card.currentCost)) { return; }
         GameObject go = Instantiate(manager.minionPrefab);
         LiveMinion live = go.GetComponent<LiveMinion>();
 
@@ -181,6 +189,7 @@ public class PlayerController : NetworkBehaviour
         Effect[] battlecry = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, data).ToArray();
         //effects.Remove(battlecry)
         bool first = true;
+        if (batlecryVictims != null && batlecryVictims.Count < 1) batlecryVictims = null;
         foreach (Effect effect in battlecry)
         {
             manager.DoEffect(effect, minionSequenceId, this, targets: first ? batlecryVictims : null);
@@ -231,7 +240,7 @@ public class PlayerController : NetworkBehaviour
     public void CmdPlayMinion(CardState card, ushort victimId) // vagy int cardIndex
     {
         // ellenörzés : IsVictimValid? if(victimId==ushortMaxValue)
-        
+       
         print("playing a minion " + card.ToString());
         PlayMinion(card,victimId==ushort.MaxValue?null:new List<ushort> { victimId});
 
@@ -249,16 +258,18 @@ public class PlayerController : NetworkBehaviour
     [Client]
     public void BeforePlay(CardState card)
     {
+        if (!manager.IsMyTurn()) { PlayerMessage.Send("nem az én köröm van", this);return; };
+        if(currentResource.Value<card.currentCost) { PlayerMessage.Send("nincs manám", this);return; }
         CardData def = CardManager.instance.GetCard(card.cardId);
         if (def == null) return;
-
+        
         bool isSpell = def.GetCardType() == CardType.Spell;
         print("DEF :::: " +def.effectIds.Count);
         // Board-limit csak lényre vonatkozik
         if (!isSpell)
         {
             var board = isEnemy.Value ? manager.boardEnemy : manager.boardAlly;
-            if (board.Count >= GameManager.BOARD_LIMIT) { Debug.Log("Tele a pálya"); return; }
+            if (board.Count >= GameManager.BOARD_LIMIT) { PlayerMessage.Send("Tele a pálya", this); return; }
         }
 
         Effect[] e = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, def).ToArray();
@@ -271,39 +282,61 @@ public class PlayerController : NetworkBehaviour
         {
             if (isSpell)
             {
-                Debug.Log("Nincs érvényes célpont, a lap marad a kézben.");
+                PlayerMessage.Send("Nincs érvényes célpont, a lap marad a kézben.", this);
                 return;
             }
 
             SendPlay(card, ushort.MaxValue, false);   // lény: kijön, battlecry nélkül
             return;
         }
+        _validTargetsToSelect = FilterByTargetCondition(_validTargetsToSelect, needsTarget.targetCondition);
         TargetSelector.instance.Begin(
             _validTargetsToSelect,
             new Vector3(0f, -3.0f, 0f),
             targetId => SendPlay(card, targetId, isSpell));
     }
+    private List<ushort> FilterByTargetCondition(List<ushort> targets, Trigger condition)
+    {
+        if (condition == null || condition.sub == Trigger.subject.None)
+            return targets;
 
+        return targets.Where(id =>
+        {
+            var state = GameManager.instance.GetMinionById(id);
+            return manager.MeetsTargetCondition(condition, state);
+        }).ToList();
+    }
+
+   
     private void SendPlay(CardState card, ushort targetId, bool isSpell)
     {
         print("SENDING INTO PLAY "+card.sequenceId.ToString());
+        manager.SendClientEvent(new ClientEvent
+        {
+            effectType = (ushort)Effect.Type.playCard,
+            targetIds = new ushort[] { card.cardId }
+        });
         if (isSpell) CmdPlaySpell(card, targetId);
         else CmdPlayMinion(card, targetId);
     }
+
+    internal static PlayerMessageUI message =>PlayerMessageUI.Instance;
     [ServerRpc(RequireOwnership = true)]
     public void CmdPlaySpell(CardState card, ushort victimId)
     {
-        //if (!GameManager.instance.IsPlayersTurn(this)) return;
-
+        if (!GameManager.instance.IsPlayersTurn(this)) return;
+        
         var def = CardManager.instance.GetCard(card.cardId);
         if (def == null || def.GetCardType() != CardType.Spell) return;
 
         PlaySpell(card, victimId == ushort.MaxValue ? null : new List<ushort> { victimId });
     }
-
+    
     [Server]
     private void PlaySpell(CardState card, List<ushort> victims = null)
     {
+        if (!economy.TrySpendResource(card.currentCost)) { PlayerMessage.Send("Not enough Mana.", this); return; }
+        if (CounterSpell()) { PlayerMessage.Send("Spell Countered",this); RemoveCardFromHand(card); return; }
         var def = CardManager.instance.GetCard(card.cardId);
         Effect[] effects = EffectManagerClient.instance.GetEffectData(def.effectIds).ToArray();
         print("playing spell");
@@ -311,12 +344,12 @@ public class PlayerController : NetworkBehaviour
         Effect needsTarget = FindTargetedEffect(effects);
         if (needsTarget != null && (victims == null || victims.Count == 0))
         {
-            Debug.LogWarning("Célzott spell célpont nélkül — elutasítva.");
+            PlayerMessage.Send("Célzott spell célpont nélkül — elutasítva.", this);
             return;
         }
 
         // Mana CSAK az ellenőrzések után
-        if (!economy.TrySpendResource(def.cost)) { Debug.Log("Nincs elég mana"); return; }
+        
 
         RemoveCardFromHand(card);
         GameManager.instance.cardBags.Remove(card.sequenceId, RemoveReason.ZoneChange);
@@ -331,7 +364,27 @@ public class PlayerController : NetworkBehaviour
         manager.graveyard.DeadCards.Add(card.cardId);
         manager.graveyard.Execute();
     }
+    bool CounterSpell()
+    {
+        var enemyBoard = isEnemy.Value
+    ? GameManager.instance.boardAlly
+    : GameManager.instance.boardEnemy;
 
+        foreach (var state in enemyBoard)
+        {
+            var logic = GameManager.instance.GetMinionLogic(state.sequenceId);
+            if (logic == null) continue;
+            if (!logic.effectBag.TryConsumeGuard(Effect.Type.spell)) continue;
+
+            manager.SendClientEvent(new ClientEvent
+            {
+                effectType = (ushort)Effect.Type.counter,
+                targetIds = new ushort[] { state.sequenceId }
+            });
+            return true;
+        }
+        return false;
+    }
     /// <summary>Az első olyan instant effekt, ami kézi célzást igényel.</summary>
     private static Effect FindTargetedEffect(Effect[] effects)
     {
@@ -382,12 +435,30 @@ public class PlayerController : NetworkBehaviour
     }
 
     public List<FutureMinion> futureMinions = new List<FutureMinion>();
-    
+
 
     [TargetRpc]
     public void TargetDiscoverChoices(NetworkConnection conn, ushort[] cardIds)
     {
-        DiscoverCenter.instance.Show(cardIds, chosenCardId => CmdResolveDiscover(chosenCardId));
+        DiscoverCenter.instance.Show(cardIds,
+            chosenCardId => CmdResolveDiscover(chosenCardId));
+    }
+
+    // ÚJ overload a copy-hoz
+    [TargetRpc]
+    public void TargetDiscoverChoicesForCopy(NetworkConnection conn, ushort[] cardIds)
+    {
+        DiscoverCenter.instance.Show(cardIds,
+            chosenCardId => CmdResolveCopyFromHand(chosenCardId));
+    }
+    [ServerRpc]
+    public void CmdResolveCopyFromHand(ushort chosenCardId)
+    {
+        hand.Add(new CardState
+        {
+            cardId = chosenCardId,
+            sequenceId = GameManager.instance.NextCardId(isEnemy.Value)
+        });
     }
 
     [ServerRpc]
@@ -403,6 +474,7 @@ public class PlayerController : NetworkBehaviour
     public void RemoveCardFromHand(CardState card) { 
         
         hand.Remove(card);
+        manager.cardBags.Remove(card.sequenceId,RemoveReason.Death);
     }
     
     
@@ -411,7 +483,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (_deck.Count == 0)
         {
-            Debug.LogWarning("Nincs több lap a pakliban!");
+            PlayerMessage.Send("Nincs több lap a pakliban!", this);
             return;   // TODO: fatigue
         }
         // todo ha a kéz 10 kártya van  a lép  ég 
@@ -509,9 +581,37 @@ public class PlayerController : NetworkBehaviour
             });
         }
 
-        //Shuffle();
+        Shuffle();
     }
+    public void CreateDeck(ushort[] cardIds)
+    {
+        _deck.Clear();
 
+        foreach (ushort cardId in cardIds)
+        {
+            CardData card =
+                CardManager.instance.GetCard(cardId);
+
+            if (card == null)
+            {
+                Debug.LogWarning($"Nincs ilyen kártya: {cardId}");
+                continue;
+            }
+
+            _deck.Add(new CardState
+            {
+                cardId = cardId,
+
+                sequenceId =
+                    GameManager.instance.NextCardId(!isEnemy.Value),
+
+                currentCost = card.cost
+            });
+        }
+
+        Shuffle();
+    }
+   
     [Server]
     private void Shuffle()
     {
@@ -567,11 +667,34 @@ public class PlayerController : NetworkBehaviour
 
         if (!IsOwner) return;
         isEnemy.OnChange += OnRoleReceived;
-        RegisterMeServerRpc();          
 
-        
 
-    }
+        // ==========================================
+        // SAJÁT KLIENS DECKJE
+        // ==========================================
+
+        ushort[] deckIds =
+            DeckStorage
+                .GetPreparedDeckIds();
+
+        if (!manager.offlineTestMode||
+            deckIds == null ||
+            deckIds.Length == 0
+        )
+        {
+            Debug.LogError(
+                "PlayerController elindult, " +
+                "de nincs előkészített deck!"
+            );
+
+            //return;
+        }
+
+
+        RegisterMeServerRpc(
+            deckIds
+        );
+}
     // PlayerController
     [TargetRpc]
     public void RoleAssignedTargetRpc(NetworkConnection conn, bool enemy) => SubscribeBoards(enemy);
@@ -615,9 +738,9 @@ public class PlayerController : NetworkBehaviour
         manager.boardEnemy.OnChange -= ally ? boardManager.OnBoardChangeEnemy : boardManager.OnBoardChangeHome;
     }
     [ServerRpc(RequireOwnership = true)]
-    private void RegisterMeServerRpc()
+    private void RegisterMeServerRpc(ushort[] deckIds)
     {
-        GameManager.instance.RegisterPlayer(this);
+        GameManager.instance.RegisterPlayer(this,deckIds);
 
     }
     [TargetRpc]

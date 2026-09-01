@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 107
   Cost: 5
-  description: Set highest HP enemy to 1
+  description: 'OnPlay: Set the highest Health enemy minion''s Health to 1.'
   m: {fileID: 11400000, guid: 09d22d0d842a96d4eabdfa95b602334a, type: 2}
   spell: {fileID: 0}

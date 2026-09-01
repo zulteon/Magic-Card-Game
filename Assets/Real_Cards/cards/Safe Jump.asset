@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1003
   Cost: 1
-  description: "Ments meg egy bar\xE1ts\xE1gos miniont: vedd vissza a kezedbe a harc
-    k\xF6zep\xE9r\u0151l"
+  description: Return a friendly minion to your hand.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: a4b6994d3c3d741478a3595de5548d60, type: 2}

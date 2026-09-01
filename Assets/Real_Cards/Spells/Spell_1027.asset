@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Spell_1027
   m_EditorClassIdentifier: 
   sprite: id_00293_012_fossa_pickpocket_mid_slip
-  description: "Fossa Pickpocket** \u2192 Steal 2 gold from the enemy"
+  description: Steal 2 Mana from the enemy next turn.
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 959556842e8e98c428a5faea4cf6d1e7, type: 2}
+  - {fileID: 11400000, guid: 33c2d166c3c33a046ac7298863e905d4, type: 2}

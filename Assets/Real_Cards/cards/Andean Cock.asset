@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 103
   Cost: 5
-  description: "3 maki l\xE9git\xE1mad\xE1s"
+  description: 'OnPlay: Launch 3 Maki air strikes.'
   m: {fileID: 11400000, guid: 33950c2a7bfb28d43a3396edd60f8446, type: 2}
   spell: {fileID: 0}

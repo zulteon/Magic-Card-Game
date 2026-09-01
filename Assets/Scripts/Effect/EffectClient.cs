@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using FishNet.Object;
-
+using System;
 public class EffectClient : NetworkBehaviour
 {
     public static EffectClient instance;
@@ -43,6 +43,33 @@ public class EffectClient : NetworkBehaviour
             StartCoroutine(ProcessQueue()); 
         }
     }
+    #region turn start&end
+    public event Action OnTurnStart;
+    public event Action OnTurnEnd;
+
+    [Client]
+    public void RaiseTurnStart()
+    {
+        OnTurnStart?.Invoke();
+    }
+
+    [Client]
+    public void RaiseTurnEnd()
+    {
+        OnTurnEnd?.Invoke();
+    }
+    [ObserversRpc]
+    public void TurnEndObserversRpc()
+    {
+        OnTurnEnd?.Invoke();
+    }
+
+    [ObserversRpc]
+    public void TurnStartObserversRpc()
+    {
+        OnTurnStart?.Invoke();
+    }
+    #endregion
     private IEnumerator HandleReturnToHandVisual(ClientEvent e)
     {
         foreach (var id in e.targetIds)
@@ -92,6 +119,15 @@ public class EffectClient : NetworkBehaviour
                     yield return HandleSendToFutureVisual(e);break;
             case Effect.Type.minionSwap:
                 yield return HandleMinionSwapVisual(e); break;
+            case Effect.Type.setManaCrystal:
+                SetManaCrystal(e);break;
+            case Effect.Type.playCard:
+                try
+                {
+                    CardInRealAction.instance.ShowCard(e.targetIds[0]);
+                }
+                catch { }
+                break;
             default:
                 Debug.LogWarning($"Unknown effect type: {e.effectType}");
                 yield break;
@@ -146,6 +182,10 @@ public class EffectClient : NetworkBehaviour
                // yield return new WaitForSeconds(0.1f);
             }
         }
+    }
+    private void SetManaCrystal(ClientEvent e)
+    {
+        ManaCenterUI.instance.SetMana(e.value);
     }
     private IEnumerator HandleMinionSwapVisual(ClientEvent e)
     {

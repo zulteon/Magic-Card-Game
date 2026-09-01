@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spell_1000
   m_EditorClassIdentifier: 
   sprite: Gemini_Generated_Image_ (16)
-  description: "Hipopotamusz a f\xFCrd\u0151k\xE1dban \u2192 \"Zs\xFAfolt Medence\""
+  description: Deal 2 damage to the minions on each end of the enemy board.
   effect: 
   e:
   - {fileID: 11400000, guid: 492f40c944b8fdf4fa258a3dbb982c0d, type: 2}

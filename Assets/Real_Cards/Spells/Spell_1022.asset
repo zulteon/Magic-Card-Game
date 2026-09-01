@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Spell_1022
   m_EditorClassIdentifier: 
   sprite: id_00225_010_prompt_determined_caterpillar_wearing
-  description: "Herny\xF3 tervez \u2192 H\xFAzz 2 lapot, dobj el 1-et"
+  description: Discard a card. draw 2 card
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: e202cd7055d887e4480330d95e44efbc, type: 2}
+  - {fileID: 11400000, guid: a0ffa7ed661fab54682aae042be7d21d, type: 2}
