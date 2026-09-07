@@ -17,5 +17,6 @@ MonoBehaviour:
   sprite: id_00116_031_fire_salamander_firefighter_glossy
   description: 'OnDeath: Summon a 2/2.'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: e5a85df5d06ab23478178e92db4dda93, type: 2}
   race: 0

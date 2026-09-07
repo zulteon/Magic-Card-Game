@@ -61,16 +61,19 @@ public class PlayerController : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-        if (GameManager.instance == null || GameManager.instance.offlineTestMode) return;
+        if (GameManager.instance == null) return;
 
-        if (Input.GetKeyDown(KeyCode.D)) RequestDrawServerRpc();
-        if (Input.GetKeyDown(KeyCode.F)) RequestPlayFirstServerRpc();
-        if (Input.GetKeyDown(KeyCode.Return)) RequestEndTurnServerRpc();
-        if (Input.GetKeyDown(KeyCode.M)) AskForMana(10);
+       // if (Input.GetKeyDown(KeyCode.D)) RequestDrawServerRpc();
+        //if (Input.GetKeyDown(KeyCode.F)) RequestPlayFirstServerRpc();
+       // if (Input.GetKeyDown(KeyCode.Return)) RequestEndTurnServerRpc();
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            print("juhu" + economy == null); AskForMana(10);
+        }
         
     }
     [ServerRpc(RequireOwnership = true)]
-    private void AskForMana(int amount) => currentResource.Value = amount;
+    private void AskForMana(int amount) { print("juhu"+economy==null); economy.RaiseResource(amount); }
     [ServerRpc(RequireOwnership = true)]
     private void RequestDrawServerRpc() => DrawCard();
 
@@ -80,7 +83,32 @@ public class PlayerController : NetworkBehaviour
         if (hand.Count == 0) return;
         BeforePlay(hand[0]);
     }
+    [ServerRpc]
+    public void RequestMinionPreview(ushort sequenceId)
+    {
+        MinionLogic minion =
+            GameManager.instance.GetMinionLogic(sequenceId);
 
+        string[] effects =
+        EffectTextFormatter.Build(minion)
+            .TakeLast(4)
+            .ToArray();
+
+        ReceiveMinionPreview(
+            sequenceId,
+            effects
+        );
+    }
+    [ObserversRpc]
+    private void ReceiveMinionPreview(
+    ushort sequenceId,
+    string[] effects)
+    {
+        MinionCardView.instance.ReceiveMinionEffects(
+            sequenceId,
+            effects
+        );
+    }
     [ServerRpc(RequireOwnership = true)]
     internal void RequestEndTurnServerRpc() => GameManager.instance.EndTurn();
     public GameObject liveCardPrefab;
@@ -103,9 +131,22 @@ public class PlayerController : NetworkBehaviour
         isEnemy.Value = !home;
         heroId = isEnemy.Value ? (ushort)1 : (ushort)0;
         if (manager.offlineTestMode)
-            CreateDeck(player.deck);
-        else
-            CreateDeck(deckList);
+        {
+            if (!string.IsNullOrWhiteSpace(manager.testDeckName)&&home)
+            {
+                List<CardData> testDeckCards =
+                    DeckStorage.Load(manager.testDeckName);
+
+                ushort[] testDeckIds =
+                    testDeckCards.Select(c => c.cardId).ToArray();
+
+                CreateDeck(testDeckIds);
+            }
+            else
+            {
+                CreateDeck(player.deck);
+            }
+        }
             // <- az ID-allokátorhoz kell a home
                                               // GameManager, a játék indításakor
        // playerB.Value.GiveCoin();   
@@ -161,7 +202,7 @@ public class PlayerController : NetworkBehaviour
     [Server]
     public void PlayMinion(CardState card, List<ushort> batlecryVictims = null)
     {
-        if (!manager.IsMyTurn()) {PlayerMessage.Send("It's not my turn.", this); return; }
+        if (!manager.IsMyTurn(this)) {PlayerMessage.Send("It's not my turn.", this); return; }
         if (!economy.TrySpendResource(card.currentCost)) { return; }
         GameObject go = Instantiate(manager.minionPrefab);
         LiveMinion live = go.GetComponent<LiveMinion>();
@@ -182,33 +223,48 @@ public class PlayerController : NetworkBehaviour
         RemoveCardFromHand(card);
 
         // --- BATTLECRY CHECK HELYE ---
-        // Lekérjük a statikus adatokat (ScriptableObject), hogy lássuk az effekteket
         MinionCard data = CardManager.instance.GetMinion(card.cardId);
 
-        // print(data.effectIds[0]);
-        Effect[] battlecry = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, data).ToArray();
-        //effects.Remove(battlecry)
+        List<Effect> battlecries = new List<Effect>();
+        List<Effect> afterBattlecries = new List<Effect>();
+
+        foreach (Effect effect in TriggerChecker.instance.CheckTrigger(Trigger.time.instant, data))
+        {
+            if (effect.afterBattlecry)
+                afterBattlecries.Add(effect);
+            else
+                battlecries.Add(effect);
+        }
+
+
         bool first = true;
         if (batlecryVictims != null && batlecryVictims.Count < 1) batlecryVictims = null;
-        foreach (Effect effect in battlecry)
+        foreach (Effect effect in battlecries)
         {
             manager.DoEffect(effect, minionSequenceId, this, targets: first ? batlecryVictims : null);
             first = false;
         }
+        manager.RegisterAbilities(minionLogic.effectBag, minionSequenceId, EffectManagerClient.instance.GetEffectData(data.effectIds).ToArray(), Zone.Board);
+        GameEvents.Instance.RaiseMinionSummoned(minionLogic);
+        manager.SendSummonEvent(state,isEnemy.Value);
 
-        manager.SendClientEvent(new ClientEvent
+
+        foreach (Effect effect in afterBattlecries)
         {
-            effectType = (ushort)Effect.Type.summon,
-            targetIds = new[] { minionSequenceId },
-            newValues = new[] { isEnemy.Value ? 0 : 1 }
-        });
-
-        manager.RegisterAbilities(minionLogic.effectBag,minionSequenceId, EffectManagerClient.instance.GetEffectData(data.effectIds).ToArray(),Zone.Board);
+            manager.DoEffect(
+                effect,
+                minionSequenceId,
+                this, targets: first ? batlecryVictims : null
+            );
+            first = false;
+        }
+       
         
-        //GameEvents.Instance.RaiseMinionSummoned(minionLogic);
     }
-    public void Summon(ushort summonAbleId,bool homeSummon= true,  int overrideAttack = -1, int overrideHealth = -1)
+
+    public void Summon(ushort summonAbleId,bool homeSummon= true,  int overrideAttack = -1, int overrideHealth = -1,bool shouldRegisterAbilities = true)
     {
+        print("Summoning");
         bool toEnemyBoard = isEnemy.Value == homeSummon;
         minionSequenceId = manager.NextCardId(toEnemyBoard);
         MinionState state=MinionStateFactory.FromMinionData(summonAbleId,minionSequenceId);
@@ -223,15 +279,12 @@ public class PlayerController : NetworkBehaviour
             manager.boardAlly.Add(state);
         else
             manager.boardEnemy.Add(state);
+        if(shouldRegisterAbilities)
         manager.RegisterAbilities(minionLogic.effectBag, minionSequenceId,
     EffectManagerClient.instance.GetEffectData(state.activeEffects).ToArray(),
     Zone.Board);
-      /*  manager.SendClientEvent(new ClientEvent
-        {
-            effectType = (ushort)Effect.Type.summon,
-            targetIds = new[] { minionSequenceId },
-            newValues = new[] { toEnemyBoard ? 0 : 1 }
-        });*/
+        
+        manager.SendSummonEvent( state,toEnemyBoard);
         GameEvents.Instance.RaiseMinionSummoned(minionLogic);
     }
     // ott, ahol most a feliratkozó foreach van (szerveroldal)
@@ -258,7 +311,7 @@ public class PlayerController : NetworkBehaviour
     [Client]
     public void BeforePlay(CardState card)
     {
-        if (!manager.IsMyTurn()) { PlayerMessage.Send("nem az én köröm van", this);return; };
+        if (!manager.IsMyTurn(this)) { PlayerMessage.Send("nem az én köröm van", this);return; };
         if(currentResource.Value<card.currentCost) { PlayerMessage.Send("nincs manám", this);return; }
         CardData def = CardManager.instance.GetCard(card.cardId);
         if (def == null) return;
@@ -300,14 +353,20 @@ public class PlayerController : NetworkBehaviour
         if (condition == null || condition.sub == Trigger.subject.None)
             return targets;
 
+        Debug.Log($"[TARGET CONDITION] subject={condition.sub} incoming={string.Join(",", targets)}");
+
         return targets.Where(id =>
         {
             var state = GameManager.instance.GetMinionById(id);
-            return manager.MeetsTargetCondition(condition, state);
+            bool result = manager.MeetsTargetCondition(condition, state);
+
+            Debug.Log($"[TARGET CHECK] id={id} cardId={state.cardId} HP={state.currentHealth}/{state.maxHealth} subject={condition.sub} result={result}");
+
+            return result;
         }).ToList();
     }
 
-   
+
     private void SendPlay(CardState card, ushort targetId, bool isSpell)
     {
         print("SENDING INTO PLAY "+card.sequenceId.ToString());
@@ -545,7 +604,7 @@ public class PlayerController : NetworkBehaviour
         all.Add(manager.GetHeroId(this,true));
         return all;
     }
-    ushort untargetableId = 26;
+    ushort untargetableId = 70;
     public bool HasUntargetable (List<ushort> effectIds)
     {
         foreach (var effectId in effectIds)
@@ -650,7 +709,8 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-            
+        if (IsServer)
+            economy = new PlayerEconomy(this);
     }
     public override void OnStartClient()
     {

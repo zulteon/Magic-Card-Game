@@ -24,13 +24,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 777362456731ea9439cf239eff3c813c, type: 2}
   - {fileID: 11400000, guid: 59abd4626ec778445932b84dcdc8255e, type: 2}
   random: 0
-  raceValue: -1
   multiValue: -1
-  multiSplit: 0
   other: 0
   effectId: 81
   logicOp: 
   linkedTrigger: {fileID: 11400000, guid: 59abd4626ec778445932b84dcdc8255e, type: 2}
   sortMode: 0
+  targetCondition: {fileID: 0}
   activeZone: 1
   needsTarget: 1
+  afterBattlecry: 1

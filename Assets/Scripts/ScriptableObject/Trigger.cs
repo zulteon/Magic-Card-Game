@@ -11,7 +11,7 @@ public class Trigger : ScriptableObject
     public enum time { instant,during, endofturn, startofturn, dormant,before, after,oneturn,multiturn,startofcombat,endofcombat,ifso,value,buff }
     public enum subject{ Minion,Card,None,Hero,Health,Attack, Attack_Health,Self,minionCount,eventvalue,turn, HandCount,RemainingMana,boardCount,isDamaged}
     public enum conditions { less,adjacent,more,none,equals,thisOne,ally,enemy}
-    public enum Target {self, all,enemy,ally, adjacent,allother,left,right, selfAndNeighbour, none}
+    public enum Target {self, all,enemy,ally, adjacent,allother,left,right, selfAndNeighbour, none, whomAttacked }
     public enum TargetType { minion,race,character,taunt,hero,none}
     public enum SortMode { none, highestHealth, lowestHealth, highestAttack, lowestAttack }
     public enum TargetCast { single, multi, random, all,none }
@@ -27,6 +27,7 @@ public class Trigger : ScriptableObject
     public TargetType tartype=TargetType.none;
     public TargetCast targetcast=TargetCast.none;
     public Trigger valueTrigger;
+    public bool onlyMyTurn=false;
 }
 
 

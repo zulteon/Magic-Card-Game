@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: id_00291_010_an_axolotl_burn_ward
   description: Restore a minion to full Health
-  effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: d6f9a4539301bd240a4638d5ce826061, type: 2}

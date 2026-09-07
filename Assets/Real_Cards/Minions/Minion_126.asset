@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7316e52f769db246947f9458f8b0e7d, type: 3}
   m_Name: Minion_126
   m_EditorClassIdentifier: 
-  attack: 3
+  attack: 2
   health: 2
   sprite: id_00142_005_tibetan_yak_locksmith_massive
-  description: 'EndOfTurn: Give a minion +1/1 in hand'
+  description: 'EndOfTurn: Gain 1/1'
   effect: 
   e:
-  - {fileID: 11400000, guid: f6f9a83beff5b5e4e84bdbcbd8e0f0e4, type: 2}
+  - {fileID: 11400000, guid: a4143173d98ff554fb36530394537f3b, type: 2}
   race: 0

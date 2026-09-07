@@ -36,6 +36,7 @@ public class DeckBuilderUI : MonoBehaviour
     public Button saveButton;
     public Button loadButton;
     public Button newButton;
+    public Button deleteButton;
     public Button editModeButton;
     public Button doneButton;
     public TMP_Text editModeText;
@@ -73,6 +74,7 @@ public class DeckBuilderUI : MonoBehaviour
         saveButton.onClick.AddListener(SaveDeck);
         newButton.onClick.AddListener(NewDeck);
         editModeButton.onClick.AddListener(ToggleEditMode);
+
         try { doneButton.onClick.AddListener(SceneManagement.instance.OpenMainMenu); }
         catch { Debug.LogWarning("nem tudtam hozzá adni a done buttonhoz"); }
 
@@ -80,7 +82,8 @@ public class DeckBuilderUI : MonoBehaviour
 
         loadButton.onClick.AddListener(OnLoadClicked);
         RefreshDeckDropdown();
-
+        deleteButton.onClick.AddListener(OnDeleteClicked); // <-- EZT ADD HOZZÁ
+        RefreshDeckDropdown();
         // A gridArea szélessége az első képkockában még 0 lehet (layout előtt).
         yield return null;
 
@@ -99,12 +102,29 @@ public class DeckBuilderUI : MonoBehaviour
         deckDropdown.ClearOptions();
         deckDropdown.AddOptions(names);
         loadButton.interactable = names.Count > 0;
+        deleteButton.interactable = names.Count > 0;
     }
 
     private void OnLoadClicked()
     {
         if (deckDropdown.options.Count == 0) return;
         LoadDeck(deckDropdown.options[deckDropdown.value].text);
+    }
+    private void OnDeleteClicked()
+    {
+        if (deckDropdown.options.Count == 0)
+            return;
+
+        string deckName = deckDropdown.options[deckDropdown.value].text;
+
+        DeckStorage.Delete(deckName);
+
+        // Ha pont azt a paklit töröltük, amit jelenleg szerkesztünk,
+        // akkor kezdjünk egy új paklit.
+        if (_deckName == deckName)
+            NewDeck();
+
+        RefreshDeckDropdown();
     }
     #endregion
     private void ToggleEditMode()

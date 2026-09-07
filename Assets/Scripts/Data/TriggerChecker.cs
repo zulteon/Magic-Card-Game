@@ -63,26 +63,41 @@ public class TriggerChecker : MonoBehaviour
             return expectsOwnerTurn == isActuallyOwnerTurn;
         }
         MinionState target=targetLogic==null?default:GameManager.instance.GetMinionById(targetLogic._sequenceId);
-        int subjectValue=getSubject(trigger,targetLogic, target, eventValue);
+        int subjectValue=getSubject(trigger,targetLogic, target, eventValue,doerLogic);
         int value = trigger.value;
         if (trigger.valueTrigger!=null)
         {
-            value =getSubject(trigger.valueTrigger,targetLogic,target, eventValue); 
+            value =getSubject(trigger.valueTrigger,targetLogic,target, eventValue,doerLogic); 
         }
 
-
+        bool result = true;
         switch (trigger.cond)
         {
             case Trigger.conditions.less:
-                return subjectValue < value;
+                result= subjectValue < value;break;
             case Trigger.conditions.equals:
-                return subjectValue == value;
+                result= subjectValue == value; break;
             case Trigger.conditions.more:
-                return subjectValue > value;
-        }return true;
+                result= subjectValue > value; break;
+        }
+
+        Debug.Log(
+        $"[IFSO] " +
+        $"doer={doerLogic?._sequenceId} | " +
+        $"target={targetLogic?._sequenceId} | " +
+        $"subject={trigger.sub} | " +
+        $"subjectValue={subjectValue} | " +
+        $"condition={trigger.cond} | " +
+        $"compareValue={value} | " +
+        $"allyBoard={manager.boardAlly.Count} | " +
+        $"enemyBoard={manager.boardEnemy.Count} | " +
+        $"RESULT={result}"
+    );
+
+        return result;
     }
 
-    int getSubject(Trigger trigger,MinionLogic targetLogic,MinionState target,int eventValue) {
+    int getSubject(Trigger trigger,MinionLogic targetLogic,MinionState target,int eventValue, MinionLogic doerLogic=null) {
         int value = 0;
         switch (trigger.sub)
         {
@@ -96,10 +111,28 @@ public class TriggerChecker : MonoBehaviour
                 value = eventValue;
                 break;
             case Trigger.subject.boardCount:
-                value = manager.isAllyMinion(targetLogic._sequenceId)
+                MinionLogic reference = targetLogic ?? doerLogic;
+
+                if (reference == null)
+                {
+                    Debug.LogError("[minionCount] Nincs se target, se doer!");
+                    return 0;
+                }
+
+                bool isAlly =
+                    manager.isAllyMinion(reference._sequenceId);
+
+                value = isAlly
                     ? manager.boardAlly.Count
                     : manager.boardEnemy.Count;
-                break;
+                Debug.Log(
+    $"[BOARD COUNT] " +
+    $"reference={reference._sequenceId} | " +
+    $"target={(targetLogic == null ? "NULL" : targetLogic._sequenceId.ToString())} | " +
+    $"doer={(doerLogic == null ? "NULL" : doerLogic._sequenceId.ToString())} | " +
+    $"isAlly={isAlly} | " +
+    $"count={value}"
+);
                 break;
 
         }return value;

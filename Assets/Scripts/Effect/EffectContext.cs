@@ -23,12 +23,18 @@ public class EffectContext  // ← Vissza class-ra
         {// maybe the targeting center get targets can drop minion logic but thats a micro performance
             //after a while it turned out very usefull, when we add events with empty targets 
             targetIds=TargetingCenter.GetTargets(e, doerId,source);
-            UnityEngine.Debug.Log("Are we hetting here"+ targetIds.Count);
         }
+        UnityEngine.Debug.Log(
+    $"[CTX TARGET] effect={e.type}, " +
+    $"doer={doerId}, " +
+    $"target={e.target}, " +
+    $"targets={string.Join(",", targetIds)}"
+);
         this.effect = e;
         this.doerId = doerId;
         this.value = e.value + extraValue;
         this.buff = effect.buff;
+        
         MinionLogic[] temp = new MinionLogic[targetIds.Count];
         int count = 0;
 
@@ -55,17 +61,25 @@ public class EffectContext  // ← Vissza class-ra
     public ClientEvent ToClientEvent()
     {
         ushort[] ids = Array.Empty<ushort>();
-        int[] healthValues = Array.Empty<int>();
+        int[] values = Array.Empty<int>();
 
         if (targets != null && targets.Length > 0)
         {
             ids = new ushort[targets.Length];
-            healthValues = new int[targets.Length];
+
+            // Minden targethez:
+            // Attack, Health
+            values = new int[targets.Length * 2];
 
             for (int i = 0; i < targets.Length; i++)
             {
                 ids[i] = targets[i]._sequenceId;
-                healthValues[i] = targets[i].Health;
+
+                values[i * 2] =
+                    targets[i].attack;
+
+                values[i * 2 + 1] =
+                    targets[i].Health;
             }
         }
 
@@ -75,7 +89,7 @@ public class EffectContext  // ← Vissza class-ra
             targetIds = ids,
             value = value,
             doerId = doerId,
-            newValues = healthValues
+            newValues = values
         };
     }/*
 

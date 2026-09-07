@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: Spell_1001
   m_EditorClassIdentifier: 
   sprite: aoe_1
-  description: Deal 1-3 damage randomly to every minion.
-  effect: 
+  description: Deal 1-3 damage randomly to every  enemy minion.
   e:
   - {fileID: 11400000, guid: 642292b38e108a746a2c38a7865344d6, type: 2}

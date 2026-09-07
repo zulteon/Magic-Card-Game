@@ -130,6 +130,7 @@ public class GameEvents
     // ===== OLVASHATÓ FELIRATKOZÁS (AddEvent) =====
     public void AddEvent(ushort seqId, EventType type, Action handler)
     {
+
         // A Switch-case sokkal olvashatóbb, mint a lambdák!
         switch (type)
         {
@@ -194,8 +195,25 @@ public class GameEvents
     {
         Instance = new GameEvents();
     }
-    
 
+    public List<ushort> GetRegisteredIds(EventType type)
+    {
+        List<ushort> result = new();
+
+        foreach (var pair in _registry)
+        {
+            foreach (var sub in pair.Value)
+            {
+                if (sub.Type == type)
+                {
+                    result.Add(pair.Key);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
 }
 
 public static class TriggerConverter

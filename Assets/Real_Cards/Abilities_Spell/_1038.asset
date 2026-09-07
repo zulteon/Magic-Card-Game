@@ -10,25 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac8a27f6d19e7f948b70a5ccc50cba57, type: 3}
-  m_Name: _122 Summon 3
+  m_Name: _1038
   m_EditorClassIdentifier: 
-  type: 16
+  type: 2
   targetType: 0
   targetCast: 0
-  target: 0
-  value: 3
+  target: 3
+  value: 9999
   buff: {x: 0, y: 0}
-  summonableId: 147
+  summonableId: 0
   give: {fileID: 0}
   triggers:
-  - {fileID: 11400000, guid: 742f204fc25018e4388ca64f9b9f55c9, type: 2}
+  - {fileID: 11400000, guid: 777362456731ea9439cf239eff3c813c, type: 2}
   random: 0
-  raceValue: -1
   multiValue: -1
-  multiSplit: 0
   other: 0
-  effectId: 17
+  effectId: 92
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0
-  activeZone: 0
+  targetCondition: {fileID: 0}
+  activeZone: 1
+  needsTarget: 1
+  afterBattlecry: 0

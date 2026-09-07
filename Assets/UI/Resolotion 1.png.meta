@@ -1,0 +1,780 @@
+fileFormatVersion: 2
+guid: fc86aa6c25d5591448af638f57f1a376
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1388324241304205627
+    second: Resolotion 1_0
+  - first:
+      213: 2063581352102670369
+    second: Resolotion 1_1
+  - first:
+      213: 1358411268812710849
+    second: Resolotion 1_2
+  - first:
+      213: -5258010569863065628
+    second: Resolotion 1_3
+  - first:
+      213: -7370555076406591650
+    second: Resolotion 1_4
+  - first:
+      213: -6302192681942517393
+    second: Resolotion 1_5
+  - first:
+      213: 5678397411155820042
+    second: Resolotion 1_6
+  - first:
+      213: -8213665906543989301
+    second: Resolotion 1_7
+  - first:
+      213: -5596089117208787403
+    second: Resolotion 1_8
+  - first:
+      213: 5688332862304600103
+    second: Resolotion 1_9
+  - first:
+      213: -3885651819371477430
+    second: Resolotion 1_10
+  - first:
+      213: 2893055430766322468
+    second: Resolotion 1_11
+  - first:
+      213: 6047161736005306728
+    second: Resolotion 1_12
+  - first:
+      213: 5085560557350877883
+    second: Resolotion 1_13
+  - first:
+      213: 9105098499436435779
+    second: Resolotion 1_14
+  - first:
+      213: 3966846189287675968
+    second: Resolotion 1_15
+  - first:
+      213: 798762789189912088
+    second: Resolotion 1_16
+  - first:
+      213: 3256256768749811591
+    second: Resolotion 1_17
+  - first:
+      213: 4956826892238359847
+    second: Resolotion 1_18
+  - first:
+      213: 6820129176898479230
+    second: Resolotion 1_19
+  - first:
+      213: 759438624267200204
+    second: Resolotion 1_20
+  - first:
+      213: 778301761194402255
+    second: Resolotion 1_21
+  - first:
+      213: -8495701736315291838
+    second: Resolotion 1_22
+  - first:
+      213: -5635594549834374955
+    second: Resolotion 1_23
+  - first:
+      213: 1648327226556391137
+    second: Resolotion 1_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Resolotion 1_0
+      rect:
+        serializedVersion: 2
+        x: 1276
+        y: 697
+        width: 66
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b393004ba81544310800000000000000
+      internalID: 1388324241304205627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_1
+      rect:
+        serializedVersion: 2
+        x: 1338
+        y: 690
+        width: 139
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12033317e4053ac10800000000000000
+      internalID: 2063581352102670369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_2
+      rect:
+        serializedVersion: 2
+        x: 1475
+        y: 694
+        width: 74
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c328701adb0ad210800000000000000
+      internalID: 1358411268812710849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_3
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 638
+        width: 65
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ef001eae3bc707b0800000000000000
+      internalID: -5258010569863065628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_4
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 646
+        width: 45
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5f3559753786b990800000000000000
+      internalID: -7370555076406591650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_5
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 650
+        width: 76
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f69ffbe652d1a88a0800000000000000
+      internalID: -6302192681942517393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_6
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 651
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0eb0792c58bdce40800000000000000
+      internalID: 5678397411155820042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_7
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 646
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcd65b83062330e80800000000000000
+      internalID: -8213665906543989301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_8
+      rect:
+        serializedVersion: 2
+        x: 827
+        y: 443
+        width: 88
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5364755e892b652b0800000000000000
+      internalID: -5596089117208787403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_9
+      rect:
+        serializedVersion: 2
+        x: 913
+        y: 447
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 720c8d5a99401fe40800000000000000
+      internalID: 5688332862304600103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_10
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 453
+        width: 34
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a464381e144631ac0800000000000000
+      internalID: -3885651819371477430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_11
+      rect:
+        serializedVersion: 2
+        x: 978
+        y: 446
+        width: 59
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42367521692362820800000000000000
+      internalID: 2893055430766322468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_12
+      rect:
+        serializedVersion: 2
+        x: 1031
+        y: 452
+        width: 61
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8694ee54f85dbe350800000000000000
+      internalID: 6047161736005306728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_13
+      rect:
+        serializedVersion: 2
+        x: 1382
+        y: 334
+        width: 71
+        height: 133
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbaf2a8e16a839640800000000000000
+      internalID: 5085560557350877883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_14
+      rect:
+        serializedVersion: 2
+        x: 1449
+        y: 420
+        width: 34
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 349d9d728decb5e70800000000000000
+      internalID: 9105098499436435779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_15
+      rect:
+        serializedVersion: 2
+        x: 1483
+        y: 418
+        width: 101
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0489a1787911d0730800000000000000
+      internalID: 3966846189287675968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_16
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 352
+        width: 58
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81607755686c51b00800000000000000
+      internalID: 798762789189912088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_17
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 371
+        width: 38
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7873bce574c803d20800000000000000
+      internalID: 3256256768749811591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_18
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 364
+        width: 34
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72d88fccbcf2ac440800000000000000
+      internalID: 4956826892238359847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_19
+      rect:
+        serializedVersion: 2
+        x: 591
+        y: 374
+        width: 13
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e74af4f0a57f5ae50800000000000000
+      internalID: 6820129176898479230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_20
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 372
+        width: 45
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc66824b7611a8a00800000000000000
+      internalID: 759438624267200204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_21
+      rect:
+        serializedVersion: 2
+        x: 1426
+        y: 355
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc1ad0404551dca00800000000000000
+      internalID: 778301761194402255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_22
+      rect:
+        serializedVersion: 2
+        x: 1462
+        y: 359
+        width: 70
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 247f1417844391a80800000000000000
+      internalID: -8495701736315291838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_23
+      rect:
+        serializedVersion: 2
+        x: 1527
+        y: 373
+        width: 40
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d0aef69d985ac1b0800000000000000
+      internalID: -5635594549834374955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resolotion 1_24
+      rect:
+        serializedVersion: 2
+        x: 1559
+        y: 372
+        width: 67
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ee9f7c11e800e610800000000000000
+      internalID: 1648327226556391137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Resolotion 1_0: 1388324241304205627
+      Resolotion 1_1: 2063581352102670369
+      Resolotion 1_10: -3885651819371477430
+      Resolotion 1_11: 2893055430766322468
+      Resolotion 1_12: 6047161736005306728
+      Resolotion 1_13: 5085560557350877883
+      Resolotion 1_14: 9105098499436435779
+      Resolotion 1_15: 3966846189287675968
+      Resolotion 1_16: 798762789189912088
+      Resolotion 1_17: 3256256768749811591
+      Resolotion 1_18: 4956826892238359847
+      Resolotion 1_19: 6820129176898479230
+      Resolotion 1_2: 1358411268812710849
+      Resolotion 1_20: 759438624267200204
+      Resolotion 1_21: 778301761194402255
+      Resolotion 1_22: -8495701736315291838
+      Resolotion 1_23: -5635594549834374955
+      Resolotion 1_24: 1648327226556391137
+      Resolotion 1_3: -5258010569863065628
+      Resolotion 1_4: -7370555076406591650
+      Resolotion 1_5: -6302192681942517393
+      Resolotion 1_6: 5678397411155820042
+      Resolotion 1_7: -8213665906543989301
+      Resolotion 1_8: -5596089117208787403
+      Resolotion 1_9: 5688332862304600103
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

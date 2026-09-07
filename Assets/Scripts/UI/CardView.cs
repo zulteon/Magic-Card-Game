@@ -16,6 +16,8 @@ public class CardView : MonoBehaviour
     public CardState cardState;
     [SerializeField]
     SpriteRenderer spriteRenderer;
+
+    private Vector3 _baseScale;
     public void Awake()
     {
         _atkBaseSize = attackText.fontSize;
@@ -23,6 +25,7 @@ public class CardView : MonoBehaviour
         visualStartPos = visual.localPosition;
         visualStartScale = visual.localScale;
         visualStartRotation = visual.localRotation;
+        _baseScale = transform.localScale;
     }
     public void SetCard(CardData cardData,CardState cardState, bool isEnemy = false)
     {
@@ -117,6 +120,7 @@ public class CardView : MonoBehaviour
     }
     private void SetHoverVisual(bool active)
     {
+        PutInFront(active);
         if (active)
         {
             visual.localScale =
@@ -202,8 +206,27 @@ public class CardView : MonoBehaviour
 }
     public void LoadSprite(CardData card)
     {
-        print("card" + card.sprite);
          spriteRenderer.sprite=Resources.Load<Sprite>("Sprites/" + card.sprite);
+    }
+    private void PutInFront(bool b)
+    {
+        // View + annak minden child SpriteRenderere
+        SpriteRenderer[] renderers =
+            visual.GetComponentsInChildren<SpriteRenderer>(true);
+
+        foreach (SpriteRenderer sr in renderers)
+        {
+            sr.sortingOrder = b ? 11 : 0;
+        }
+
+        // View alatti Canvas
+        Canvas canvas = visual.GetComponentInChildren<Canvas>(true);
+
+        if (canvas != null)
+        {
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = b ? 12 : 2;
+        }
     }
     #region FlashEffect
     private Coroutine _flash;
@@ -224,22 +247,39 @@ public class CardView : MonoBehaviour
 
     private IEnumerator FlashRoutine()
     {
+        _baseScale = transform.localScale;
         const float dur = 0.3f;
         const float grow = 1.6f;
+        const float cardGrow = 1.12f;
 
         attackText.color = healthText.color = Color.green;
 
         float t = 0f;
+
         while (t < dur)
         {
             t += Time.deltaTime;
             float k = Mathf.Clamp01(t / dur);
 
+            // stat számok
             float size = Mathf.Lerp(grow, 1f, k);
+
             attackText.fontSize = _atkBaseSize * size;
             healthText.fontSize = _hpBaseSize * size;
 
-            Color c = Color.Lerp(Color.green, Color.white, k);
+            // teljes kártya
+            float cardScale = Mathf.Lerp(cardGrow, 1f, k);
+
+            transform.localScale =
+                _baseScale * cardScale;
+
+            // szín
+            Color c = Color.Lerp(
+                Color.green,
+                Color.white,
+                k
+            );
+
             attackText.color = healthText.color = c;
 
             yield return null;
@@ -247,7 +287,11 @@ public class CardView : MonoBehaviour
 
         attackText.fontSize = _atkBaseSize;
         healthText.fontSize = _hpBaseSize;
+
         attackText.color = healthText.color = Color.white;
+
+        transform.localScale = _baseScale;
+
         _flash = null;
     }
     #endregion
@@ -263,6 +307,7 @@ public class CardView : MonoBehaviour
 
         return result;
     }
+    
     
 }
 

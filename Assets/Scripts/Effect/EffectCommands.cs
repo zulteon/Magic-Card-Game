@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,10 +41,16 @@ public static class EffectCommands
         {Effect.Type.loanPower,LoanStrength},
         {Effect.Type.buffAndNeighbours,LoanStrength},
         {Effect.Type.damageReduce,DamageReduction},
-        {Effect.Type.copyCard,CopyFromEnemyHand},
+        {Effect.Type.copyCardHand,CopyFromEnemyHand},
         {Effect.Type.destroy,Destroy},
         {Effect.Type.discard,Discard},
         {Effect.Type.reActivate,ReActivate},
+        {Effect.Type.silence,Silence},
+        {Effect.Type.setStats,SetStats},
+        {Effect.Type.steal,Steal},
+        {Effect.Type.swapAttackHealth,SwapAttackAndHealth },
+        {Effect.Type.draw,Draw },
+
        
        
        
@@ -81,10 +88,22 @@ public static class EffectCommands
             UnityEngine.Random.Range(ctx.buff.x, ctx.buff.y+1));
         }
     }
+    public static void SwapAttackAndHealth(EffectContext ctx)
+    {
+        foreach (var t in ctx.targets)
+            t.SwapAttackHealth();
+    }
+    public static void SetStats(EffectContext ctx)
+    {
+        foreach (var t in ctx.targets)
+            t.SetStats(ctx.buff.x,ctx.buff.y);
+    }
     public static void DamageAndNeighbours(EffectContext ctx)
     {
         ushort main = ctx.targets[0].sequenceId;
-        List<ushort> neighbours=GameManager.instance.GetNeighbours(ctx.targets[0].sequenceId, !ctx.playerController.isEnemy.Value);
+        bool ally = GameManager.instance.isAllyMinion(main);
+        List<ushort> neighbours=GameManager.instance.GetNeighbours(main, ally);
+        UnityEngine.Debug.Log("Neighbours : "+neighbours.Count);
         List<MinionLogic> list=new List<MinionLogic>();
         list.Add(ctx.targets[0]);
         foreach(var t in neighbours)
@@ -139,11 +158,20 @@ public static class EffectCommands
             GameManager.instance.ChangeMinionById(i.sequenceId, m => { m.canAttack = false; return m; });
         }
     }
+    public static void Draw(EffectContext ctx)
+    {
+        UnityEngine.Debug.Log(" drawing "+ctx.value+ctx.playerController.ToString());
+        PlayerController player=ctx.effect.target==Trigger.Target.enemy?GameManager.instance.OtherPlayer(ctx.playerController): ctx.playerController;
+        for(int i =0;i<ctx.value; i++)
+        {
+            player.DrawCard();
+        }
+    }
     public static void Discard(EffectContext ctx)
     {
         var hand = ctx.playerController.hand;
         if (hand.Count == 0) return;
-
+        UnityEngine.Debug.Log("Draw" +hand.Count);
         int randomIndex = UnityEngine.Random.Range(0, hand.Count);
         ctx.playerController.RemoveCardFromHand(hand[randomIndex]);
     }
@@ -156,6 +184,46 @@ public static class EffectCommands
                 m.canAttack = true;
                 return m;
             });
+        }
+    }
+    public static void Silence(EffectContext ctx)
+    {
+        foreach (var target in ctx.targets)
+        {
+            ushort id = target._sequenceId;
+            var state = GameManager.instance.GetMinionById(id);
+            var card = CardManager.instance.GetMinion(state.cardId);
+            if (card == null) continue;
+
+            // statok visszaállítása az eredeti kártya értékére
+            // HP: ha kisebb mint a max, marad — különben visszaáll
+            GameManager.instance.ChangeMinionById(id, m =>
+            {
+                m.attack = (short)card.attack;
+                m.currentHealth = (ushort)Mathf.Min(m.currentHealth, card.health);
+                return m;
+            });
+
+            // effektek törlése
+            target.effectBag.DisposeAll(RemoveReason.Silence);
+
+            // taunt UI törlése
+            // SendClientEvent a kliensnek hogy frissítse a vizuált
+            GameManager.instance.SendClientEvent(new ClientEvent
+            {
+                effectType = (ushort)Effect.Type.silence,
+                targetIds = new ushort[] { id },
+                newValues = new[] { card.attack, (int)state.currentHealth }
+            });
+        }
+    }
+    public static void Steal(EffectContext ctx)
+    {
+
+        foreach( var target in ctx.targets)
+        {
+            target.Steal(ctx.buff, ctx.doerId);
+            
         }
     }
     public static void Umbrella(EffectContext ctx)
@@ -349,7 +417,7 @@ public static class EffectCommands
     {
         foreach (ushort id in ctx.targetIds)
         {
-            ctx.playerController.ReturnToHand(id);
+            GameManager.instance.GetOwnerOf(id).ReturnToHand(id);
         }
     }
     public static void Discover(EffectContext ctx)
@@ -376,21 +444,15 @@ public static class EffectCommands
     }
     public static void SummonHalfStats(EffectContext ctx)
     {
-        MinionLogic target = GameManager.instance.GetMinionLogic(ctx.doerId);
-        if (target == null) return;
+        ushort cardId = (ushort)ctx.effect.multiValue;
 
-        MinionCard card = CardManager.instance.GetMinion(target.cardId);
+        MinionCard card = CardManager.instance.GetMinion(cardId);
         if (card == null) return;
 
-        var buff = GameManager.GetMinionBuff(target.cardId, target);
+        int halfAttack = Mathf.Max(1, card.attack / 2);
+        int halfHealth = Mathf.Max(1, card.health / 2);
 
-        int fullAttack = card.attack + buff.x;
-        int fullHealth = card.health + buff.y;
-
-        int halfAttack = Mathf.Max(1, fullAttack / 2);
-        int halfHealth = Mathf.Max(1, fullHealth / 2);
-
-        ctx.playerController.Summon(card.cardId, overrideAttack: halfAttack, overrideHealth: halfHealth);
+        ctx.playerController.Summon(cardId, overrideAttack: halfAttack, overrideHealth: halfHealth, shouldRegisterAbilities: false);
     }
     public static void DeBuff(EffectContext ctx)
     {
@@ -415,10 +477,27 @@ public static class EffectCommands
     }
     public static void CopyStats(EffectContext ctx)
     {
-        if (ctx.targets.Length > 1) {Debug.LogWarning("COpy multiple stats? ");
+        if (ctx.targets==null ||ctx.targets.Length != 1 ) {Debug.LogWarning("COpy multiple stats?  or none?");
         return;}
-        GameManager.instance.GetMinionLogic(ctx.doerId).CopyStats(ctx.targetIds[0], ctx.buff);
-        
+        MinionLogic m = GameManager.instance.GetMinionLogic(ctx.doerId);
+        m.CopyStats(ctx.targetIds[0], ctx.buff);
+        GameManager.instance.SendClientEvent(new ClientEvent
+        {
+            effectType = (ushort)Effect.Type.copyStats,
+
+            doerId = ctx.doerId,
+
+            targetIds = new ushort[]
+    {
+        ctx.targetIds[0]
+    },
+
+            newValues = new int[]
+    {
+        m.attack,
+        m.currentHealth
+    }
+        });
     }
     public static void DoubleStats(EffectContext ctx)
     {
@@ -447,7 +526,7 @@ public static class EffectCommands
     public static void Buff(EffectContext ctx)
     {
         if (ctx?.effect == null) { Debug.LogError("Buff: nincs Effect."); return; }
-        if (ctx.targetIds == null) { Debug.LogError("Buff: nincs target lista."); return; }
+        if (isNull(ctx.targetIds)) { Debug.LogError("Buff: nincs target lista."); return; }
 
         int attackBonus = ctx.buff.x;
         int healthBonus = ctx.buff.y;
@@ -457,6 +536,8 @@ public static class EffectCommands
     }
     public static void Summon(EffectContext ctx)
     {
+       
+
         bool toHome = true;
         if (ctx.effect.target == Trigger.Target.enemy || ctx.effect.target == Trigger.Target.ally)
             toHome = ctx.effect.target == Trigger.Target.ally;
@@ -485,6 +566,10 @@ public static class EffectCommands
                 lt.Health += ctx.effect.buff.y;
             }
         }
+    }
+    static bool isNull(ushort[] array)
+    {
+        if (array == null || array.Length == 0) return true; return false;
     }
     public static void GainEconomy(EffectContext ctx)
     {

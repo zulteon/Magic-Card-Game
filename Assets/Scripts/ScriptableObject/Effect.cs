@@ -10,7 +10,7 @@ public class Effect : ScriptableObject
         none, damage, heal, give, death, attack, buff, steal, swapAttackHealth, setStats, copyStats, gainEconomy, counter, spell, cardDestroyed,
         charge, summon,sleep,taunt,doubleStats,cleave,albatros, debuff,unattackable,reflect, bodyguard,discard,draw, returnToHand,trueDamage,summonHalfOf,
         gainEconomyNextTurn, damageBoardEdges, sacrificeAndDamageAll,randomDamage, cantAttackForTurn, damageAndNeighbours, buffAndCantAttack,discover,sendToFuture,umbrella,
-        minionSwap, syncDance, setManaCrystal,playCard,loanPower, buffAndNeighbours,damageReduce,copyCard,destroy,reActivate
+        minionSwap, syncDance, setManaCrystal,playCard,loanPower, buffAndNeighbours,damageReduce,copyCardHand,destroy,reActivate,silence
     }
     
 
@@ -37,6 +37,8 @@ public class Effect : ScriptableObject
     public enum LogicOperator { NONE, AND, OR, THEN }
     public Zone activeZone = Zone.Board;
     public bool needsTarget = true;
+
+    public bool afterBattlecry = false;
 #if UNITY_EDITOR
     private void OnValidate()
 {

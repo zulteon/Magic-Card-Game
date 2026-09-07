@@ -45,7 +45,7 @@ public class MinionLogic
     {
         _sequenceId = sequenceId;
         effectBag = new EffectBag(_sequenceId);
-        cardId=GameManager.instance.GetMinionById(sequenceId).cardId;
+        cardId = GameManager.instance.GetMinionById(sequenceId).cardId;
         // MinionCard cardData = CardManager.instance.GetMinion(cardId);
     }
     public void Attack(int damage, ushort victimId, bool forced = false)
@@ -234,6 +234,7 @@ public class MinionLogic
         if (deBuff.y > state.currentHealth+1) state.currentHealth = 1; else
             state.currentHealth -= (ushort)deBuff.y;
         maxhealth = state.currentHealth;
+        State = state;
         GameManager.instance.SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.buff,
@@ -251,7 +252,6 @@ public class MinionLogic
     public void Buff(int attackBonus, int healthBonus)
     {
         var state = State;
-        UnityEngine.Debug.Log(" BUffoljad " + healthBonus);
         state.attack = (short)Math.Clamp(
             state.attack + attackBonus,
             short.MinValue,
@@ -332,15 +332,31 @@ public class MinionLogic
         var thief = manager.GetMinionById(thiefId);
 
         // clamp: nem lophat többet, mint amennyi ténylegesen van
-        int actualAttackSteal = UnityEngine.Mathf.Min(amount.x, victimState.attack);
+        int actualAttackSteal = UnityEngine.Mathf.Min(Mathf.Max(0, amount.x),Mathf.Max(0, victimState.attack));
         int actualHealthSteal = UnityEngine.Mathf.Min(amount.y, victimState.currentHealth);
+        UnityEngine.Debug.Log(
+    $"[STEAL START] " +
+    $"thief={thiefId} " +
+    $"thiefAtk={thief.attack} | " +
+    $"victim={_sequenceId} " +
+    $"victimAtk={victimState.attack} | " +
+    $"requested={amount.x}"
+);
 
-        victimState.attack = (short)Math.Clamp(victimState.attack - actualAttackSteal, short.MinValue, short.MaxValue);
+       UnityEngine. Debug.Log(
+            $"[STEAL RESULT] actual={actualAttackSteal} | " +
+            $"thief {thief.attack} -> {thief.attack + actualAttackSteal} | " +
+            $"victim {victimState.attack} -> {victimState.attack - actualAttackSteal}");
+        
+                victimState.attack = (short)Math.Clamp(victimState.attack - actualAttackSteal, short.MinValue, short.MaxValue);
         victimState.currentHealth = (ushort)Math.Clamp(victimState.currentHealth - actualHealthSteal, 0, ushort.MaxValue);
-
+        victimState.maxHealth = victimState.maxHealth - actualHealthSteal;
         thief.attack = (short)Math.Clamp(thief.attack + actualAttackSteal, short.MinValue, short.MaxValue);
         thief.currentHealth = (ushort)Math.Clamp(thief.currentHealth + actualHealthSteal, 0, ushort.MaxValue);
+        thief.maxHealth=thief.maxHealth +actualHealthSteal;
+        State = victimState;
 
+        manager.ChangeMinionById(thiefId, m => m = thief);
         GameManager.instance.SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.steal,
@@ -350,8 +366,7 @@ public class MinionLogic
             newValues = new int[] { thief.attack, thief.currentHealth, victimState.attack, victimState.currentHealth }
         });
 
-        State = victimState; // this = victim, frissítjük
-        manager.ChangeMinionById(thiefId, m => m = thief);
+         // this = victim, frissítjük
     }
     public void SwapAttackHealth()
     {
@@ -363,7 +378,8 @@ public class MinionLogic
         // csere: az Attack lesz az új Health, a Health lesz az új Attack
         state.attack = (short)Math.Clamp(oldHealth, short.MinValue, short.MaxValue);
         state.currentHealth = (ushort)Math.Clamp(oldAttack, 0, ushort.MaxValue);
-
+        state.maxHealth = state.currentHealth;
+        State = state;
         GameManager.instance.SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.swapAttackHealth,
@@ -373,7 +389,7 @@ public class MinionLogic
             newValues = new int[] { state.attack, state.currentHealth }
         });
 
-        State = state;
+        
     }
     public void SetStats(int attack, int health)
     {

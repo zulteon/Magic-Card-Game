@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1044
   Cost: 8
-  description: 
+  description: 6 damage to all enemy minion
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: da1e12b3801c5814f9a3cf5bdbe21884, type: 2}

@@ -9,6 +9,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Managing;
 using static Trigger;
+using FishNet.Demo.AdditiveScenes;
 public class GameManager : NetworkBehaviour
 {
     #region 1. SINGLETON & MEZŐK
@@ -33,7 +34,8 @@ public class GameManager : NetworkBehaviour
     public readonly SyncVar<PlayerController> playerA = new SyncVar<PlayerController>();
     public readonly SyncVar<PlayerController> playerB = new SyncVar<PlayerController>();
     public Deck testDeck;
-
+    public Deck testDeckEnemy;
+    public string testDeckName;
     #region CardTemplate
     [Header("prefabs")]
     public GameObject cardTemplateFront;
@@ -130,6 +132,9 @@ public class GameManager : NetworkBehaviour
         {
             if(minion.sequenceId == sequenceId) return  minion;
         }
+        if (tmpCementaryStates.TryGetValue(sequenceId, out MinionState deadState))
+            return deadState;
+
         return default;
         //foreach in heros
     }
@@ -273,6 +278,7 @@ public class GameManager : NetworkBehaviour
 
         return result;
     }
+    
     public byte isEnemy(ushort id,PlayerController player)=>IsEnemy(id,isAlly(player));
     public byte IsEnemy(ushort id,bool isAlly=true) 
     {
@@ -404,13 +410,7 @@ public class GameManager : NetworkBehaviour
 
             if (isAlly) boardAlly.Add(state);
             else boardEnemy.Add(state);
-
-            SendClientEvent(new ClientEvent
-            {
-                effectType = (ushort)Effect.Type.summon,
-                targetIds = new ushort[] { state.sequenceId },
-                newValues = new[] { isAlly ? 1 : 0 }
-            });
+            SendSummonEvent(state, !isAlly);
         }
     }
     public bool IsEnemy(MinionLogic m)
@@ -428,6 +428,7 @@ public class GameManager : NetworkBehaviour
 
     private List<(int index, ushort id)> tmpCementaryAlly = new();
     private List<(int index, ushort id)> tmpCementaryEnemy = new();
+    private readonly Dictionary<ushort, MinionState> tmpCementaryStates = new();
     internal List<MinionLogic> tmpCementary=new();
 
     public void PutInMinionToTmpCementary(int index, ushort id, bool ally,MinionLogic m)
@@ -435,6 +436,7 @@ public class GameManager : NetworkBehaviour
         if (ally) tmpCementaryAlly.Add((index, id));
         else tmpCementaryEnemy.Add((index, id));
         tmpCementary.Add(m);
+        tmpCementaryStates[id] = GetMinionById(id);
     }
 
     public List<ushort> RestoreBoard(bool ally)
@@ -548,7 +550,7 @@ public class GameManager : NetworkBehaviour
     // GameManager
     public readonly SyncVar<int> turn = new(0);
 
-    public int CurrentPlayerIndex => (turn.Value+1) % 2;
+    public int CurrentPlayerIndex => turn.Value % 2;
 
     public PlayerController CurrentPlayerController
         => CurrentPlayerIndex == 0 ? playerA.Value : playerB.Value;
@@ -558,6 +560,13 @@ public class GameManager : NetworkBehaviour
     public void EndTurn()
     {
         EffectClient.instance.TurnEndObserversRpc();
+        var endTurnIds =
+    GameEvents.Instance.GetRegisteredIds(GameEvents.EventType.TurnEnd);
+
+        Debug.Log(
+            $"[END TURN REGISTERED] count={endTurnIds.Count} | " +
+            $"ids={string.Join(",", endTurnIds)}"
+        );
         GameEvents.Instance.RaiseTurnEnd();
         int cantAttackForTurns=GetplayerByTurn().CantAttackForTurn;
         if (cantAttackForTurns > 0)
@@ -570,12 +579,16 @@ public class GameManager : NetworkBehaviour
     [Server]
     private void StartTurn()
     {
-        EffectClient.instance.TurnStartObserversRpc();
         turn.Value++;
+        EffectClient.instance.TurnStartObserversRpc();
+       
 
         var pc = CurrentPlayerController;
         if (pc == null) return;
-
+        if (pc == playerA.Value)
+            print("az első jatekos");
+        else if (pc == playerB.Value == pc)
+            print("a második jatekos");
         print(pc.economy.ToString());
         pc.economy.StartTurn();
 
@@ -746,7 +759,8 @@ public class GameManager : NetworkBehaviour
             {
                 bag.Add(effect, ownerId, EffectRole.Trigger);
                 ushort capturedId = ownerId;
-
+                bool onlyMyTurn = t.onlyMyTurn;
+                int myPlayerIndex= GameManager.instance.GetOwnerOf(capturedId)==playerA.Value? (ushort)0 :(ushort) 1;
                 if (TriggerConverter.EventHasMinion(gameEvent))
                 { // az if es dolgokat egyhelyre gyüjthetjük a gameevents  trigger converterbe
                     var myLogic = GameManager.instance.GetMinionLogic(capturedId);
@@ -755,6 +769,7 @@ public class GameManager : NetworkBehaviour
                   && effect.type == Effect.Type.buff;
                     GameEvents.Instance.AddEvent(capturedId, gameEvent,
                         (MinionLogic summoned) => {
+                            if (onlyMyTurn )if( GameManager.instance.GetPlayerIndexByTurn() != myPlayerIndex) return;
                             if (!TriggerChecker.instance.IsDoerValid(t, summoned, capturedId)) return;
                             if (checkSameCard)
                             {
@@ -770,9 +785,8 @@ public class GameManager : NetworkBehaviour
                 {
                     GameEvents.Instance.AddEvent(capturedId, gameEvent,
                         () => {
-                            var myLogic = GameManager.instance.GetMinionLogic(capturedId);
-                            if (myLogic == null || myLogic.effectBag.IsLocked) return;
-
+                            if (onlyMyTurn) if (GameManager.instance.GetPlayerIndexByTurn() != myPlayerIndex) return;
+                            if (bag != null && bag.IsLocked && (currentZone & Zone.Hand) == 0) return;
                             EffectRunner.Run(effect, capturedId);
                         });
                 }
@@ -902,6 +916,27 @@ public class GameManager : NetworkBehaviour
     {
         EffectClient.instance.AddEventBatch(new[]{_event});
     }
+    public void SendSummonEvent(MinionState minion, bool isEnemy)
+    {
+        SendClientEvent(new ClientEvent
+        {
+            effectType = (ushort)Effect.Type.summon,
+
+            targetIds = new[]
+            {
+            minion.sequenceId
+        },
+
+            newValues = new[]
+            {
+            isEnemy ? 0 : 1,
+            (int)minion.cardId,
+            minion.attack,
+            minion.currentHealth,
+            minion.taunt?1:0
+            }
+        });
+    }
     #endregion
 
     #endregion
@@ -921,7 +956,12 @@ public class GameManager : NetworkBehaviour
         foreach (var e in effects)
         {// if so trigger egyelőre szoló de ha több lesz könnyen megoldható
             // 1. Megkeressük az IfSo triggert manuálisan a tömbben
-            
+            Debug.Log(
+    $"[DEATH EFFECT] deadId={doerId}, " +
+    $"effect={effects[0].type}, " +
+    $"summonId={effects[0].summonableId}, " +
+    $"owner={owner}"
+);
             DoEffect(e, doerId, owner,fromDoEffects:true);
         }
         FinishEventQueue();
@@ -931,6 +971,7 @@ public class GameManager : NetworkBehaviour
     {
        // if(targets == null)
        // List<ushort> targets = TargetingCenter.GetTargets(e, doerId, owner);
+
         EffectContext ctx = new EffectContext(e, doerId, targets,source:owner);
         Trigger[] ifsoTriggers = System.Array.FindAll(e.triggers, t => t.t == Trigger.time.ifso);
         if (ifsoTriggers.Length > 0)
@@ -938,7 +979,7 @@ public class GameManager : NetworkBehaviour
             MinionLogic target = targets?.Count > 0
                 ? GetMinionLogic(targets[0])
                 : null;
-
+            print("ifso trigger we are here");
             if (!TriggerChecker.instance.IfSoTrigger(ifsoTriggers[0], GetMinionLogic(doerId), target))
                 return;
         }
@@ -955,26 +996,52 @@ public class GameManager : NetworkBehaviour
             // ha minden célpont kiesett, az effekt nem fut le
             if (ctx.targetIds.Length == 0) return;
         }
-        EffectRunner.Run(ctx); // Szerver matek
+        EffectRunner.Run(ctx); 
         try
         {
             Debug.Log($"[Send] {ctx.effect.type}, targetIds: {string.Join(",", ctx.targetIds)}");
         }
         catch { }
-        if (ctx.effect.type!=Effect.Type.damage  && ctx.effect.type !=  Effect.Type.doubleStats && Effect.Type.minionSwap!=ctx.effect.type)
-        SendClientEvent(ctx.ToClientEvent()); // Kliens mozi
+        if (!SkipEffectSending(ctx.effect.type))
+        {
+            SendClientEvent(ctx.ToClientEvent());
+        }
         if (!fromDoEffects) graveyard.Execute();
     }
+    private readonly Effect.Type[] skipEffectSending =
+    {
+        Effect.Type.damage,
+        Effect.Type.doubleStats,
+        Effect.Type.minionSwap,
+        Effect.Type.silence,
+        Effect.Type.buff,
+        Effect.Type.summon,
+        Effect.Type.steal,
+        Effect.Type.copyStats,
+        Effect.Type.swapAttackHealth,
+    };
 
+    private bool SkipEffectSending(Effect.Type type)
+    {
+        foreach (var effectType in skipEffectSending)
+        {
+            if (effectType == type)
+                return true;
+        }
+
+        return false;
+    }
     #endregion
 
-//<<<<<<<<----------------------------------->>>>>>>>
+    //<<<<<<<<----------------------------------->>>>>>>>
     #region 4. Harc
+    public ushort deffenderId;
     [Server]
     public void ExecuteAttack(ushort attackerId, ushort deffenderId)
     {// ez a metodus kihelyezhető máshova ne mindenért a game manager feleljen.
         //ushort? overriddenTarget = EffectRunner.RunBeforeAttack(attackerId, defenderId);
         //ushort actualDefenderId = overriddenTarget ?? defenderId;
+        this.deffenderId = deffenderId;
         MinionLogic attacker = GetMinionLogic(attackerId);
         var defBoard = isAllyMinion(deffenderId)?boardAlly:boardEnemy;
         bool tauntExists = false;
@@ -999,13 +1066,17 @@ public class GameManager : NetworkBehaviour
             .ConsumeByTrigger(Trigger.time.before, Effect.Type.attack);
 
         if (beforeEffects.Count > 0)
+        {
+            print("Elkaptunk before attackot" +beforeEffects.Count);
             DoEffects(beforeEffects.ToArray(), attackerId, GetOwnerOf(attackerId));
+            
+        }
         // Effect[] beforeAttack = TriggerChecker.instance.CheckTrigger(Trigger.time.instant, Effect.Type.attack, attackerId).ToArray();
         if (attacker == null)return;
         if (CheckForCounter(Effect.Type.attack, deffenderId))
             return;
         attacker.Attack(GetMinionById(attackerId).attack, deffenderId);
-
+        this.deffenderId = ushort.MaxValue;
     }
     
     public void CancelAttack()
@@ -1044,7 +1115,7 @@ public class GameManager : NetworkBehaviour
         gameEvents = GameEvents.Instance;
         Hero a = ScriptableObject.CreateInstance<Hero>();
         gameState = new GameState();
-        Init(testDeck, a, testDeck, a);
+        Init(testDeck, a, testDeckEnemy, a);
 
     }
     public override void OnStartClient()
@@ -1105,6 +1176,7 @@ public class GameManager : NetworkBehaviour
             player.Init(gameState.players[1], false, this,offlineTestMode?null:deckIds);
             player.RoleAssignedTargetRpc(player.Owner, player.isEnemy.Value);
         }
+        if(!offlineTestMode)
         TryStartGame();
     }
     
@@ -1208,7 +1280,12 @@ public class GameManager : NetworkBehaviour
 
         for (int i = 0; i < boardEnemy.Count; i++)
             if (boardEnemy[i].sequenceId == sequenceId) return playerB.Value;
-
+        foreach (var i in playerA.Value.hand)
+            if (i.sequenceId == sequenceId)
+                return playerA.Value;
+        foreach (var i in playerB.Value.hand)
+            if (i.sequenceId == sequenceId)
+                return playerB.Value;
         return null;
     }
     public bool isAlly(PlayerController player)
@@ -1226,9 +1303,15 @@ public class GameManager : NetworkBehaviour
     }
     public PlayerController GetplayerByTurn(bool isEnemy = false)
     {
-        return isEnemy
-            ? GetControllerOf(gameState.OpponentPlayer)
-            : GetControllerOf(gameState.CurrentPlayer);
+        if(turn.Value%2==0)
+            return isEnemy?playerB.Value: playerA.Value;
+        else
+            return isEnemy?playerA.Value: playerB.Value;
+    }
+    public int GetPlayerIndexByTurn(bool isEnemy=false)
+    {
+        if (turn.Value % 2 == 0) return isEnemy ? 1 : 0;
+        else return isEnemy ? 0 : 1;
     }
     public PlayerController GetLocalPlayerController()
     {
@@ -1264,18 +1347,28 @@ public class GameManager : NetworkBehaviour
     public PlayerController GetPlayerByIndex(int index)
     => index == 0 ? playerA.Value : playerB.Value;
     #endregion
-    internal bool IsMyTurn()
-    {if (turn.Value < 0) return true;
-        PlayerController player =
-        GetLocalPlayerController();
+    internal bool IsMyTurn(PlayerController player)
+    {
+        if (turn.Value < 0)
+            return true;
 
         if (player == null)
             return false;
 
-        bool enemyTurn =
-            turn.Value % 2 == 1;
+        bool firstPlayerTurn = turn.Value % 2 == 0;
 
-        return player.isEnemy.Value == enemyTurn;
+        if (firstPlayerTurn)
+            return !player.isEnemy.Value;
+
+        return player.isEnemy.Value;
+    }
+    /// <summary>
+    /// This function works on client only
+    /// </summary>
+    /// <returns></returns>
+    internal bool IsMyTurn()
+    {
+        return IsMyTurn(GetLocalPlayerController());
     }
     public bool isAllyTurn()
     {

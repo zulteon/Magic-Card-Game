@@ -30,6 +30,8 @@ public class MinionView : MonoBehaviour
             print(" Load " + sprite);
             spriteRenderer.sprite = (Sprite)Resources.Load<Sprite>("Sprites/" + sprite);
         }
+        ChangeBorder();
+            
     }
     // ✨ Csak HP frissítése (ezt hívja az EffectClient)
     public void UpdateHealthVisual(int newHealth)
@@ -106,33 +108,64 @@ public class MinionView : MonoBehaviour
         UpdateAttackVisual(newAttack);
         UpdateHealthVisual(newHealth);
 
+        bool isDebuff = buffValue < 0;
+
+        Color effectColor =
+            isDebuff
+                ? new Color(1f, 0.25f, 0.25f)
+                : new Color(0.3f, 1f, 0.35f);
+
+        string text =
+            isDebuff
+                ? $"{buffValue} DEBUFF!"
+                : $"+{buffValue} BUFF!";
+
         ShowFloatingText(
-            $"+{buffValue} BUFF!",
-            Color.green
+            text,
+            effectColor
         );
 
-        yield return BuffTextAnimation();
+        yield return BuffTextAnimation(
+            effectColor
+        );
     }
-    private IEnumerator BuffTextAnimation()
+    private IEnumerator BuffTextAnimation(
+    Color effectColor)
     {
-        Vector3 attackOriginalScale = attackText.transform.localScale;
-        Vector3 healthOriginalScale = healthText.transform.localScale;
+        Vector3 attackOriginalScale =
+            attackText.transform.localScale;
 
-        Color attackOriginalColor = attackText.color;
-        Color healthOriginalColor = healthText.color;
+        Vector3 healthOriginalScale =
+            healthText.transform.localScale;
 
-        Color buffColor = new Color(0.3f, 1f, 0.35f);
+        Color attackOriginalColor =
+            attackText.color;
+
+        Color healthOriginalColor =
+            healthText.color;
+
 
         float growDuration = 0.15f;
         float shrinkDuration = 0.2f;
 
         float elapsed = 0f;
 
+
+        // =========================
+        // NÖVEKEDÉS
+        // =========================
+
         while (elapsed < growDuration)
         {
-            float t = elapsed / growDuration;
+            float t =
+                elapsed / growDuration;
 
-            float scale = Mathf.Lerp(1f, 1.45f, t);
+            float scale =
+                Mathf.Lerp(
+                    1f,
+                    1.45f,
+                    t
+                );
 
             attackText.transform.localScale =
                 attackOriginalScale * scale;
@@ -140,23 +173,45 @@ public class MinionView : MonoBehaviour
             healthText.transform.localScale =
                 healthOriginalScale * scale;
 
+
             attackText.color =
-                Color.Lerp(attackOriginalColor, buffColor, t);
+                Color.Lerp(
+                    attackOriginalColor,
+                    effectColor,
+                    t
+                );
 
             healthText.color =
-                Color.Lerp(healthOriginalColor, buffColor, t);
+                Color.Lerp(
+                    healthOriginalColor,
+                    effectColor,
+                    t
+                );
+
 
             elapsed += Time.deltaTime;
+
             yield return null;
         }
+
+
+        // =========================
+        // VISSZA
+        // =========================
 
         elapsed = 0f;
 
         while (elapsed < shrinkDuration)
         {
-            float t = elapsed / shrinkDuration;
+            float t =
+                elapsed / shrinkDuration;
 
-            float scale = Mathf.Lerp(1.45f, 1f, t);
+            float scale =
+                Mathf.Lerp(
+                    1.45f,
+                    1f,
+                    t
+                );
 
             attackText.transform.localScale =
                 attackOriginalScale * scale;
@@ -164,21 +219,39 @@ public class MinionView : MonoBehaviour
             healthText.transform.localScale =
                 healthOriginalScale * scale;
 
+
             attackText.color =
-                Color.Lerp(buffColor, attackOriginalColor, t);
+                Color.Lerp(
+                    effectColor,
+                    attackOriginalColor,
+                    t
+                );
 
             healthText.color =
-                Color.Lerp(buffColor, healthOriginalColor, t);
+                Color.Lerp(
+                    effectColor,
+                    healthOriginalColor,
+                    t
+                );
+
 
             elapsed += Time.deltaTime;
+
             yield return null;
         }
 
-        attackText.transform.localScale = attackOriginalScale;
-        healthText.transform.localScale = healthOriginalScale;
 
-        attackText.color = attackOriginalColor;
-        healthText.color = healthOriginalColor;
+        attackText.transform.localScale =
+            attackOriginalScale;
+
+        healthText.transform.localScale =
+            healthOriginalScale;
+
+        attackText.color =
+            attackOriginalColor;
+
+        healthText.color =
+            healthOriginalColor;
     }
     // Helper: Floating text megjelenítése
     private void ShowFloatingText(string text, Color color)
@@ -234,4 +307,32 @@ public class MinionView : MonoBehaviour
     {
         return _liveMinion;
     }
+    #region MinionBorder
+    private static int defaultBorder=0;
+    public static int currentBorderIndex;
+    int currentBorder = 0;
+    [SerializeField] Transform myBorder;
+    public void ChangeBorder(int borderNumber = -1)
+    {
+        
+        if (borderNumber != -1)
+            currentBorderIndex = borderNumber;
+
+        if (currentBorder == currentBorderIndex)
+            return;
+
+        if (_liveMinion.sequenceId < 3) return;
+        if (myBorder != null)
+            Destroy(myBorder.gameObject);
+
+        myBorder = Instantiate(
+            MinionCardView.instance.minionBorders[currentBorderIndex],
+            transform,
+            false
+        );
+
+        currentBorder = currentBorderIndex;
+    }
+
+    #endregion
 }

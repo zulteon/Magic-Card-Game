@@ -16,19 +16,19 @@ MonoBehaviour:
   targetType: 0
   targetCast: 3
   target: 3
-  value: 1
+  value: 2
   buff: {x: 0, y: 0}
   summonableId: 0
   give: {fileID: 0}
   triggers:
   - {fileID: 11400000, guid: d30cdbfde2c11bb479bbef53c9e07cd8, type: 2}
   random: 0
-  raceValue: -1
   multiValue: -1
-  multiSplit: 0
   other: 0
   effectId: 28
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0
+  targetCondition: {fileID: 0}
   activeZone: 1
+  needsTarget: 1

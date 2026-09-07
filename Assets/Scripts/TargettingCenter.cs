@@ -8,7 +8,7 @@ public  static class TargetingCenter
     public static GameManager GameManager { get; private set; }
     public static List<ushort> GetTargets(Effect e, ushort doerId, PlayerController source=null)
     {// az egész playercontroller lekérést kilehetne szedni , fölösleges elég annyit tudni hogy ally vagy nem 
-        if (Trigger.Target.none==e.target) return null;
+        if (Trigger.Target.none==e.target) return new List<ushort>();
         if(e.targetCast==Effect.TargetCast.single&& e.target==Trigger.Target.self)
             return new List<ushort>() { doerId};
         if (source == null)
@@ -56,6 +56,11 @@ public  static class TargetingCenter
                 targetIds.AddRange(
                 GameManager.instance.GetNeighbours(doerId, GameManager.instance.isAlly(source)));
                 break;
+            case Trigger.Target.whomAttacked:
+                targetIds.Add(
+                    GameManager.instance.deffenderId);
+                if (e.targetType == TargetType.minion && targetIds[0] < 2) return new List<ushort>();
+                return targetIds;
             
         }
         if(e.other)targetIds.Remove(doerId);
@@ -138,8 +143,10 @@ public  static class TargetingCenter
                 }
                 else
                 {
-                    Debug.Log("TODO: Player selects multiple targets");
-                    return result;
+                   // Debug.Log("TODO: Player selects multiple targets");
+                   while(targetIds.Count > multivalue)
+                        { targetIds.RemoveAt(targetIds.Count-1); }
+                    return targetIds;
                 }
                 break;
         }

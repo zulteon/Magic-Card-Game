@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,9 +15,9 @@ public class SceneManagement : MonoBehaviour
     {
         instance = this;
     }
-
+    public bool skipDeckView = false;
     private IEnumerator Start()
-    {
+    {if (skipDeckView) yield  break;
         while (GameManager.instance==null) yield return null;
         float t =1.8f;
         while (t > 0)

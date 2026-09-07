@@ -43,7 +43,7 @@
       "cardId": 102,
       "cardName": "Flamingo Yoga Teacher",
       "cost": 4,
-      "description": "OnPlay: Buff the strongest three debuff the the weakest two ally by 1/1.",
+      "description": "OnPlay: Buff the weakest three debuff the the strongest two ally by 1/1.",
       "cardType": "minion",
       "sprite": "id_00143_006_flamingo_yoga_instructor_balancing",
       "effectIds": [
@@ -166,7 +166,9 @@
       "description": "OnDeath: Deal 3 damage to a random enemy.",
       "cardType": "minion",
       "sprite": "id_00114_029_poison_dart_frog_dj",
-      "effectIds": [],
+      "effectIds": [
+        9
+      ],
       "dynamicValues": {}
     },
     {
@@ -187,8 +189,8 @@
       "dynamicValues": {}
     },
     {
-      "attack": 4,
-      "health": 5,
+      "attack": 2,
+      "health": 3,
       "effect": "",
       "raceId": 0,
       "charge": false,
@@ -204,8 +206,8 @@
       "dynamicValues": {}
     },
     {
-      "attack": 2,
-      "health": 2,
+      "attack": 4,
+      "health": 4,
       "effect": "",
       "raceId": 0,
       "charge": false,
@@ -229,7 +231,7 @@
       "cardId": 114,
       "cardName": "Solo Influencer",
       "cost": 2,
-      "description": "If he is the only one on board gain 2/2",
+      "description": "If he is the only one on your board gain 2/2",
       "cardType": "minion",
       "sprite": "id_00117_032_frill_necked_lizard_influencer",
       "effectIds": [
@@ -266,7 +268,9 @@
       "description": "OnDeath: Summon a 2/2.",
       "cardType": "minion",
       "sprite": "id_00116_031_fire_salamander_firefighter_glossy",
-      "effectIds": [],
+      "effectIds": [
+        82
+      ],
       "dynamicValues": {}
     },
     {
@@ -333,7 +337,7 @@
       "cardType": "minion",
       "sprite": "id_00141_004_chinchilla_luxury_fur_salon",
       "effectIds": [
-        14
+        17
       ],
       "dynamicValues": {}
     },
@@ -350,7 +354,7 @@
       "cardType": "minion",
       "sprite": "id_00213_002_an_ancient_tuatara_philosopher",
       "effectIds": [
-        17
+        14
       ],
       "dynamicValues": {}
     },
@@ -418,7 +422,7 @@
       "cardType": "minion",
       "sprite": "id_00142_005_tibetan_yak_locksmith_massive",
       "effectIds": [
-        6
+        22
       ],
       "dynamicValues": {}
     },
@@ -553,7 +557,9 @@
       "description": "OnPlay: Give a minion +4/4 but -3/3 next turn",
       "cardType": "minion",
       "sprite": "Gemini_Generated_Image_k2pw1pk2pw1pk2pw",
-      "effectIds": [],
+      "effectIds": [
+        83
+      ],
       "dynamicValues": {}
     },
     {
@@ -676,6 +682,21 @@
       "dynamicValues": {}
     },
     {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 500,
+      "cardName": "Pigeon_c",
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "pigeon",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
       "attack": 0,
       "health": 2,
       "effect": "",
@@ -684,7 +705,7 @@
       "cardId": 501,
       "cardName": "501 BOMB Minion",
       "cost": 0,
-      "description": "",
+      "description": "Warning it might explode",
       "cardType": "minion",
       "sprite": "BombIMG",
       "effectIds": [
@@ -708,10 +729,25 @@
       "dynamicValues": {}
     },
     {
+      "attack": 1,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 503,
+      "cardName": "Cat kid",
+      "cost": 0,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "saved_cat",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
       "effect": null,
       "cardId": 1000,
       "cardName": "Crowded Bathtub",
-      "cost": 4,
+      "cost": 2,
       "description": "Deal 2 damage to the minions on each end of the enemy board.",
       "cardType": "spell",
       "sprite": "Gemini_Generated_Image_ (16)",
@@ -725,7 +761,7 @@
       "cardId": 1001,
       "cardName": "Cake Party",
       "cost": 4,
-      "description": "Deal 1-3 damage randomly to every minion.",
+      "description": "Deal 1-3 damage randomly to all enemy  minion.",
       "cardType": "spell",
       "sprite": "aoe_1",
       "effectIds": [
@@ -845,7 +881,7 @@
       "cost": 4,
       "description": "Set all friendly minions' stats to their average Attack and Health.",
       "cardType": "spell",
-      "sprite": "balansz",
+      "sprite": "synchron",
       "effectIds": [
         62
       ],
@@ -913,21 +949,6 @@
       "sprite": "id_00327_016_naked_mole_rat_sauna",
       "effectIds": [
         38
-      ],
-      "dynamicValues": {}
-    },
-    {
-      "effect": null,
-      "cardId": 1017,
-      "cardName": "Sugar Glide Swing",
-      "cost": 2,
-      "description": "Give a friendly minion +2/+2. When it dies, return it to your hand.",
-      "cardType": "spell",
-      "sprite": "id_00332_001_young_sugar_glider_on",
-      "effectIds": [
-        41,
-        42,
-        53
       ],
       "dynamicValues": {}
     },
@@ -1193,9 +1214,9 @@
       "cardId": 1043,
       "cardName": "Pool Crash",
       "cost": 5,
-      "description": "",
+      "description": "4 damage to all  minion",
       "cardType": "spell",
-      "sprite": "aoe2",
+      "sprite": "aoe_2",
       "effectIds": [
         88
       ],
@@ -1206,9 +1227,9 @@
       "cardId": 1044,
       "cardName": "Grand Finale",
       "cost": 8,
-      "description": "",
+      "description": "6 damage to all enemy minion",
       "cardType": "spell",
-      "sprite": "aoe3",
+      "sprite": "aoe_3",
       "effectIds": [
         89
       ],

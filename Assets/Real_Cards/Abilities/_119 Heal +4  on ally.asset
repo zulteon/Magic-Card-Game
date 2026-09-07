@@ -10,25 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac8a27f6d19e7f948b70a5ccc50cba57, type: 3}
-  m_Name: _119 Heal +4 OnDeath
+  m_Name: _119 Heal +4  on ally
   m_EditorClassIdentifier: 
   type: 2
-  targetType: 0
+  targetType: 2
   targetCast: 0
-  target: 0
+  target: 3
   value: 4
   buff: {x: 0, y: 0}
   summonableId: 0
   give: {fileID: 0}
   triggers:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 777362456731ea9439cf239eff3c813c, type: 2}
   random: 0
-  raceValue: -1
   multiValue: -1
-  multiSplit: 0
   other: 0
   effectId: 13
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0
+  targetCondition: {fileID: 0}
   activeZone: 1
+  needsTarget: 1
+  afterBattlecry: 0

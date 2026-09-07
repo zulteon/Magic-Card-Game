@@ -17,5 +17,6 @@ MonoBehaviour:
   sprite: id_00181_004_chameleon_street_mime_classic
   description: 'OnPlay: Lock an enemy minion for 1 turn.'
   effect: 
-  e: []
+  e:
+  - {fileID: 0}
   race: 0

@@ -18,7 +18,7 @@ public class AllCardsExporter : EditorWindow
 
     private const string SPELL_ABILITY_FOLDER =
         "Assets/Real_Cards/Abilities_Spell";
-    private string ignoredIdsText = "";
+    private string ignoredIdsText = "140,142,133,131,100,103,101,116,1035,1016,1026,1028,1017,1032";
 
     private List<Card> foundCards = new();
 

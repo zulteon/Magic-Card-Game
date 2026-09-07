@@ -3,7 +3,9 @@ public static class MinionStateFactory
 {
     public static MinionState FromCardState(CardState card, ushort sequenceId)
     {
+        
         MinionCard c = (MinionCard)CardManager.instance.GetMinion(card.cardId);bool taunt=false;
+        ushort health = (ushort)(c.health + card.healthBonus);
         foreach (var i in c.effectIds)
             if (i == 11)
                 taunt = true;
@@ -12,7 +14,8 @@ public static class MinionStateFactory
             cardId = c.cardId,
             sequenceId = sequenceId,
             canAttack = c.charge,
-            currentHealth = (ushort)(c.health + card.healthBonus),
+            currentHealth = health,
+             maxHealth = health,
             attack = (short)(c.attack + card.attackBonus),
             taunt = taunt,
             activeEffects = new List<ushort>(c.effectIds) // valszeg fölösleges , figyeljünk az effect lekéréséket a triggercheckbe ha kiszedjük
@@ -30,6 +33,7 @@ public static class MinionStateFactory
             sequenceId = sequenceId,
             canAttack = c.charge,
             currentHealth = (ushort)(c.health ),
+            maxHealth = (ushort)(c.health ),
             attack = (short)(c.attack),
             activeEffects = new List<ushort>(c.effectIds)
         };

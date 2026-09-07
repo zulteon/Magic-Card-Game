@@ -80,6 +80,7 @@ public class ManaCenterUI : MonoBehaviour
 
     public void SetMana(int mana)
     {
+        UnityEngine.Debug.Log("Manana");
         mana = Mathf.Clamp(
             mana,
             0,

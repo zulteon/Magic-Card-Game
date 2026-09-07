@@ -46,6 +46,27 @@ public static class DeckStorage
 
         return result;
     }
+    public static void Delete(string deckName)
+    {
+        string path = Path.Combine(Folder, deckName + ".json");
+
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning($"Nincs ilyen pakli törléshez: {deckName}");
+            return;
+        }
+
+        File.Delete(path);
+
+        Debug.Log($"Pakli törölve: {deckName}");
+
+        // Ha pont ez volt elõkészítve hálózatra, töröljük azt is.
+        if (PreparedDeckName == deckName)
+        {
+            preparedDeckIds = null;
+            PreparedDeckName = null;
+        }
+    }
     private static ushort[] preparedDeckIds;
 
     public static string PreparedDeckName { get; private set; }

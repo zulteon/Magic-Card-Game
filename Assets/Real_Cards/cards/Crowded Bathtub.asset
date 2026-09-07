@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Crowded Bathtub
   m_EditorClassIdentifier: 
   cardId: 1000
-  Cost: 4
+  Cost: 2
   description: Deal 2 damage to the minions on each end of the enemy board.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: 533f63db644a8e64487b778a22f93daa, type: 2}

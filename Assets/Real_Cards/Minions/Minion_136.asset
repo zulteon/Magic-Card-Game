@@ -17,5 +17,6 @@ MonoBehaviour:
   sprite: Gemini_Generated_Image_k2pw1pk2pw1pk2pw
   description: 'OnPlay: Give a minion +4/4 but -3/3 next turn'
   effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 28971276f96d0514d8d5a4acc06991ba, type: 2}
   race: 0

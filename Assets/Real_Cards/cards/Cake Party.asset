@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardId: 1001
   Cost: 4
-  description: Deal 1-3 damage randomly to every minion.
+  description: Deal 1-3 damage randomly to all enemy  minion.
   m: {fileID: 0}
   spell: {fileID: 11400000, guid: f3cdee98f59813c41a049a1cfeadb1fc, type: 2}

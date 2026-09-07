@@ -15,6 +15,7 @@ public class PlayerEconomy
     {
         if (_owner.currentResource.Value < amount) return false;
         _owner.currentResource.Value -= amount;
+        SendManaCrystalEvent();
         return true;
     }
 
@@ -36,24 +37,15 @@ public class PlayerEconomy
             _owner.currentResource.Value = 0;
         }
 
-        GameManager.instance.SendClientEvent(new ClientEvent()
-        {
-            effectType = (ushort)Effect.Type.setManaCrystal,
-            targetIds = new ushort[] { _owner.isEnemy.Value ? (ushort)1 : (ushort)0 },
-            value = _owner.currentResource.Value,
-        });
+        SendManaCrystalEvent();
     }
 
     public void RaiseResource(int amount)
     {
         
         _owner.currentResource.Value += amount;   // nincs felsõ korlát
-        EffectClient.instance.AddEvent(new ClientEvent()
-        {
-            effectType = (ushort)Effect.Type.setManaCrystal,
-            targetIds = new ushort[] { _owner.isEnemy.Value ? (ushort)1 : (ushort)0 },
-            value = _owner.currentResource.Value,
-        });
+        UnityEngine.Debug.Log("Resource raisde");
+        SendManaCrystalEvent();
     }
     public void GainEconomyNextTurn(int value)
     {
@@ -61,4 +53,14 @@ public class PlayerEconomy
         extraResourceNextTurn += value;
     }
     public int CurrentResource => _owner.currentResource.Value;
+
+    public void SendManaCrystalEvent()
+    {
+        GameManager.instance.SendClientEvent(new ClientEvent()
+        {
+            effectType = (ushort)Effect.Type.setManaCrystal,
+            targetIds = new ushort[] { _owner.isEnemy.Value ? (ushort)1 : (ushort)0 },
+            value = _owner.currentResource.Value,
+        });
+    }
 }

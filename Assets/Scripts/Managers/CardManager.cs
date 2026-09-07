@@ -123,9 +123,19 @@ public class CardManager : MonoBehaviour
         {
             var c = allCards[i];
 
-            if ((c.description != null && c.description.ToLowerInvariant().Contains(query)) ||
-                (c.sprite != null && c.sprite.ToLowerInvariant().Contains(query)))
+            if (
+                (c.cardName != null &&
+                 c.cardName.ToLowerInvariant().Contains(query))
+                ||
+                (c.description != null &&
+                 c.description.ToLowerInvariant().Contains(query))
+                ||
+                (c.sprite != null &&
+                 c.sprite.ToLowerInvariant().Contains(query))
+            )
+            {
                 _searchResult.Add(c);
+            }
         }
 
         return _searchResult;

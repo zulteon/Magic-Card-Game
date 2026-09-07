@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9176982780338997315}
   - component: {fileID: 7509724841750469428}
   - component: {fileID: -5567276821277575490}
+  - component: {fileID: 3496488358763534636}
   m_Layer: 5
   m_Name: MinionUI
   m_TagString: Untagged
@@ -101,6 +102,7 @@ MonoBehaviour:
   healthText: {fileID: 7068520321490412688}
   spriteRenderer: {fileID: 1772615394230354927}
   tauntUI: {fileID: 3791464001058343689}
+  myBorder: {fileID: 570247132685384218}
 --- !u!114 &-5567276821277575490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,6 +121,18 @@ MonoBehaviour:
   attack: 0
   ally: 1
   activeEffects: 
+--- !u!114 &3496488358763534636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043349455705400269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0323b2964137da14fb6b997a0b55289a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3732697723086050560
 GameObject:
   m_ObjectHideFlags: 0
