@@ -25,7 +25,7 @@ MonoBehaviour:
   random: 0
   multiValue: 135
   other: 0
-  effectId: 45
+  effectId: 96
   logicOp: 
   linkedTrigger: {fileID: 0}
   sortMode: 0

@@ -82,13 +82,24 @@ public class DeckCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             if (portrait.sprite.rect.width > portrait.sprite.rect.height)
             {
                 portrait.transform.localScale =new Vector3(wideIMGScale, wideIMGScale, 1);
+                Vector2 pos= portrait.GetComponent<RectTransform>().anchoredPosition;
+                pos.y = HeightenWidePortraitImg;
+                portrait.GetComponent<RectTransform>().anchoredPosition = pos;
+            }
+            else
+            {
+                portrait.transform.localScale = new Vector3(basePortraitScale, basePortraitScale);
+                Vector2 pos = portrait.GetComponent<RectTransform>().anchoredPosition;
+                pos.y = -10;
+                portrait.GetComponent<RectTransform>().anchoredPosition= pos;
             }
         }
 
         SetCount(countInDeck);
         gameObject.SetActive(true);
     }
-
+    public float HeightenWidePortraitImg =0.3f;
+    private float basePortraitScale = 2.4407f;
     public void SetCount(int count)
     {
         bool show = count > 0;

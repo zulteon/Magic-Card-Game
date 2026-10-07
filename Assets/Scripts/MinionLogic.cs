@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FishNet.Example.Scened;
+using System;
 using System.Diagnostics;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -146,7 +147,7 @@ public class MinionLogic
             UnityEngine.Debug.Log("damaging " + damage.ToString());
         var state = State;
         state.currentHealth = (ushort)UnityEngine.Mathf.Max(0, state.currentHealth - damage);
-        
+        State = state;
         UnityEngine.Debug.Log($"[Damage] {_sequenceId} kap {damage}-t\n{System.Environment.StackTrace}");
         // ✨ DIREKT ITT küldjük el, MIUTÁN a HP megváltozott
         ClientEvent ev = new ClientEvent
@@ -426,16 +427,19 @@ public class MinionLogic
             newValues = new int[] { player.economy.CurrentResource }
         });
     }
-    public void GainEconomyNextTurn(int value)
+    public void GainEconomyNextTurn(int value,PlayerController player)
     {
-        manager.GetOwnerOf(State.sequenceId).economy.GainEconomyNextTurn(value);
+        player.economy.GainEconomyNextTurn(value);
     }
     public enum RemoveReason { Death, Silence, ReturnToHand }
 
     // MinionLogic
     public  void Death()
     {
-       // if (IsHero) GameManager.instance.CheckGameOver();
+        if (IsHero) {
+            PlayerController loser = GameManager.instance.GetPlayerByIndex(_sequenceId);
+            GameManager.instance.EndGame(loser);
+        }
         GameManager.instance.graveyard.SendToGraveyard(_sequenceId);
     }
     public void Summon()

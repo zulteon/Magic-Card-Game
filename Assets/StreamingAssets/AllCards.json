@@ -384,7 +384,7 @@
       "cardId": 124,
       "cardName": "Wombat Baker",
       "cost": 3,
-      "description": "OnDeath: Give a friendly minion +3 Health.",
+      "description": "OnPlay: Give a friendly minion +3 Health.",
       "cardType": "minion",
       "sprite": "id_00032_004_stylized_wombat_baker_white",
       "effectIds": [
@@ -410,7 +410,7 @@
       "dynamicValues": {}
     },
     {
-      "attack": 3,
+      "attack": 2,
       "health": 2,
       "effect": "",
       "raceId": 0,
@@ -418,7 +418,7 @@
       "cardId": 126,
       "cardName": "Yak Locksmith",
       "cost": 4,
-      "description": "EndOfTurn: Give a minion +1/1 in hand",
+      "description": "In Hand EndOfTurn: Gain 1/1",
       "cardType": "minion",
       "sprite": "id_00142_005_tibetan_yak_locksmith_massive",
       "effectIds": [
@@ -525,23 +525,6 @@
       "sprite": "id_00182_005_tenrec_fakir_street_performer",
       "effectIds": [
         20
-      ],
-      "dynamicValues": {}
-    },
-    {
-      "attack": 2,
-      "health": 4,
-      "effect": "",
-      "raceId": 0,
-      "charge": false,
-      "cardId": 135,
-      "cardName": "Axolotl Barista",
-      "cost": 4,
-      "description": "OnDeath: Summon a minion with half of this minion's original Attack and Health.",
-      "cardType": "minion",
-      "sprite": "id_00237_006_an_axolotl_caf_worker",
-      "effectIds": [
-        45
       ],
       "dynamicValues": {}
     },
@@ -682,6 +665,66 @@
       "dynamicValues": {}
     },
     {
+      "attack": 2,
+      "health": 1,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 147,
+      "cardName": "Circuit Bug",
+      "cost": 1,
+      "description": "In Hand EndOfTurn: Gain 1/1",
+      "cardType": "minion",
+      "sprite": "id_00246_005_mantis_shrimp_metro_electrician",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 4,
+      "health": 5,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 148,
+      "cardName": "Beaver Plumber",
+      "cost": 4,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "id_00037_009_stylized_beaver_plumber_blue",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 2,
+      "health": 3,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 149,
+      "cardName": "Pangolin Security",
+      "cost": 2,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "id_00084_011_pangolin_nightclub_bouncer_large",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "attack": 5,
+      "health": 7,
+      "effect": "",
+      "raceId": 0,
+      "charge": false,
+      "cardId": 150,
+      "cardName": "Avarage Rhino",
+      "cost": 6,
+      "description": "",
+      "cardType": "minion",
+      "sprite": "id_00193_016_babirusa_scrap_metal_collector",
+      "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
       "attack": 1,
       "health": 1,
       "effect": "",
@@ -741,6 +784,19 @@
       "cardType": "minion",
       "sprite": "saved_cat",
       "effectIds": [],
+      "dynamicValues": {}
+    },
+    {
+      "effect": null,
+      "cardId": 999,
+      "cardName": "Coin",
+      "cost": 0,
+      "description": "Gain a mana",
+      "cardType": "spell",
+      "sprite": "coin",
+      "effectIds": [
+        95
+      ],
       "dynamicValues": {}
     },
     {
@@ -973,7 +1029,9 @@
       "description": "Destroy an enemy minion with 3 or less Health.",
       "cardType": "spell",
       "sprite": "id_00283_002_cassowary_construction_inspector_kicking",
-      "effectIds": [],
+      "effectIds": [
+        94
+      ],
       "dynamicValues": {}
     },
     {
@@ -984,7 +1042,9 @@
       "description": "Your hero takes 3 less damage from all sources this turn.",
       "cardType": "spell",
       "sprite": "id_00232_001_fearless_honey_badger_bakery",
-      "effectIds": [],
+      "effectIds": [
+        93
+      ],
       "dynamicValues": {}
     },
     {
@@ -1096,19 +1156,6 @@
     },
     {
       "effect": null,
-      "cardId": 1032,
-      "cardName": "Circuit Inspection",
-      "cost": 2,
-      "description": "Look at enemy hand copy one card.",
-      "cardType": "spell",
-      "sprite": "id_00246_005_mantis_shrimp_metro_electrician",
-      "effectIds": [
-        79
-      ],
-      "dynamicValues": {}
-    },
-    {
-      "effect": null,
       "cardId": 1033,
       "cardName": "Pressure Blast",
       "cost": 2,
@@ -1167,7 +1214,9 @@
       "description": "Restore a minion to full Health ",
       "cardType": "spell",
       "sprite": "id_00291_010_an_axolotl_burn_ward",
-      "effectIds": [],
+      "effectIds": [
+        92
+      ],
       "dynamicValues": {}
     },
     {
@@ -1188,7 +1237,7 @@
       "cardId": 1041,
       "cardName": "Fine Vintage",
       "cost": 2,
-      "description": "",
+      "description": "Discover a card from your deck",
       "cardType": "spell",
       "sprite": "id_00313_002_star_nosed_mole_sommelier",
       "effectIds": [

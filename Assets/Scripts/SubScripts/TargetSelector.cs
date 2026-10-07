@@ -128,7 +128,12 @@ public class TargetSelector : MonoBehaviour
             return;
         
         if (_valid == null || !_valid.Contains(id))
+        {
+            PlayerMessage.Send("Thats not a valid a target", GameManager.instance.GetLocalPlayerController());
             return;
+
+        }
+            
         
         var callback = _onPicked;
 

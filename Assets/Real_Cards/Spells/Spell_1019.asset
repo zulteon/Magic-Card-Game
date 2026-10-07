@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: id_00283_002_cassowary_construction_inspector_kicking
   description: Destroy an enemy minion with 3 or less Health.
-  effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: b731de2a60bab204d920a679c22e1aee, type: 2}

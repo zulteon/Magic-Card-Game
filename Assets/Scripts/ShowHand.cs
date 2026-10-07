@@ -3,6 +3,7 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine.XR;
+using static Trigger;
 
 public class ShowHand : MonoBehaviour
 {
@@ -15,10 +16,32 @@ public class ShowHand : MonoBehaviour
     public GameObject cardTemplateBack;
     public Transform handParent;
     public bool isEnemy { get; set; }
+
+    [Header("Ally hand automatikus leengedése")]
+    [SerializeField] private bool autoLowerAllyHand = true;
+    [Tooltip("Fix képernyõterület (0–1): X, Y, szélesség, magasság. Az origó bal alul van.")]
+    [SerializeField] private Rect allyHoverArea = new Rect(0f, 0f, 1f, 0.2f);
+    [SerializeField, Min(0f)] private float lowerDelay = 3f;
+    [Tooltip("Ennyi helyi egységgel kerül lejjebb a handParent.")]
+    [SerializeField, Min(0f)] private float loweredDistance = 0.2f;
+    [Tooltip("A handParent eredeti méretének szorzója leengedve: 0.95 = 5%-kal kisebb.")]
+    [SerializeField, Range(0.01f, 1f)] private float loweredScale = 0.95f;
+
+    private float timeOutsideHand;
+    private bool isHandLowered;
+    private Vector3 handParentRestPosition;
+    private Vector3 handParentRestScale;
+
     private void Awake()
     {
-        handParent = new GameObject("Hand Parent UI").transform;
-        handParent.transform.parent = transform;
+        if (handParent == null)
+        {
+            handParent = new GameObject("Hand Parent UI").transform;
+            handParent.parent = transform;
+        }
+
+        handParentRestPosition = handParent.localPosition;
+        handParentRestScale = handParent.localScale;
     }
     private void Start()
     {
@@ -27,19 +50,80 @@ public class ShowHand : MonoBehaviour
         GameManager.instance.GetCardTemplates(out cardTemplateFront, out cardTemplateBack);
         getPlayer();
     }
-    
-    
+
+
+    private void Update()
+    {
+        if (playerController == null || isEnemy || !autoLowerAllyHand)
+        {
+            timeOutsideHand = 0f;
+            SetHandLowered(false);
+            return;
+        }
+
+        if (IsMouseInsideHandArea())
+        {
+            timeOutsideHand = 0f;
+            SetHandLowered(false);
+        }
+        else if (!isHandLowered)
+        {
+            timeOutsideHand += Time.unscaledDeltaTime;
+            if (timeOutsideHand >= lowerDelay)
+                SetHandLowered(true);
+        }
+    }
+
+    private bool IsMouseInsideHandArea()
+    {
+        if (!Application.isFocused || Screen.width <= 0 || Screen.height <= 0)
+            return false;
+
+        Vector2 mousePosition;
+#if ENABLE_INPUT_SYSTEM
+        var mouse = UnityEngine.InputSystem.Mouse.current;
+        if (mouse == null) return false;
+        mousePosition = mouse.position.ReadValue();
+#else
+        mousePosition = Input.mousePosition;
+#endif
+
+        Vector2 normalizedPosition = new Vector2(
+            mousePosition.x / Screen.width,
+            mousePosition.y / Screen.height);
+
+        return allyHoverArea.Contains(normalizedPosition);
+    }
+
+    private void SetHandLowered(bool lowered)
+    {
+        if (isHandLowered == lowered) return;
+
+        isHandLowered = lowered;
+        if (handParent == null) return;
+
+        handParent.localPosition = handParentRestPosition
+            + (lowered ? Vector3.down * loweredDistance : Vector3.zero);
+        handParent.localScale = handParentRestScale * (lowered ? loweredScale : 1f);
+    }
+
     private void OnDisable()
     {
+        timeOutsideHand = 0f;
+        SetHandLowered(false);
+
         if (playerController != null)
         {
             //playerController.hand.OnChange -= OnHandChanged;
         }
     }
 
+    // TODO: A live PlayerController.hand eseményeirõl késõbb válasszuk le ezt a nézetet.
+    // A külsõ feliratkozást / OnHandChanged-hívást is át kell majd kötni az új adatforrásra;
+    // a getPlayer() jelenleg továbbra is a PlayerControllerbõl határozza meg az ally/enemy oldalt.
     public void OnHandChanged(SyncListOperation op, int index, CardState oldItem, CardState newItem, bool asServer)
     {
-        
+
         if (asServer)
             return;
         // A logikád itt továbbra is a tulajdonosi viszonyra épül, ami helyes.
@@ -69,16 +153,16 @@ public class ShowHand : MonoBehaviour
         {
             //UpdateCardUI(index, newItem); a buff flesh event csinálja ezt.
         }
-       /* else if (op == SyncListOperation.Complete)
-        {
-            foreach (var go in handUI) Destroy(go);
-            handUI.Clear();
+        /* else if (op == SyncListOperation.Complete)
+         {
+             foreach (var go in handUI) Destroy(go);
+             handUI.Clear();
 
-            for (int i = 0; i < playerController.hand.Count; i++)
-                CreateCardUI(playerController.hand[i]);
+             for (int i = 0; i < playerController.hand.Count; i++)
+                 CreateCardUI(playerController.hand[i]);
 
-            ArrangeCards();
-        } */
+             ArrangeCards();
+         } */
     }
 
     private void UpdateCardUI(int index, CardState state)
@@ -127,9 +211,9 @@ public class ShowHand : MonoBehaviour
     float margin = 0.5f;
     float cardSize = 1f;
     [SerializeField]
-    float minusYHeight=-4f;
+    float minusYHeight = -4f;
     [SerializeField]
-    float YHeight=4f;
+    float YHeight = 4f;
     public void ArrangeCards()
     {
         int count = handUI.Count;
@@ -158,11 +242,12 @@ public class ShowHand : MonoBehaviour
             float y = baseY + (Mathf.Cos(rad) - 1f) * verticalCurve; // -1f hogy lefelé íveljen
 
             var card = handUI[i];
-            card.transform.position = new Vector3(x, y, -i * 0.1f); // Kis Z offset a rétegezéshez
+            // Helyi koordináták: a handParent mozgatása és skálázása újrarendezéskor is érvényesül.
+            card.transform.localPosition = new Vector3(x, y, -i * 0.1f); // Kis Z offset a rétegezéshez
 
             // Hearthstone-szerû forgatás: a kártya "néz" az ív érintõje irányába
             float rotationAngle = isEnemy ? angle : -angle; // Enemy-nél fordított irány
-            card.transform.rotation = Quaternion.Euler(0, 0, rotationAngle);
+            card.transform.localRotation = Quaternion.Euler(0, 0, rotationAngle);
 
             // Opcionális: kártya méretezés (középsõ kártyák kicsit nagyobbak)
             float distanceFromCenter = Mathf.Abs(angle) / (totalAngle / 2f);
@@ -172,7 +257,7 @@ public class ShowHand : MonoBehaviour
     }
     protected void getPlayer()
     {
-        playerController=GetComponent<PlayerController>();
+        playerController = GetComponent<PlayerController>();
         isEnemy = !playerController.IsOwner;
     }
     public CardView FindCardView(ushort seqId)
@@ -184,5 +269,9 @@ public class ShowHand : MonoBehaviour
                 return view;
         }
         return null;
+    }
+    public void Hide(bool b=true)
+    {
+        handParent.gameObject.SetActive(!b);
     }
 }

@@ -129,9 +129,13 @@ public class PlayerController : NetworkBehaviour
         liveCardPrefab = manager.liveCardPrefab;
 
         isEnemy.Value = !home;
+
         heroId = isEnemy.Value ? (ushort)1 : (ushort)0;
+       
         if (manager.offlineTestMode)
         {
+            manager.playerB.Value.heroId =(ushort) 1;
+            manager.CreateHeroMinionLogic(true);
             if (!string.IsNullOrWhiteSpace(manager.testDeckName)&&home)
             {
                 List<CardData> testDeckCards =
@@ -146,6 +150,10 @@ public class PlayerController : NetworkBehaviour
             {
                 CreateDeck(player.deck);
             }
+        }
+        else
+        {
+            CreateDeck(deckList);
         }
             // <- az ID-allokátorhoz kell a home
                                               // GameManager, a játék indításakor
@@ -167,6 +175,29 @@ public class PlayerController : NetworkBehaviour
             manager.CreateHeroMinionLogic(!isEnemy.Value); */
         }
         state = player;
+        SetupHeroSide(isEnemy.Value);
+    }
+    [ObserversRpc]
+    private void SetupHeroSide(bool shouldSwitch)
+    {
+        // Csak a saját PlayerControllerünk foglalkozzon vele.
+        if (!IsOwner)
+            return;
+
+        // Player A-nál minden eleve jó.
+        if (!shouldSwitch)
+            return;
+
+        HeroView heroView =
+            FindFirstObjectByType<HeroView>();
+
+        if (heroView == null)
+        {
+            Debug.LogError("HeroView not found!");
+            return;
+        }
+
+        heroView.SwitchSides();
     }
     int maxMana;
     public readonly SyncVar<int> currentResource=new(0);
@@ -192,11 +223,6 @@ public class PlayerController : NetworkBehaviour
         if(!isEnemy.Value)
         ManaCrystalUI.instance.setManaCrystal(maxMana, maxMana);
     }*/
-    public void Die()
-    {
-        Debug.Log("Meghalt a player");
-        manager.GameOver(isEnemy.Value);
-    }
     int maxboardCount = 8;
     static ushort minionSequenceId=1;//0,1 heros main
     [Server]
@@ -373,7 +399,7 @@ public class PlayerController : NetworkBehaviour
         manager.SendClientEvent(new ClientEvent
         {
             effectType = (ushort)Effect.Type.playCard,
-            targetIds = new ushort[] { card.cardId }
+            targetIds = new ushort[] { card.cardId,targetId }
         });
         if (isSpell) CmdPlaySpell(card, targetId);
         else CmdPlayMinion(card, targetId);
@@ -558,7 +584,7 @@ public class PlayerController : NetworkBehaviour
                 value = cs.cardId,      // hogy a kliens tudja, MIT mutasson
                 doerId = cs.sequenceId
             });
-
+            PlayerMessage.Send("Hand is full card is burned", this);
             return;   // se hand.Add, se MoveCard — a lap eltűnik
         }
 
@@ -601,7 +627,7 @@ public class PlayerController : NetworkBehaviour
         if (taunts.Count > 0) return taunts;
 
         // Különben minden lény + az ellenséges hős
-        all.Add(manager.GetHeroId(this,true));
+        all.Add(manager.GetOpposingHeroId());
         return all;
     }
     ushort untargetableId = 70;
@@ -670,10 +696,49 @@ public class PlayerController : NetworkBehaviour
 
         Shuffle();
     }
-   
+    #region mulligan
+    [TargetRpc]
+    public void TargetShowMulligan(NetworkConnection conn, ushort[] cardIds, ushort[] sequenceIds)
+    {
+        showHand?.Hide();
+        MulliganCenter.instance.Show(cardIds, sequenceIds,
+            toReplace => CmdConfirmMulligan(toReplace));
+    }
+
+    [ServerRpc]
+    public void CmdConfirmMulligan(ushort[] sequenceIds)
+    {
+        print("Mulligan, confirmed");
+        foreach (var seqId in sequenceIds)
+        {
+            var card = hand.FirstOrDefault(c => c.sequenceId == seqId);
+            if (card.cardId == 0) continue;
+
+            hand.Remove(card);
+            int insertIndex = UnityEngine.Random.Range(0, _deck.Count + 1);
+            _deck.Insert(insertIndex, card);
+            DrawCard();
+        }
+
+        GameManager.instance.OnMulliganDone(this);
+    }
+    public void GetACoin()
+    {
+        var cardData = CardManager.instance.GetCard(999);
+        if (cardData == null) return;
+
+        hand.Add(new CardState
+        {
+            cardId = cardData.cardId,
+            sequenceId = GameManager.instance.NextCardId(isEnemy.Value),
+            currentCost = cardData.cost
+        });
+    }
+    #endregion
     [Server]
     private void Shuffle()
     {
+        if (manager.offlineTestMode) return;
         for (int i = _deck.Count - 1; i > 0; i--)
         {
             int j = UnityEngine.Random.Range(0, i + 1);
@@ -742,10 +807,7 @@ public class PlayerController : NetworkBehaviour
             deckIds.Length == 0
         )
         {
-            Debug.LogError(
-                "PlayerController elindult, " +
-                "de nincs előkészített deck!"
-            );
+            
 
             //return;
         }
@@ -757,7 +819,17 @@ public class PlayerController : NetworkBehaviour
 }
     // PlayerController
     [TargetRpc]
-    public void RoleAssignedTargetRpc(NetworkConnection conn, bool enemy) => SubscribeBoards(enemy);
+    public void RoleAssignedTargetRpc(NetworkConnection conn, bool isEnemy)
+    {
+        SubscribeBoards(isEnemy);
+        CmdPlayerReady();   // jelzi a szervernek
+    }
+
+    [ServerRpc]
+    public void CmdPlayerReady()
+    {
+        GameManager.instance.PlayerReady(this);
+    }
     private void OnRoleReceived(bool prev, bool next, bool asServer)
     {
         if (asServer) return;
@@ -796,6 +868,12 @@ public class PlayerController : NetworkBehaviour
         bool ally = !isEnemy.Value;
         manager.boardAlly.OnChange -= ally ? boardManager.OnBoardChangeHome : boardManager.OnBoardChangeEnemy;
         manager.boardEnemy.OnChange -= ally ? boardManager.OnBoardChangeEnemy : boardManager.OnBoardChangeHome;
+    }
+
+    [TargetRpc]
+    internal void GameOverTargetRpc(NetworkConnection conn, bool win)
+    {
+        WinLoose_Show.Instance.GameOver(win);
     }
     [ServerRpc(RequireOwnership = true)]
     private void RegisterMeServerRpc(ushort[] deckIds)

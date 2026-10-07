@@ -20,7 +20,8 @@ public class WinLoose_Show : MonoBehaviour
     public void GameOver(bool win)
     {
         keret.gameObject.SetActive(true);
-        keret.gameObject.SetActive(win);
         loose.gameObject.SetActive(!win);
+        if(win)
+            this.win.gameObject.SetActive(true);
     }
 }

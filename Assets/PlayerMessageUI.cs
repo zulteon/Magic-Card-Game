@@ -80,8 +80,19 @@ public class PlayerMessageUI : MonoBehaviour
 }
 public static class PlayerMessage
 {
-    public static void Send( string message, PlayerController pc)
+    public static void Send(string message, PlayerController pc)
     {
+        if (pc == null)
+            return;
+
+        // Már a megfelelõ kliensen vagyunk.
+        if (pc.IsOwner)
+        {
+            PlayerMessageUI.Instance?.ShowMessage(message);
+            return;
+        }
+
+        // Egyébként a szerver küldje el a tulajdonos kliensnek.
         pc.TargetShowMessage(pc.Owner, message);
     }
 }

@@ -1220,6 +1220,7 @@ MonoBehaviour:
     attackBonus: 0
     healthBonus: 0
   spriteRenderer: {fileID: 1266800329533710257}
+  moveSpeed: 0.09
   dragHoverPoint: {fileID: 7953838417669933765}
   dragHoverDistance: 0.15
   hoverScale: 2

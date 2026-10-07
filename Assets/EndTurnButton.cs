@@ -13,7 +13,6 @@ public class EndTurnButton : MonoBehaviour
 
     [Header("Warning Blink")]
     [SerializeField] private float blinkSpeed = 4f;
-
     private Coroutine rotateCoroutine;
     private Coroutine blinkCoroutine;
 
@@ -34,6 +33,7 @@ public class EndTurnButton : MonoBehaviour
         {
             EffectClient.instance.OnTurnEnd += OnTurnEnd;
             EffectClient.instance.OnTurnStart += OnTurnStart;
+            print("feliratkoztunk");
         }
     }
 
@@ -57,7 +57,9 @@ public class EndTurnButton : MonoBehaviour
     private void OnClick()
     {
         // A szerver dönti el a kör végét.
-        GameManager.instance.GetLocalPlayerController().RequestEndTurnServerRpc();
+        if(GameManager.instance.IsMyTurn())
+            GameManager.instance.GetLocalPlayerController().RequestEndTurnServerRpc();
+        
 
         // Nem itt forgatjuk meg a homokórát.
         // Megvárjuk a szerverrõl érkezõ TurnEnd eventet.
@@ -89,8 +91,14 @@ public class EndTurnButton : MonoBehaviour
     {
         // Késõbb itt lehet eldönteni,
         // hogy ténylegesen a mi körünk kezdõdött-e.
-
-        button.interactable = true;
+        bool myTurn= GameManager.instance.IsMyTurn();
+        bool areWeHome = GameManager.instance.AreWeHomePlayer();
+        if(GameManager.instance.turn.Value%2==0 && areWeHome)
+        {
+            button.interactable = true;
+        }
+        if(GameManager.instance.turn.Value%2==0&& !areWeHome)
+            button.interactable = true;
 
         StopRedBlink();
     }
@@ -146,7 +154,15 @@ public class EndTurnButton : MonoBehaviour
 
         rect.localRotation =
             targetRotation;
+        float z = rect.localEulerAngles.z;
 
+        // Legközelebbi 180 fok
+        z = Mathf.Round(z / 180f) * 180f;
+
+        // 360 legyen újra 0
+        z = Mathf.Repeat(z, 360f);
+
+        rect.localRotation = Quaternion.Euler(0f, 0f, z);
         rotateCoroutine = null;
     }
 

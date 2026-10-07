@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: id_00232_001_fearless_honey_badger_bakery
   description: Your hero takes 3 less damage from all sources this turn.
-  effect: 
-  e: []
+  e:
+  - {fileID: 11400000, guid: 9c8ac387e891d374b939b3bfbbf49d7b, type: 2}

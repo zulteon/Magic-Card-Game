@@ -76,8 +76,7 @@ public class LiveEffect
 
     public bool IsSpent => charges == 0;
 
-    
-
+    public int damageReduction = 0;
 
     /// <summary>
     /// Megpróbálja elhasználni egy tölettel.
@@ -181,7 +180,7 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
         if (role == EffectRole.Guard) guardCount++;
         return live;
     }
-
+    
     public bool Has(Effect.Type type)
     {
         if (_locked) return false;
@@ -220,19 +219,20 @@ feltétel — IfSoTrigger → teljesül-e a szám-feltétel
         }
         return false;
     }
+    // ConsumeDamageReduction:
     public int ConsumeDamageReduction()
-{
-    int total = 0;
-    for (int i = _list.Count - 1; i >= 0; i--)
     {
-        var e = _list[i];
-        if (e.Role != EffectRole.Guard) continue;
-        if (e.Def.type != Effect.Type.damageReduce) continue;
-        total += e.charges;
-        RemoveAt(i);
+        int total = 0;
+        for (int i = _list.Count - 1; i >= 0; i--)
+        {
+            var e = _list[i];
+            if (e.Role != EffectRole.Guard) continue;
+            if (e.Def.type != Effect.Type.damageReduce) continue;
+            total += e.damageReduction;
+          //  RemoveAt(i);
+        }
+        return total;
     }
-    return total;
-}
     public List<Effect> ConsumeByTrigger(Trigger.time when, Effect.Type activity)
     {
         if (_locked) return new List<Effect>();

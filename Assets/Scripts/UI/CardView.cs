@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using static Trigger;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 public class CardView : MonoBehaviour
 {
     
@@ -60,7 +61,7 @@ public class CardView : MonoBehaviour
 
     }
     Vector3 mousePosition;
-    float moveSpeed=0.03f;
+    public float moveSpeed=0.03f;
     [SerializeField] private Transform dragHoverPoint;
     [SerializeField] private float dragHoverDistance = 1.5f;
     bool isDragging;
@@ -165,13 +166,17 @@ public class CardView : MonoBehaviour
         if (transform.position.y <= playingMinHeight ||
             !GameManager.instance.IsMyTurn())
         {
+            if (!GameManager.instance.IsMyTurn())
+                PlayerMessage.Send("Thats not my turn!",GameManager.instance.GetLocalPlayerController());
             showHand.ArrangeCards();
             return;
         }
-
+        var freshCard = GameManager.instance.GetLocalPlayerController().hand.FirstOrDefault(c => c.sequenceId == cardState.sequenceId);
+        if (freshCard.cardId == 0) return;
         GameManager.instance
             .GetLocalPlayerController()
-            .BeforePlay(cardState);
+            .BeforePlay(freshCard);
+        showHand.ArrangeCards();
     }
     [SerializeField] private float hoverScale = 2f;
     [SerializeField] private float hoverJump = 1.8f;

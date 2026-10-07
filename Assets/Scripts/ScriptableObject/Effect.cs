@@ -10,7 +10,7 @@ public class Effect : ScriptableObject
         none, damage, heal, give, death, attack, buff, steal, swapAttackHealth, setStats, copyStats, gainEconomy, counter, spell, cardDestroyed,
         charge, summon,sleep,taunt,doubleStats,cleave,albatros, debuff,unattackable,reflect, bodyguard,discard,draw, returnToHand,trueDamage,summonHalfOf,
         gainEconomyNextTurn, damageBoardEdges, sacrificeAndDamageAll,randomDamage, cantAttackForTurn, damageAndNeighbours, buffAndCantAttack,discover,sendToFuture,umbrella,
-        minionSwap, syncDance, setManaCrystal,playCard,loanPower, buffAndNeighbours,damageReduce,copyCardHand,destroy,reActivate,silence
+        minionSwap, syncDance, setManaCrystal,playCard,loanPower, buffAndNeighbours,damageReduce,copyCardHand,destroy,reActivate,silence, destoyWithLessAttack
     }
     
 

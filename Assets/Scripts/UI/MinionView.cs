@@ -41,11 +41,8 @@ public class MinionView : MonoBehaviour
         // Opcionálisan: HP bar animáció
         // healthBar.fillAmount = (float)newHealth / maxHealth;
     }
-    private void Update()
-    {
-        if(Input.GetKeyUp(KeyCode.Escape)) 
-        PlayDamageAnimation(3);
-    }
+    
+
     // ✨ Csak Attack frissítése
     public void UpdateAttackVisual(int newAttack)
     {
@@ -65,6 +62,7 @@ public class MinionView : MonoBehaviour
     public void PlayDamageAnimation(int damageAmount)
     {
         // Rázás effekt
+        if (damageAmount < 1) return;
         StartCoroutine(ShakeAnimation());
 
         // Floating damage szöveg ("-2")

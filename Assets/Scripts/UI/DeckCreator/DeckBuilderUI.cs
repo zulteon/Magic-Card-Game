@@ -139,9 +139,11 @@ public class DeckBuilderUI : MonoBehaviour
 
     private void Refresh()
     {
-        _filtered = _editMode
-            ? DeckAsCardList()
-            : CardManager.instance.Search(searchField.text);
+        _filtered = (_editMode
+                ? DeckAsCardList()
+                : CardManager.instance.Search(searchField.text))
+                .Where(c => c.cardId < 500 || c.cardId > 600)
+                .ToList();
 
         _page = Mathf.Clamp(_page, 0, PageCount - 1);
 

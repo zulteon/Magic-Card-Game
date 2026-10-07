@@ -125,7 +125,9 @@ public class EffectClient : NetworkBehaviour
             case Effect.Type.playCard:
                 try
                 {
-                    CardInRealAction.instance.ShowCard(e.targetIds[0]);
+
+                    
+                    CardInRealAction.instance.ShowCard(e.targetIds[0], e.targetIds.Length > 1 ? e.targetIds[1]:0);
                 }
                 catch { }
                 break;
@@ -141,6 +143,7 @@ public class EffectClient : NetworkBehaviour
                 yield return HandleDebuffVisual(e); break;
             case Effect.Type.swapAttackHealth:
                 yield return HandleSwapAttackAndHealthVisual(e); break;
+            
             default:
                 Debug.LogWarning($"Unknown effect type: {e.effectType}");
                 yield break;
@@ -293,11 +296,19 @@ public class EffectClient : NetworkBehaviour
 
     private IEnumerator SetManaCrystal(ClientEvent e)
     {
-        if(e.targetIds==null || e.targetIds.Length == 0) yield break;
+        if (e.targetIds == null || e.targetIds.Length == 0) yield break;
         ushort home = GameManager.instance.AreWeHomePlayer() ? (ushort)0 : (ushort)1;
-        if (home != e.targetIds[0]) yield break;
-        ManaCenterUI.instance.SetMana(e.value);
-        yield return null;
+        if (home != e.targetIds[0])
+        {
+            EnemyMana.instance.Fill(e.value);
+            yield break;
+        }//yield break;
+        else
+        {
+            print("Seeting mana");
+            ManaCenterUI.instance.SetMana(e.value);
+            yield return null;
+        }
     }
     private IEnumerator HandleMinionSwapVisual(ClientEvent e)
     {

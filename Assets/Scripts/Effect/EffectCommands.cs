@@ -50,6 +50,7 @@ public static class EffectCommands
         {Effect.Type.steal,Steal},
         {Effect.Type.swapAttackHealth,SwapAttackAndHealth },
         {Effect.Type.draw,Draw },
+        {Effect.Type.destoyWithLessAttack,DestroyWithLessAttack },
 
        
        
@@ -173,6 +174,7 @@ public static class EffectCommands
         if (hand.Count == 0) return;
         UnityEngine.Debug.Log("Draw" +hand.Count);
         int randomIndex = UnityEngine.Random.Range(0, hand.Count);
+        PlayerMessage.Send("Discard a card at " + randomIndex.ToString(),ctx.playerController);
         ctx.playerController.RemoveCardFromHand(hand[randomIndex]);
     }
     public static void ReActivate(EffectContext ctx)
@@ -265,9 +267,11 @@ public static class EffectCommands
 
         if (heroLogic == null) return;
 
+        // DamageReduction parancsban:
         var live = heroLogic.effectBag.Add(ctx.effect, ctx.doerId, EffectRole.Guard,
-            charges: ctx.value,
+            charges: 1,
             expiresInTurns: 2);
+        live.damageReduction = ctx.value;   // 3
     }
     public static void CopyFromEnemyHand(EffectContext ctx)
     {
@@ -286,6 +290,12 @@ public static class EffectCommands
     public static void Destroy(EffectContext ctx)
     {
         foreach (var target in ctx.targets)
+            target.Death();
+    }
+    public static void DestroyWithLessAttack(EffectContext ctx)
+    {
+        foreach (var target in ctx.targets)
+            if(target.attack<ctx.value)
             target.Death();
     }
     public static void BuffAndNeighbours(EffectContext ctx)
@@ -437,10 +447,10 @@ public static class EffectCommands
     /// <param name="ctx"></param>
     public static void GainEconomyNextTurn(EffectContext ctx)
     {
-        if (ctx.effect.target != Trigger.Target.enemy)
-            GameManager.instance.GetMinionLogic(ctx.doerId).GainEconomyNextTurn(ctx.value);
-        else
-            GameManager.instance.OtherPlayer(ctx.playerController).economy.GainEconomyNextTurn(ctx.value);
+
+
+        ctx.targets[0].GainEconomyNextTurn(ctx.value, ctx.effect.target == Trigger.Target.enemy ?
+            GameManager.instance.OtherPlayer(ctx.playerController): ctx.playerController);
     }
     public static void SummonHalfStats(EffectContext ctx)
     {
@@ -573,8 +583,7 @@ public static class EffectCommands
     }
     public static void GainEconomy(EffectContext ctx)
     {
-        foreach (var t in ctx.targets)
-            t.GainEconomy(ctx.doerId,ctx.value);
+        GameManager.instance.GetOwnerOf(ctx.doerId).economy.RaiseResource(ctx.value);
     }
     // További parancsok ide jöhetnek
 }

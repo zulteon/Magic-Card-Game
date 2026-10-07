@@ -15,7 +15,7 @@ public class NetStartUI : MonoBehaviour
     private string _address = "127.0.0.1";
     private NetworkManager _nm;
     private bool _started;
-
+    public GameObject deckBuilderButton;
     private GUIStyle _panelStyle;
     private GUIStyle _titleStyle;
     private GUIStyle _buttonStyle;
@@ -102,7 +102,8 @@ public class NetStartUI : MonoBehaviour
             {
                 if (!PrepareSelectedDeck())
                     return;
-
+                if (deckBuilderButton != null)
+                    deckBuilderButton.SetActive(false);
                 _nm.ServerManager.StartConnection();
                 _nm.ClientManager.StartConnection();
                 _started = true;
@@ -118,7 +119,8 @@ public class NetStartUI : MonoBehaviour
             {
                 if (!PrepareSelectedDeck())
                     return;
-
+                if (deckBuilderButton != null)
+                    deckBuilderButton.SetActive(false);
                 _nm.TransportManager.Transport.SetClientAddress(_address);
                 _nm.ClientManager.StartConnection();
                 _started = true;

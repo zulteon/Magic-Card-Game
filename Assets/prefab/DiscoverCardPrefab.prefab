@@ -396,8 +396,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: This is a description
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: be1b5d54629222247bb951eafba22dd2, type: 2}
+  m_sharedMaterial: {fileID: -8454419221738510840, guid: be1b5d54629222247bb951eafba22dd2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1080,11 +1080,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardId: 0
+  wideImageScaleMultiplier: 0.8
+  wideImageYOffset: 0.28
   attackText: {fileID: 7336766278005056956}
   healthText: {fileID: 710022824068206152}
   costText: {fileID: 9006527419257806417}
   descriptionText: {fileID: 8629167933512967727}
   nameText: {fileID: 5760661301894335114}
+  sequenceId: 0
 --- !u!1 &9118544113652262092
 GameObject:
   m_ObjectHideFlags: 0

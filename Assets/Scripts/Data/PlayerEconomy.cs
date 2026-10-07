@@ -39,7 +39,11 @@ public class PlayerEconomy
 
         SendManaCrystalEvent();
     }
-
+    public void SetNull()
+    {
+        _owner.currentResource.Value = 0;
+        SendManaCrystalEvent();
+    }
     public void RaiseResource(int amount)
     {
         

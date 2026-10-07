@@ -10,6 +10,7 @@ using FishNet.Object.Synchronizing;
 using FishNet.Managing;
 using static Trigger;
 using FishNet.Demo.AdditiveScenes;
+using FishNet.Connection;
 public class GameManager : NetworkBehaviour
 {
     #region 1. SINGLETON & MEZŐK
@@ -122,7 +123,7 @@ public class GameManager : NetworkBehaviour
                 EffectRunner.Run(effect, watcherId, source: watcherOwner);
             });
     }
-
+    
     //do cementary minions needed?
     public MinionState GetMinionById(ushort sequenceId)
     {
@@ -300,7 +301,6 @@ public class GameManager : NetworkBehaviour
     {
         if (allyHeroLogic != null && !isEnemy) return;
         if (enemyHeroLogic != null && isEnemy) return;
-        print("JUHUUU KREATING A Logic for hero");
         var logic = new MinionLogic(isEnemy?(ushort)1:(ushort)0);
         if (!isEnemy) allyHeroLogic = logic;
         if (isEnemy) enemyHeroLogic = logic;
@@ -539,6 +539,10 @@ public class GameManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.F)) PlayFirstCard(playerA.Value);
         if (Input.GetKeyDown(KeyCode.G)) PlayFirstCard(playerB.Value);
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            DebugHands();
+        }
     }
 
     private void PlayFirstCard(PlayerController pc)
@@ -581,7 +585,8 @@ public class GameManager : NetworkBehaviour
     {
         turn.Value++;
         EffectClient.instance.TurnStartObserversRpc();
-       
+        print(" is my turn p1 " + GameManager.instance.IsMyTurn(playerA.Value));
+        print(" is my turn p2 " + GameManager.instance.IsMyTurn(playerB.Value));
 
         var pc = CurrentPlayerController;
         if (pc == null) return;
@@ -591,10 +596,13 @@ public class GameManager : NetworkBehaviour
             print("a második jatekos");
         print(pc.economy.ToString());
         pc.economy.StartTurn();
-
+        OtherPlayer(pc).economy.SetNull();
         CheckLockedMinions();
         foreach (var m in minionLogics)
             m.effectBag.TickExpiry();
+       allyHeroLogic.effectBag.TickExpiry();
+     
+       enemyHeroLogic.effectBag.TickExpiry();    
 
         ResetAttacks(pc);
 
@@ -624,13 +632,19 @@ public class GameManager : NetworkBehaviour
     }
 
 
-    public void GameOver(bool isEnemy)
+    
+    [Server]
+    public void EndGame(PlayerController loser)
     {
-        gameOverHandler.TriggerGameOver(isEnemy);
+        PlayerController winner =
+            loser == playerA.Value ? playerB.Value : playerA.Value;
+
+        loser.GameOverTargetRpc(loser.Owner, false);
+        winner.GameOverTargetRpc(winner.Owner, true);
     }
     #endregion
 
-//<<<<<<<<----------------------------------->>>>>>>>
+    //<<<<<<<<----------------------------------->>>>>>>>
     #region 3. EFFEKTEK 
     [Server]
     public void AddStats(ushort id, int atk, int hp)
@@ -670,25 +684,97 @@ public class GameManager : NetworkBehaviour
     {
         if (_gameStarted) return;
         if (playerA.Value == null || playerB.Value == null) return;
-
         _gameStarted = true;
-        GameStart();
+
+        // GameStart();
+    }
+    private int _mulligansDone = 0;
+    void DealStartingHands()
+    {
+        for (int i = 0; i < 3; i++) playerA.Value.DrawCard();
+        for (int i = 0; i < 4; i++) playerB.Value.DrawCard();   // a második több lapot kap
+
+    }
+    public void StartMulligan()
+    {
+        _mulligansDone = 0;
+
+        Debug.Log($"StartMulligan fut, offlineTestMode={offlineTestMode}, playerA hand={playerA.Value.hand.Count}");
+        if (offlineTestMode)
+        {
+            // közvetlen hívás, TargetRpc megkerülése
+            MulliganCenter.instance.Show(
+                playerA.Value.hand.Select(c => c.cardId).ToArray(),
+                playerA.Value.hand.Select(c => c.sequenceId).ToArray(),
+                toReplace => playerA.Value.CmdConfirmMulligan(toReplace));
+
+            OnMulliganDone(playerB.Value);
+            return;
+        }
+
+        playerA.Value.TargetShowMulligan(
+            playerA.Value.Owner,
+            playerA.Value.hand.Select(c => c.cardId).ToArray(),
+            playerA.Value.hand.Select(c => c.sequenceId).ToArray());
+
+        playerB.Value.TargetShowMulligan(
+            playerB.Value.Owner,
+            playerB.Value.hand.Select(c => c.cardId).ToArray(),
+            playerB.Value.hand.Select(c => c.sequenceId).ToArray());
+    }
+
+
+    // GameManager-be
+    private bool _playerAReady = false;
+    private bool _playerBReady = false;
+
+    public void PlayerReady(PlayerController pc)
+    {
+        if (pc == playerA.Value) _playerAReady = true;
+        if (pc == playerB.Value) _playerBReady = true;
+
+        // offline módban a B mindig ready
+        if (offlineTestMode) _playerBReady = true;
+
+        if (_playerAReady && _playerBReady)
+        {
+            _playerAReady = false;
+            _playerBReady = false;
+            DealStartingHands();
+            StartMulligan();
+        }
+    }
+    private ushort[] GetHandIds(PlayerController pc)
+    {
+        return pc.hand.Select(c => c.cardId).ToArray();
+    }
+    private CardState[] GetHandCards(PlayerController pc)
+    {
+        return pc.hand.ToArray();
+    }
+    public void OnMulliganDone(PlayerController pc)
+    {
+        _mulligansDone++;
+        if (_mulligansDone >= 2|| offlineTestMode)
+            GameStart();   // mindkét játékos végzett, indul a meccs
     }
 
     [Server]
     private void GameStart()
     {
-        Debug.Log("GAME START");
-
-        // Kezdőkéz
-        for (int i = 0; i < 3; i++) playerA.Value.DrawCard();
-        for (int i = 0; i < 4; i++) playerB.Value.DrawCard();   // a második több lapot kap
-
-        // TODO: mulligan (lapcsere induláskor)
-        // TODO: coin a második játékosnak
+        PlayerMessage.Send("Game has started", playerA.Value);
+        PlayerMessage.Send("Game has started", playerB.Value);
+        RpcGameStart();
+        _gameStarted = true;
+        playerB.Value.GetACoin();
 
         turn.Value = -1;      // hogy a StartTurn ++ után 0 legyen → P1 kezd
         StartTurn();
+    }
+    [ObserversRpc]
+    private void RpcGameStart()
+    {
+        GetLocalPlayerController()?.showHand.Hide(false);
     }
     #region EffectBagBusiness
 
@@ -1175,14 +1261,18 @@ public class GameManager : NetworkBehaviour
             player.isEnemy.Value = true;
             player.Init(gameState.players[1], false, this,offlineTestMode?null:deckIds);
             player.RoleAssignedTargetRpc(player.Owner, player.isEnemy.Value);
+            StartCoroutine(TryStartGameNextFrame());
         }
-        if(!offlineTestMode)
+        //if(!offlineTestMode)
+    }
+    private IEnumerator TryStartGameNextFrame()
+    {
+        yield return null;
         TryStartGame();
     }
-    
     #endregion
 
-//<<<<<<<<----------------------------------->>>>>>>>
+    //<<<<<<<<----------------------------------->>>>>>>>
 
     #region 6. ÁLLAPOTMÓDOSÍTÓK (State Mutators) LEKÉRDEZÉSEK & KERESŐK
 
@@ -1315,7 +1405,7 @@ public class GameManager : NetworkBehaviour
     }
     public PlayerController GetLocalPlayerController()
     {
-        return playerA.Value != null && playerA.Value.IsOwner ? playerA.Value : playerB.Value;
+        return playerA.Value.IsOwner ? playerA.Value : playerB.Value;
     }
     public bool AreWeHomePlayer()
     {
@@ -1332,6 +1422,23 @@ public class GameManager : NetworkBehaviour
         if (player == playerA.Value) { id = enemy ? (ushort)1 : (ushort)0; }
         else { id = enemy ? (ushort)0 : (ushort)1; }
         return id;
+    }
+    public ushort GetOpposingHeroId()
+    {
+        if (playerA.Value != null && playerA.Value.IsOwner)
+        {
+            // Mi vagyunk A → ellenfél B
+            return 1;
+        }
+
+        if (playerB.Value != null && playerB.Value.IsOwner)
+        {
+            // Mi vagyunk B → ellenfél A
+            return 0;
+        }
+
+        Debug.LogError("GetOpposingHeroId: local player not found!");
+        return ushort.MaxValue;
     }
     public PlayerController GetControllerOf(PlayerState state)
     {
@@ -1435,6 +1542,29 @@ public class GameManager : NetworkBehaviour
     internal int GetHandCount(bool v)
     {
         return v ? playerA.Value.hand.Count : playerB.Value.hand.Count;
+    }
+    [ContextMenu("Debug Hands")]
+    public void DebugHands()
+    {
+        DebugHand("PlayerA", playerA.Value);
+        DebugHand("PlayerB", playerB.Value);
+    }
+
+    private void DebugHand(string label, PlayerController pc)
+    {
+        if (pc == null) { Debug.Log($"[Hand Debug] {label}: NULL"); return; }
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"[Hand Debug] {label} — {pc.hand.Count} lap:");
+
+        foreach (var card in pc.hand)
+        {
+            var cardData = CardManager.instance.GetCard(card.cardId);
+            string name = cardData?.cardName ?? "ISMERETLEN";
+            sb.AppendLine($"  cardId={card.cardId} ({name}) | seqId={card.sequenceId} | cost={card.currentCost} | atkBonus={card.attackBonus} | hpBonus={card.healthBonus}");
+        }
+
+        Debug.Log(sb.ToString());
     }
     #endregion
 
